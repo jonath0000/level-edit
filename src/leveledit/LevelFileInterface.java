@@ -1,7 +1,7 @@
 package leveledit;
 
 import levelmodel.DummyObject;
-import levelmodel.DummyObjects;
+import levelmodel.DummyObjectList;
 import levelmodel.TileMap;
 
 /**
@@ -14,12 +14,12 @@ public interface LevelFileInterface {
      * 
      * @return true if ok.
      */
-    public boolean write(DummyObjects dummyObjects, TileMap tileMap);
+    public boolean write(DummyObjectList dummyObjects, TileMap tileMap);
     
     /**
      * Read a level into memory.
      * @return true if ok.
      */
-    public boolean read(DummyObjects dummyObjects, DummyObject [] dummyTypes, 
+    public boolean read(DummyObjectList dummyObjects, DummyObject [] dummyTypes, 
             TileMap tileMap);
 }

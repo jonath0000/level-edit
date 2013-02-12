@@ -1,7 +1,7 @@
 package leveledit;
 
 import levelmodel.DummyObject;
-import levelmodel.DummyObjects;
+import levelmodel.DummyObjectList;
 import levelmodel.TileMap;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -58,7 +58,7 @@ public class MapView
     public static final int MIRROR_CONST = 300;
     private TileMap tileMap;
     // dummy objects
-    protected DummyObjects dummyObjects = new DummyObjects();
+    protected DummyObjectList dummyObjects = new DummyObjectList();
     // camera
     private int camX = 0;
     private int camY = 0;

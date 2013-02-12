@@ -2,7 +2,7 @@ package levelfileformats;
 
 import java.io.FileOutputStream;
 import levelmodel.DummyObject;
-import levelmodel.DummyObjects;
+import levelmodel.DummyObjectList;
 import leveledit.LevelFileInterface;
 import levelmodel.TileMap;
 
@@ -38,7 +38,7 @@ implements LevelFileInterface {
      * @return true if ok.
      */
     @Override
-    public boolean write(DummyObjects dummyObjects, TileMap tileMap) {
+    public boolean write(DummyObjectList dummyObjects, TileMap tileMap) {
         try {
 	
 	    FileOutputStream f = new FileOutputStream(path);
@@ -136,7 +136,7 @@ implements LevelFileInterface {
      * @return false.
      */
     @Override
-    public boolean read(DummyObjects dummyObjects, DummyObject [] dummyTypes, 
+    public boolean read(DummyObjectList dummyObjects, DummyObject [] dummyTypes, 
         TileMap tileMap) {
         return false;
     }   

@@ -1,7 +1,7 @@
 package levelfileformats;
 
 import levelmodel.DummyObject;
-import levelmodel.DummyObjects;
+import levelmodel.DummyObjectList;
 import leveledit.LevelFileInterface;
 import leveledit.ResFileReader;
 import levelmodel.TileMap;
@@ -28,7 +28,7 @@ implements LevelFileInterface {
      * @return true if ok.
      */
     @Override
-    public boolean write(DummyObjects dummyObjects, TileMap tileMap) {        
+    public boolean write(DummyObjectList dummyObjects, TileMap tileMap) {        
         return false;
     }
     
@@ -37,7 +37,7 @@ implements LevelFileInterface {
      * @return true if ok.
      */
     @Override
-    public boolean read(DummyObjects dummyObjects, DummyObject [] dummyTypes, 
+    public boolean read(DummyObjectList dummyObjects, DummyObject [] dummyTypes, 
         TileMap tileMap) {
         // import from Mappy 
   
