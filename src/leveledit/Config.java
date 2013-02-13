@@ -12,7 +12,10 @@ import javax.swing.ImageIcon;
 public class Config {
     
     // Hard-coded values.
-    
+    public static final int TILESIZE = 16;
+    public static final int TILESPERROW = 8;
+    public static final int NUM_TILES = 200;
+    public static final int MIRROR_CONST = 300;
     
     // Values read from file. 
     public ImageIcon tiles;

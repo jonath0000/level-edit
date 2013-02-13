@@ -9,21 +9,18 @@ import java.util.List;
  */
 public class TileMap {
     private List<int[][]> maps; 
-    private int tileSize;
     
     /**
      * Create new tilemap size w*h with n layers.
      * @param w Size x.
      * @param h Size y.
      * @param n Layers.
-     * @param tileSize Tile size in pixels.
      */
-    public TileMap(int w, int h, int n, int tileSize) {
+    public TileMap(int w, int h, int n) {
         maps = new ArrayList();
         for(int i = 0; i < n; i++){
             maps.add(new int[h][w]);
         }
-        this.tileSize = tileSize;
     }
     
     public void setMap(int [][] map, int n) {

@@ -53,10 +53,7 @@ public class MapView
     //--------------------------------------
     // tile system
     private int editlayer = 0;
-    public static final int TILESIZE = 16;
-    public static final int TILESPERROW = 8;
-    public static final int NUM_TILES = 200;
-    public static final int MIRROR_CONST = 300;
+    
     
     protected Level level = new Level();
        
@@ -158,16 +155,16 @@ public class MapView
     public void keyPressed(KeyEvent e) {
 
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_UP) {
-            level.getDummyObjects().moveSelectedDummy(0, -MapView.TILESIZE);
+            level.getDummyObjects().moveSelectedDummy(0, -Config.TILESIZE);
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_DOWN) {
-            level.getDummyObjects().moveSelectedDummy(0, MapView.TILESIZE);
+            level.getDummyObjects().moveSelectedDummy(0, Config.TILESIZE);
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_LEFT) {
-            level.getDummyObjects().moveSelectedDummy(-MapView.TILESIZE, 0);
+            level.getDummyObjects().moveSelectedDummy(-Config.TILESIZE, 0);
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_RIGHT) {
-            level.getDummyObjects().moveSelectedDummy(MapView.TILESIZE, 0);
+            level.getDummyObjects().moveSelectedDummy(Config.TILESIZE, 0);
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_Q) {
             level.getDummyObjects().selectPrevDummy();
@@ -180,16 +177,16 @@ public class MapView
         }
 
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_A) {
-            camX -= TILESIZE;
+            camX -= Config.TILESIZE;
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_D) {
-            camX += TILESIZE;
+            camX += Config.TILESIZE;
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_W) {
-            camY -= TILESIZE;
+            camY -= Config.TILESIZE;
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_S) {
-            camY += TILESIZE;
+            camY += Config.TILESIZE;
         }
 
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_CONTROL) {
@@ -250,8 +247,8 @@ public class MapView
         y = y + getScrollY();
 
         // to tile index
-        int tX = x / TILESIZE;
-        int tY = y / TILESIZE;
+        int tX = x / Config.TILESIZE;
+        int tY = y / Config.TILESIZE;
 
         // set tile
         if (tX >= 0 && tX < level.getTileMap().getWidth() &&
@@ -291,8 +288,7 @@ public class MapView
      */
     public boolean initFromFile(LevelFileInterface lf) {
         
-        level.getDummyObjects().flushData();
-        lf.read(level.getDummyObjects(), owner.typeData, level.getTileMap());
+        level.initFromFile(lf, owner.typeData);
 
         inited = true;
         return true;
@@ -307,9 +303,8 @@ public class MapView
      */
     public boolean initBlankMap(int x, int y) {
 
-        level.getDummyObjects().flushData();
-        level.setTileMap(new TileMap(x, y, 2, TILESIZE));
-
+        level.initBlankMap(x, y);
+        
         inited = true;
 
         x = -30;
@@ -323,7 +318,7 @@ public class MapView
      * @param lf Specifies file format.
      */
     public void saveLevel(LevelFileInterface lf) {
-        lf.write(level.getDummyObjects(), level.getTileMap());
+        level.writeToFile(lf);
     }
 
     /**
@@ -367,36 +362,36 @@ public class MapView
 
                     // get row
                     tile--; // translate tile index to image index
-                    int row = tile / TILESPERROW;
-                    tile = tile % TILESPERROW;
+                    int row = tile / Config.TILESPERROW;
+                    tile = tile % Config.TILESPERROW;
 
                     // non-mirrored
-                    if (map[j][i] <= MIRROR_CONST) {
+                    if (map[j][i] <= Config.MIRROR_CONST) {
                         g.drawImage(config.tiles.getImage(),
                                 //dest
-                                i * TILESIZE - x,
-                                j * TILESIZE - y,
-                                (i + 1) * TILESIZE - x,
-                                (j + 1) * TILESIZE - y,
+                                i * Config.TILESIZE - x,
+                                j * Config.TILESIZE - y,
+                                (i + 1) * Config.TILESIZE - x,
+                                (j + 1) * Config.TILESIZE - y,
                                 // src
-                                (tile) * TILESIZE,
-                                row * TILESIZE,
-                                (tile + 1) * TILESIZE,
-                                (0 + row + 1) * TILESIZE,
+                                (tile) * Config.TILESIZE,
+                                row * Config.TILESIZE,
+                                (tile + 1) * Config.TILESIZE,
+                                (0 + row + 1) * Config.TILESIZE,
                                 this);
                     } // mirrored tiles
                     else {
                         g.drawImage(config.tiles.getImage(),
                                 //dest
-                                i * TILESIZE - x, 
-                                j * TILESIZE - y,
-                                (i + 1) * TILESIZE - x, 
-                                (j + 1) * TILESIZE - y,
+                                i * Config.TILESIZE - x, 
+                                j * Config.TILESIZE - y,
+                                (i + 1) * Config.TILESIZE - x, 
+                                (j + 1) * Config.TILESIZE - y,
                                 // src
-                                (map[j][i] - MIRROR_CONST + 1) * TILESIZE, 
+                                (map[j][i] - Config.MIRROR_CONST + 1) * Config.TILESIZE, 
                                 0,
-                                (map[j][i] - MIRROR_CONST) * TILESIZE, 
-                                TILESIZE,
+                                (map[j][i] - Config.MIRROR_CONST) * Config.TILESIZE, 
+                                Config.TILESIZE,
                                 this);
                     }
                 }
@@ -455,12 +450,12 @@ public class MapView
                 0 - x,
                 this.getHeight() - y);
         g.drawLine(0,
-                this.getMapHeight() * TILESIZE - y,
+                this.getMapHeight() * Config.TILESIZE - y,
                 this.getWidth(),
-                this.getMapHeight() * TILESIZE - y);
-        g.drawLine(this.getMapWidth() * TILESIZE - x,
+                this.getMapHeight() * Config.TILESIZE - y);
+        g.drawLine(this.getMapWidth() * Config.TILESIZE - x,
                 0 - y,
-                this.getMapWidth() * TILESIZE - x,
+                this.getMapWidth() * Config.TILESIZE - x,
                 this.getHeight() - y);
 
         // show where next entity will be created
@@ -472,7 +467,7 @@ public class MapView
                     this);
         } else {
             g.drawLine(newXPos - markerNextDummyPos.getImage().getWidth(this) / 2,
-                    this.getMapHeight() * TILESIZE - y,
+                    this.getMapHeight() * Config.TILESIZE - y,
                     newXPos,
                     this.getHeight());
         }

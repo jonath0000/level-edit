@@ -137,8 +137,8 @@ public class LevelEdit extends JFrame
 	ImageIcon listitems [] = new ImageIcon [nTiles];
 	for (int i = 0; i < nTiles; i++)
 	{
-	    int row = i / MapView.TILESPERROW;
-	    int tile = i % MapView.TILESPERROW;
+	    int row = i / Config.TILESPERROW;
+	    int tile = i % Config.TILESPERROW;
 
 	    BufferedImage newIm = 
                     new BufferedImage(w,h,BufferedImage.TYPE_3BYTE_BGR);
@@ -300,13 +300,13 @@ public class LevelEdit extends JFrame
                 if (mapView.level.getDummyObjects().selected() != null) {
                     // move
                     if (event.getSource() == moveUp) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(0, -MapView.TILESIZE);
+                        mapView.level.getDummyObjects().moveSelectedDummy(0, -Config.TILESIZE);
                     } else if (event.getSource() == moveDown) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(0, MapView.TILESIZE);
+                        mapView.level.getDummyObjects().moveSelectedDummy(0, Config.TILESIZE);
                     } else if (event.getSource() == moveLeft) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(-MapView.TILESIZE, 0);
+                        mapView.level.getDummyObjects().moveSelectedDummy(-Config.TILESIZE, 0);
                     } else if (event.getSource() == moveRight) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(MapView.TILESIZE, 0);
+                        mapView.level.getDummyObjects().moveSelectedDummy(Config.TILESIZE, 0);
                     } // nudge
                     else if (event.getSource() == nudgeUp) {
                         mapView.level.getDummyObjects().moveSelectedDummy(0, -1);
@@ -597,8 +597,8 @@ public class LevelEdit extends JFrame
 
         Config config = new Config(configFile);
         
-        updateTileList(config.tiles, MapView.NUM_TILES, 
-                MapView.TILESIZE, MapView.TILESIZE);        
+        updateTileList(config.tiles, Config.NUM_TILES, 
+                Config.TILESIZE, Config.TILESIZE);        
         updateDummyList(config.typeNames, config.typeData);
         
 	// mapview

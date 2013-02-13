@@ -10,7 +10,7 @@ public class Level {
 
     public Level() {
         dummyObjects = new DummyObjectList();
-        tileMap = new TileMap(10, 10, 2, 10);
+        tileMap = new TileMap(10, 10, 2);
     }            
     
     public DummyObjectList getDummyObjects() {
@@ -29,4 +29,33 @@ public class Level {
         this.tileMap = tileMap;
     }
     
+    /**
+     * Init level from a specified file.
+     * @param lf Level file format.
+     */
+    public void initFromFile(LevelFileInterface lf, DummyObject [] dummyTypes) {
+        
+        dummyObjects.flushData();
+        lf.read(dummyObjects, dummyTypes, tileMap);
+    }
+
+    /**
+     * Creates a blank map.
+     * 
+     * @param x width of new map.
+     * @param y height of new map.
+     */
+    public void initBlankMap(int x, int y) {
+
+        dummyObjects.flushData();
+        tileMap = new TileMap(x, y, 2);
+    }    
+    
+    /**
+     * Save level to file.
+     * @param lf Specifies file format.
+     */
+    public void writeToFile(LevelFileInterface lf) {
+        lf.write(dummyObjects, tileMap);
+    }
 }
