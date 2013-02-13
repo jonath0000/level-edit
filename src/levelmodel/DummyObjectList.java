@@ -2,7 +2,6 @@ package levelmodel;
 
 import java.util.ArrayList;
 import java.util.List;
-import levelmodel.DummyObject;
 
 /**
  * Holds all DummyObjectList, draws and manages them.
@@ -12,13 +11,9 @@ public class DummyObjectList {
 
     public List<DummyObject> dummyObjects = new ArrayList<DummyObject>();
     public DummyObject selectedDummy;
-    private int w;
-    private int h;
     private int newXPos;
 
-    public void DummyObjects(int w, int h) {
-        this.w = w;
-        this.h = h;
+    public void DummyObjects() {
         this.newXPos = 0;
     }
 
@@ -33,14 +28,7 @@ public class DummyObjectList {
     public int size() {
         return dummyObjects.size();
     }
-
-    public int getWidth() {
-        return w;
-    }
-
-    public int getHeight() {
-        return h;
-    }
+    
 
     /**
      * Camera position x
@@ -101,8 +89,6 @@ public class DummyObjectList {
             } else {
                 selectedDummy = (DummyObject) dummyObjects.get(index + 1);
             }
-        } else {
-            System.out.println("Create a dummy first!");
         }
     }
 
@@ -118,8 +104,6 @@ public class DummyObjectList {
             } else {
                 selectedDummy = (DummyObject) dummyObjects.get(index - 1);
             }
-        } else {
-            System.out.println("Create a dummy first!");
         }
     }
 
@@ -139,7 +123,7 @@ public class DummyObjectList {
      */
     public void newDummyCommand(DummyObject d) {
         // find "ground" level
-        d.y = getScrollY() + this.getHeight() - d.h - 40;
+        d.y = 0;//getScrollY() + this.getHeight() - d.h - 40;
         int x = getScrollX();
         d.x = x + newXPos;
 

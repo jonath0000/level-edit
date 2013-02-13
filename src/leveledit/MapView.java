@@ -50,21 +50,20 @@ public class MapView
     /** Storage of config. */
     private Config config;    
     
-    //--------------------------------------
-    // tile system
-    private int editlayer = 0;
-    
-    
-    protected Level level = new Level();
+    /** Reference to level. */
+    private Level level;
        
-    // camera
-    private int camX = 0;
-    private int camY = 0;
+    /** Scroll of map. */
+    private int scrollX = 0;
+    
+    /** Scroll of map. */
+    private int scrollY = 0;
     
     /** Ref to owner class */
     private LevelEdit owner;     
-    
-    public boolean inited = false;
+
+    /** Layer currently edited. */
+    private int editlayer = 0;
     /** key to delete tiles */
     private boolean deleteTileKeyDown = false;
     /** key to fill */
@@ -80,28 +79,13 @@ public class MapView
      * Constructor.
      * @param owner Handle to the GUI class
      */
-    public MapView(Config config, LevelEdit owner) {
+    public MapView(Config config, LevelEdit owner, Level level) {
         this.owner = owner;
         this.config = config;
+        this.level = level;
         setBackground(config.bgCol);
         markerSelectedDummy = new ImageIcon(MARKERSELECTEDDUMMY_PATH);
         markerNextDummyPos = new ImageIcon(MARKERNEXTDUMMYPOS_PATH);
-    }
-
-    /**
-     * Height of currently shown level.getTileMap().
-     * @return map y val
-     */
-    private int getMapHeight() {
-        return level.getTileMap().getHeight();
-    }
-
-    /**
-     * Width of currently shown level.getTileMap().
-     * @return map x val
-     */
-    private int getMapWidth() {
-        return level.getTileMap().getWidth();
     }
 
     // <editor-fold desc="Listeners">
@@ -177,16 +161,16 @@ public class MapView
         }
 
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_A) {
-            camX -= Config.TILESIZE;
+            scrollX -= Config.TILESIZE;
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_D) {
-            camX += Config.TILESIZE;
+            scrollX += Config.TILESIZE;
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_W) {
-            camY -= Config.TILESIZE;
+            scrollY -= Config.TILESIZE;
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_S) {
-            camY += Config.TILESIZE;
+            scrollY += Config.TILESIZE;
         }
 
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_CONTROL) {
@@ -290,7 +274,6 @@ public class MapView
         
         level.initFromFile(lf, owner.typeData);
 
-        inited = true;
         return true;
     }
 
@@ -304,8 +287,7 @@ public class MapView
     public boolean initBlankMap(int x, int y) {
 
         level.initBlankMap(x, y);
-        
-        inited = true;
+
 
         x = -30;
         y = -30;
@@ -322,19 +304,19 @@ public class MapView
     }
 
     /**
-     * Camera position x
-     * @return camX
+     * Scroll position x
+     * @return scrollX
      */
     int getScrollX() {
-        return camX;
+        return scrollX;
     }
 
     /**
-     * Camera position y
-     * @return camY
+     * Scroll position y
+     * @return scrollY
      */
     int getScrollY() {
-        return camY;
+        return scrollY;
     }
 
     //<editor-fold desc="Paint methods.">
@@ -405,9 +387,6 @@ public class MapView
      */
     @Override
     public void paint(Graphics g) {
-        if (!inited) {
-            return;
-        }
 
         super.paint(g);
 
@@ -450,12 +429,12 @@ public class MapView
                 0 - x,
                 this.getHeight() - y);
         g.drawLine(0,
-                this.getMapHeight() * Config.TILESIZE - y,
+                level.getTileMap().getHeight() * Config.TILESIZE - y,
                 this.getWidth(),
-                this.getMapHeight() * Config.TILESIZE - y);
-        g.drawLine(this.getMapWidth() * Config.TILESIZE - x,
+                level.getTileMap().getHeight() * Config.TILESIZE - y);
+        g.drawLine(level.getTileMap().getWidth() * Config.TILESIZE - x,
                 0 - y,
-                this.getMapWidth() * Config.TILESIZE - x,
+                level.getTileMap().getWidth() * Config.TILESIZE - x,
                 this.getHeight() - y);
 
         // show where next entity will be created
@@ -467,7 +446,7 @@ public class MapView
                     this);
         } else {
             g.drawLine(newXPos - markerNextDummyPos.getImage().getWidth(this) / 2,
-                    this.getMapHeight() * Config.TILESIZE - y,
+                    level.getTileMap().getHeight() * Config.TILESIZE - y,
                     newXPos,
                     this.getHeight());
         }

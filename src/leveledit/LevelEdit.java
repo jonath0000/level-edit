@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import levelfileformats.Blocko2LevelFile;
 import levelfileformats.InternalLevelFile;
 import levelfileformats.MappyLevelFile;
+import levelmodel.Level;
 
 /**
  * The GUI class of the LevelEdit application.
@@ -91,11 +92,11 @@ public class LevelEdit extends JFrame
 	STARTLOC_X         = 10,
 	STARTLOC_Y         = 100;
 
-    // for showing open file
-    public static File currentFile = null;
+    /** For showing open file. */
+    private File currentFile = null;
 
-    // remember pos in file system - very convinient!
-    public static File currentDir;
+    /** Remember pos in file system. */
+    private File currentDir;
     
     // dummy type data
     public String typeNames[] = new String [1];
@@ -107,8 +108,12 @@ public class LevelEdit extends JFrame
     public static final int TOOL_SET_TILE = 3;
     protected int selectedTool = TOOL_SELECT_DUMMY;
     
-    // game object
+    /** Map view. */
     private MapView mapView; 
+    
+    /** Level object. */
+    private Level level = new Level();
+    
     
     /** 
      * Replaces the dummy list with new values
@@ -164,11 +169,11 @@ public class LevelEdit extends JFrame
             case TOOL_NEW_DUMMY:
                 if (types.getSelectedIndex() != -1 && !repeated) {
                     DummyObject d = new DummyObject(typeData[types.getSelectedIndex()]);
-                    mapView.level.getDummyObjects().newDummy(x, y, d);
+                    level.getDummyObjects().newDummy(x, y, d);
                 }
                 break;
             case TOOL_SELECT_DUMMY:
-                mapView.level.getDummyObjects().selectDummy(x, y);
+                level.getDummyObjects().selectDummy(x, y);
                 break;
             case TOOL_SET_TILE:
                 if (tileList.getSelectedIndex() != -1) {
@@ -199,7 +204,7 @@ public class LevelEdit extends JFrame
             message.setText("Selected dummy: " + 
                     typeData[types.getSelectedIndex()].name);
             DummyObject d = new DummyObject(typeData[types.getSelectedIndex()]);
-            mapView.level.getDummyObjects().newDummyCommand(d);
+            level.getDummyObjects().newDummyCommand(d);
         }
     }
     
@@ -280,68 +285,64 @@ public class LevelEdit extends JFrame
 	
         @Override
 	public void actionPerformed (ActionEvent event)
-	{		    	    
+	{		    	    	       
+	    if (event.getSource() == newDummyButton) {
+                addDummy();
+            }
 
-	    if (mapView.inited)
-	    {	       
-		if (event.getSource() == newDummyButton) {
-                    addDummy();		    
-		}
-		
-		if (event.getSource() == nextObjBtn) {
-		    mapView.level.getDummyObjects().selectNextDummy();
-		}
-		
-		if (event.getSource() == prevObjBtn) {
-                    mapView.level.getDummyObjects().selectPrevDummy();
-		}
-		
-                // buttons move & nudge
-                if (mapView.level.getDummyObjects().selected() != null) {
-                    // move
-                    if (event.getSource() == moveUp) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(0, -Config.TILESIZE);
-                    } else if (event.getSource() == moveDown) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(0, Config.TILESIZE);
-                    } else if (event.getSource() == moveLeft) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(-Config.TILESIZE, 0);
-                    } else if (event.getSource() == moveRight) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(Config.TILESIZE, 0);
-                    } // nudge
-                    else if (event.getSource() == nudgeUp) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(0, -1);
-                    } else if (event.getSource() == nudgeDown) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(0, 1);
-                    } else if (event.getSource() == nudgeLeft) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(-1, 0);
-                    } else if (event.getSource() == nudgeRight) {
-                        mapView.level.getDummyObjects().moveSelectedDummy(1, 0);
-                    }
+            if (event.getSource() == nextObjBtn) {
+                level.getDummyObjects().selectNextDummy();
+            }
+
+            if (event.getSource() == prevObjBtn) {
+                level.getDummyObjects().selectPrevDummy();
+            }
+
+            // buttons move & nudge
+            if (level.getDummyObjects().selected() != null) {
+                // move
+                if (event.getSource() == moveUp) {
+                    level.getDummyObjects().moveSelectedDummy(0, -Config.TILESIZE);
+                } else if (event.getSource() == moveDown) {
+                    level.getDummyObjects().moveSelectedDummy(0, Config.TILESIZE);
+                } else if (event.getSource() == moveLeft) {
+                    level.getDummyObjects().moveSelectedDummy(-Config.TILESIZE, 0);
+                } else if (event.getSource() == moveRight) {
+                    level.getDummyObjects().moveSelectedDummy(Config.TILESIZE, 0);
+                } // nudge
+                else if (event.getSource() == nudgeUp) {
+                    level.getDummyObjects().moveSelectedDummy(0, -1);
+                } else if (event.getSource() == nudgeDown) {
+                    level.getDummyObjects().moveSelectedDummy(0, 1);
+                } else if (event.getSource() == nudgeLeft) {
+                    level.getDummyObjects().moveSelectedDummy(-1, 0);
+                } else if (event.getSource() == nudgeRight) {
+                    level.getDummyObjects().moveSelectedDummy(1, 0);
                 }
+            }
 
-		// MENU -> "Save" (LevelEdit format)
-		if (event.getSource() == saveItem){
-                    mapView.saveLevel(new InternalLevelFile(
-                            getSaveLevelPath(true)));                     
-		}	    
+            // MENU -> "Save" (LevelEdit format)
+            if (event.getSource() == saveItem) {
+                mapView.saveLevel(new InternalLevelFile(
+                        getSaveLevelPath(true)));
+            }
 
-		// MENU -> "Save as" LevelEdit format
-		if (event.getSource() == saveAsItem){
-                    mapView.saveLevel(new InternalLevelFile(
-                            getSaveLevelPath(false)));                    
-		}
+            // MENU -> "Save as" LevelEdit format
+            if (event.getSource() == saveAsItem) {
+                mapView.saveLevel(new InternalLevelFile(
+                        getSaveLevelPath(false)));
+            }
 
-		// MENU -> Export as blocko format 2
-		if (event.getSource() == exportAsBlockoFormat2Item){                    
-                    mapView.saveLevel(new Blocko2LevelFile(
-                            getSaveLevelPath(false)));  
-		}
+            // MENU -> Export as blocko format 2
+            if (event.getSource() == exportAsBlockoFormat2Item) {
+                mapView.saveLevel(new Blocko2LevelFile(
+                        getSaveLevelPath(false)));
+            }
 
-		// HELP
-		if (event.getSource() == helpItem){
-		    showHelp();
-		}
-	    }
+            // HELP
+            if (event.getSource() == helpItem) {
+                showHelp();
+            }
 
 	    
 	    // MENU -> New map
@@ -602,7 +603,7 @@ public class LevelEdit extends JFrame
         updateDummyList(config.typeNames, config.typeData);
         
 	// mapview
-	mapView = new MapView(config, this);
+	mapView = new MapView(config, this, level);
         mapView.addKeyListener(mapView);
         mapView.addMouseListener(mapView);
         mapView.addMouseMotionListener(mapView);
