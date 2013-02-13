@@ -1,6 +1,7 @@
 package levelmodel;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Holds all DummyObjectList, draws and manages them.
@@ -8,7 +9,7 @@ import java.util.Vector;
  */
 public class DummyObjectList {
 
-    public Vector<DummyObject> dummyObjects = new Vector<DummyObject>();
+    public List<DummyObject> dummyObjects = new ArrayList<DummyObject>();
     public DummyObject selectedDummy;
     private int w;
     private int h;
@@ -25,7 +26,7 @@ public class DummyObjectList {
     }
 
     public DummyObject elementAt(int i) {
-        return dummyObjects.elementAt(i);
+        return dummyObjects.get(i);
     }
 
     public int size() {
@@ -67,7 +68,7 @@ public class DummyObjectList {
 
         for (int i = dummyObjects.size() - 1; i >= 0; i--) {
             // backwards so top-viewed will be chosen
-            DummyObject d = (DummyObject) dummyObjects.elementAt(i);
+            DummyObject d = (DummyObject) dummyObjects.get(i);
             if (x > d.x - sx && x < d.x + d.w - sx
                     && y > d.y - sy && y < d.y + d.h - sy) {
                 selectedDummy = d;
@@ -95,9 +96,9 @@ public class DummyObjectList {
             int size = dummyObjects.size();
             int index = dummyObjects.indexOf(selectedDummy);
             if (index + 1 >= size) {
-                selectedDummy = (DummyObject) dummyObjects.elementAt(0);
+                selectedDummy = (DummyObject) dummyObjects.get(0);
             } else {
-                selectedDummy = (DummyObject) dummyObjects.elementAt(index + 1);
+                selectedDummy = (DummyObject) dummyObjects.get(index + 1);
             }
         } else {
             System.out.println("Create a dummy first!");
@@ -112,9 +113,9 @@ public class DummyObjectList {
             int size = dummyObjects.size();
             int index = dummyObjects.indexOf(selectedDummy);
             if (index - 1 < 0) {
-                selectedDummy = (DummyObject) dummyObjects.elementAt(size - 1);
+                selectedDummy = (DummyObject) dummyObjects.get(size - 1);
             } else {
-                selectedDummy = (DummyObject) dummyObjects.elementAt(index - 1);
+                selectedDummy = (DummyObject) dummyObjects.get(index - 1);
             }
         } else {
             System.out.println("Create a dummy first!");
@@ -178,7 +179,7 @@ public class DummyObjectList {
      * Flushes the dummyobject list
      */
     public void flushData() {
-        dummyObjects = new Vector<DummyObject>();
+        dummyObjects = new ArrayList<DummyObject>();
     }
     
 }
