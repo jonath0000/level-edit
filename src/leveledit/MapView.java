@@ -1,6 +1,5 @@
 package leveledit;
 
-import levelmodel.LevelFileInterface;
 import levelmodel.DummyObject;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,7 +11,6 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import levelmodel.Level;
-import levelmodel.TileMap;
 
 /**
  * Panel showing the level.getTileMap() and dummy objects.
@@ -263,44 +261,6 @@ public class MapView
             lastEditedTileX = tX;
             lastEditedTileY = tY;
         }
-    }
-
-    /**
-     * Init level from a specified file.
-     * @param lf Level file format.
-     * @return True.
-     */
-    public boolean initFromFile(LevelFileInterface lf) {
-        
-        level.initFromFile(lf, owner.typeData);
-
-        return true;
-    }
-
-    /**
-     * Sets up the enviroment from the configfile and creates a blank map.
-     * 
-     * @param x width of new map.
-     * @param y height of new map.
-     * @return true if all's ok.
-     */
-    public boolean initBlankMap(int x, int y) {
-
-        level.initBlankMap(x, y);
-
-
-        x = -30;
-        y = -30;
-
-        return true;
-    }    
-    
-    /**
-     * Save level to file.
-     * @param lf Specifies file format.
-     */
-    public void saveLevel(LevelFileInterface lf) {
-        level.writeToFile(lf);
     }
 
     /**

@@ -216,11 +216,7 @@ public class LevelEdit extends JFrame
                 JOptionPane.showInputDialog(this, "Map size x?"));
         int y = Integer.parseInt(
                 JOptionPane.showInputDialog(this, "Map size y?"));
-        if (mapView.initBlankMap(x, y) == false) {
-            JOptionPane.showMessageDialog(this,
-                    "Couldn't create new level!");
-            System.exit(0);
-        }
+        level.initBlankMap(x, y);
         currentFile = null;
         setTitle("LevelEdit - untitled");
     }
@@ -323,19 +319,19 @@ public class LevelEdit extends JFrame
 
             // MENU -> "Save" (LevelEdit format)
             if (event.getSource() == saveItem) {
-                mapView.saveLevel(new InternalLevelFile(
+                level.writeToFile(new InternalLevelFile(
                         getSaveLevelPath(true)));
             }
 
             // MENU -> "Save as" LevelEdit format
             if (event.getSource() == saveAsItem) {
-                mapView.saveLevel(new InternalLevelFile(
+                level.writeToFile(new InternalLevelFile(
                         getSaveLevelPath(false)));
             }
 
             // MENU -> Export as blocko format 2
             if (event.getSource() == exportAsBlockoFormat2Item) {
-                mapView.saveLevel(new Blocko2LevelFile(
+                level.writeToFile(new Blocko2LevelFile(
                         getSaveLevelPath(false)));
             }
 
@@ -353,23 +349,15 @@ public class LevelEdit extends JFrame
             // MENU -> open
             if (event.getSource() == openItem) {
 
-                if (!mapView.initFromFile(
-                        new InternalLevelFile(getOpenLevelPath()))) {
-                    JOptionPane.showMessageDialog(parentframe,
-                            "Error while opening file!");
-                    System.exit(0);
-                }
+                level.initFromFile(new InternalLevelFile(getOpenLevelPath()), 
+                        typeData);
             }
 	    
 	    // MENU -> import mappy           
             if (event.getSource() == importMappyItem) {
 
-                if (!mapView.initFromFile(
-                        new MappyLevelFile(getOpenLevelPath()))) {
-                    JOptionPane.showMessageDialog(parentframe,
-                            "Error while opening file!");
-                    System.exit(0);
-                }
+                level.initFromFile(new MappyLevelFile(getOpenLevelPath()),
+                        typeData);
             }           
 
 	    mapView.requestFocusInWindow();
