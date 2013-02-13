@@ -8,6 +8,11 @@ public class Level {
     private TileMap tileMap;
     private DummyObjectList dummyObjects;
 
+    public Level() {
+        dummyObjects = new DummyObjectList();
+        tileMap = new TileMap(10, 10, 2, 10);
+    }            
+    
     public DummyObjectList getDummyObjects() {
         return dummyObjects;
     }

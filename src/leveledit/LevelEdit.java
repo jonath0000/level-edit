@@ -164,11 +164,11 @@ public class LevelEdit extends JFrame
             case TOOL_NEW_DUMMY:
                 if (types.getSelectedIndex() != -1 && !repeated) {
                     DummyObject d = new DummyObject(typeData[types.getSelectedIndex()]);
-                    mapView.dummyObjects.newDummy(x, y, d);
+                    mapView.level.getDummyObjects().newDummy(x, y, d);
                 }
                 break;
             case TOOL_SELECT_DUMMY:
-                mapView.dummyObjects.selectDummy(x, y);
+                mapView.level.getDummyObjects().selectDummy(x, y);
                 break;
             case TOOL_SET_TILE:
                 if (tileList.getSelectedIndex() != -1) {
@@ -199,7 +199,7 @@ public class LevelEdit extends JFrame
             message.setText("Selected dummy: " + 
                     typeData[types.getSelectedIndex()].name);
             DummyObject d = new DummyObject(typeData[types.getSelectedIndex()]);
-            mapView.dummyObjects.newDummyCommand(d);
+            mapView.level.getDummyObjects().newDummyCommand(d);
         }
     }
     
@@ -289,33 +289,33 @@ public class LevelEdit extends JFrame
 		}
 		
 		if (event.getSource() == nextObjBtn) {
-		    mapView.dummyObjects.selectNextDummy();
+		    mapView.level.getDummyObjects().selectNextDummy();
 		}
 		
 		if (event.getSource() == prevObjBtn) {
-                    mapView.dummyObjects.selectPrevDummy();
+                    mapView.level.getDummyObjects().selectPrevDummy();
 		}
 		
                 // buttons move & nudge
-                if (mapView.dummyObjects.selected() != null) {
+                if (mapView.level.getDummyObjects().selected() != null) {
                     // move
                     if (event.getSource() == moveUp) {
-                        mapView.dummyObjects.moveSelectedDummy(0, -MapView.TILESIZE);
+                        mapView.level.getDummyObjects().moveSelectedDummy(0, -MapView.TILESIZE);
                     } else if (event.getSource() == moveDown) {
-                        mapView.dummyObjects.moveSelectedDummy(0, MapView.TILESIZE);
+                        mapView.level.getDummyObjects().moveSelectedDummy(0, MapView.TILESIZE);
                     } else if (event.getSource() == moveLeft) {
-                        mapView.dummyObjects.moveSelectedDummy(-MapView.TILESIZE, 0);
+                        mapView.level.getDummyObjects().moveSelectedDummy(-MapView.TILESIZE, 0);
                     } else if (event.getSource() == moveRight) {
-                        mapView.dummyObjects.moveSelectedDummy(MapView.TILESIZE, 0);
+                        mapView.level.getDummyObjects().moveSelectedDummy(MapView.TILESIZE, 0);
                     } // nudge
                     else if (event.getSource() == nudgeUp) {
-                        mapView.dummyObjects.moveSelectedDummy(0, -1);
+                        mapView.level.getDummyObjects().moveSelectedDummy(0, -1);
                     } else if (event.getSource() == nudgeDown) {
-                        mapView.dummyObjects.moveSelectedDummy(0, 1);
+                        mapView.level.getDummyObjects().moveSelectedDummy(0, 1);
                     } else if (event.getSource() == nudgeLeft) {
-                        mapView.dummyObjects.moveSelectedDummy(-1, 0);
+                        mapView.level.getDummyObjects().moveSelectedDummy(-1, 0);
                     } else if (event.getSource() == nudgeRight) {
-                        mapView.dummyObjects.moveSelectedDummy(1, 0);
+                        mapView.level.getDummyObjects().moveSelectedDummy(1, 0);
                     }
                 }
 

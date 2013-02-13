@@ -1,8 +1,7 @@
 package leveledit;
 
+import levelmodel.LevelFileInterface;
 import levelmodel.DummyObject;
-import levelmodel.DummyObjectList;
-import levelmodel.TileMap;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -12,9 +11,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import levelmodel.Level;
+import levelmodel.TileMap;
 
 /**
- * Panel showing the tilemap and dummy objects.
+ * Panel showing the level.getTileMap() and dummy objects.
  * 
  * Listens to mouse clicks and key events.
  *
@@ -56,9 +57,9 @@ public class MapView
     public static final int TILESPERROW = 8;
     public static final int NUM_TILES = 200;
     public static final int MIRROR_CONST = 300;
-    private TileMap tileMap;
-    // dummy objects
-    protected DummyObjectList dummyObjects = new DummyObjectList();
+    
+    protected Level level = new Level();
+       
     // camera
     private int camX = 0;
     private int camY = 0;
@@ -88,23 +89,22 @@ public class MapView
         setBackground(config.bgCol);
         markerSelectedDummy = new ImageIcon(MARKERSELECTEDDUMMY_PATH);
         markerNextDummyPos = new ImageIcon(MARKERNEXTDUMMYPOS_PATH);
-        tileMap = new TileMap(10, 10, 2, 10);
     }
 
     /**
-     * Height of currently shown tilemap.
+     * Height of currently shown level.getTileMap().
      * @return map y val
      */
     private int getMapHeight() {
-        return tileMap.getHeight();
+        return level.getTileMap().getHeight();
     }
 
     /**
-     * Width of currently shown tilemap.
+     * Width of currently shown level.getTileMap().
      * @return map x val
      */
     private int getMapWidth() {
-        return tileMap.getWidth();
+        return level.getTileMap().getWidth();
     }
 
     // <editor-fold desc="Listeners">
@@ -158,25 +158,25 @@ public class MapView
     public void keyPressed(KeyEvent e) {
 
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_UP) {
-            dummyObjects.moveSelectedDummy(0, -MapView.TILESIZE);
+            level.getDummyObjects().moveSelectedDummy(0, -MapView.TILESIZE);
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_DOWN) {
-            dummyObjects.moveSelectedDummy(0, MapView.TILESIZE);
+            level.getDummyObjects().moveSelectedDummy(0, MapView.TILESIZE);
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_LEFT) {
-            dummyObjects.moveSelectedDummy(-MapView.TILESIZE, 0);
+            level.getDummyObjects().moveSelectedDummy(-MapView.TILESIZE, 0);
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_RIGHT) {
-            dummyObjects.moveSelectedDummy(MapView.TILESIZE, 0);
+            level.getDummyObjects().moveSelectedDummy(MapView.TILESIZE, 0);
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_Q) {
-            dummyObjects.selectPrevDummy();
+            level.getDummyObjects().selectPrevDummy();
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_E) {
-            dummyObjects.selectNextDummy();
+            level.getDummyObjects().selectNextDummy();
         }
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_DELETE) {
-            dummyObjects.deleteSelectedDummy();
+            level.getDummyObjects().deleteSelectedDummy();
         }
 
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_A) {
@@ -254,8 +254,8 @@ public class MapView
         int tY = y / TILESIZE;
 
         // set tile
-        if (tX >= 0 && tX < tileMap.getWidth() &&
-                tY >= 0 && tY < tileMap.getHeight()) {
+        if (tX >= 0 && tX < level.getTileMap().getWidth() &&
+                tY >= 0 && tY < level.getTileMap().getHeight()) {
             int mapToEdit;
             if (this.editlayer == 1) {
                 mapToEdit = 1;
@@ -266,17 +266,17 @@ public class MapView
             int val = tileIndex + 1;
 
             if (this.fillKeyDown) {
-                tileMap.fillRecursive(mapToEdit, tX, tY,
-                        tileMap.getTileVal(tX, tY, mapToEdit),
+                level.getTileMap().fillRecursive(mapToEdit, tX, tY,
+                        level.getTileMap().getTileVal(tX, tY, mapToEdit),
                         val);
             } else if (this.lineKeyDown) {
-                tileMap.drawLine(mapToEdit, lastEditedTileX,
+                level.getTileMap().drawLine(mapToEdit, lastEditedTileX,
                         lastEditedTileY, tX, tY, val);
             } else {
                 if (this.deleteTileKeyDown) {
                     val = 0;
                 }
-                tileMap.setTileVal(tX, tY, mapToEdit, val);
+                level.getTileMap().setTileVal(tX, tY, mapToEdit, val);
             }
 
             lastEditedTileX = tX;
@@ -291,8 +291,8 @@ public class MapView
      */
     public boolean initFromFile(LevelFileInterface lf) {
         
-        dummyObjects.flushData();
-        lf.read(dummyObjects, owner.typeData, tileMap);
+        level.getDummyObjects().flushData();
+        lf.read(level.getDummyObjects(), owner.typeData, level.getTileMap());
 
         inited = true;
         return true;
@@ -307,8 +307,8 @@ public class MapView
      */
     public boolean initBlankMap(int x, int y) {
 
-        dummyObjects.flushData();
-        tileMap = new TileMap(x, y, 2, TILESIZE);
+        level.getDummyObjects().flushData();
+        level.setTileMap(new TileMap(x, y, 2, TILESIZE));
 
         inited = true;
 
@@ -323,7 +323,7 @@ public class MapView
      * @param lf Specifies file format.
      */
     public void saveLevel(LevelFileInterface lf) {
-        lf.write(dummyObjects, tileMap);
+        lf.write(level.getDummyObjects(), level.getTileMap());
     }
 
     /**
@@ -420,13 +420,13 @@ public class MapView
         int y = getScrollY();
 
         // draw tiles
-        paintMap(g, tileMap.getMap(1));
-        paintMap(g, tileMap.getMap(0));
+        paintMap(g, level.getTileMap().getMap(1));
+        paintMap(g, level.getTileMap().getMap(0));
 
         // draw the dummy objetcs
         DummyObject p;
-        for (int i = 0; i < dummyObjects.size(); i++) {
-            p = (DummyObject) dummyObjects.elementAt(i);
+        for (int i = 0; i < level.getDummyObjects().size(); i++) {
+            p = (DummyObject) level.getDummyObjects().elementAt(i);
 
             // if has picture, draw it
             if (p.pic) {
@@ -479,19 +479,19 @@ public class MapView
 
         // show selected dummy
         g.setColor(new Color(0x00FF00));
-        if (dummyObjects.selectedDummy != null) {
+        if (level.getDummyObjects().selectedDummy != null) {
             if (markerSelectedDummy != null) {
                 g.drawImage(markerSelectedDummy.getImage(),
-                        (dummyObjects.selectedDummy.x + 
-                        dummyObjects.selectedDummy.w / 2 
+                        (level.getDummyObjects().selectedDummy.x + 
+                        level.getDummyObjects().selectedDummy.w / 2 
                         - (markerSelectedDummy.getImage()).getWidth(this) / 2) 
                         - x,
-                        dummyObjects.selectedDummy.y - 30 - y,
+                        level.getDummyObjects().selectedDummy.y - 30 - y,
                         this);
             } else {
-                g.drawRect(dummyObjects.selectedDummy.x - x, 
-                        dummyObjects.selectedDummy.y - 4 - y, 
-                        dummyObjects.selectedDummy.w, 
+                g.drawRect(level.getDummyObjects().selectedDummy.x - x, 
+                        level.getDummyObjects().selectedDummy.y - 4 - y, 
+                        level.getDummyObjects().selectedDummy.w, 
                         4);
             }
         }

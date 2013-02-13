@@ -2,6 +2,7 @@ package levelmodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import levelmodel.DummyObject;
 
 /**
  * Holds all DummyObjectList, draws and manages them.

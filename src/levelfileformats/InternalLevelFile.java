@@ -3,7 +3,7 @@ package levelfileformats;
 import java.io.FileOutputStream;
 import levelmodel.DummyObject;
 import levelmodel.DummyObjectList;
-import leveledit.LevelFileInterface;
+import levelmodel.LevelFileInterface;
 import leveledit.ResFileReader;
 import levelmodel.TileMap;
 
