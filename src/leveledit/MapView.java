@@ -282,8 +282,8 @@ public class MapView
                 level.getDummyObjects().selectDummy(x, y);
                 break;
             case SET_TILE:
-                if (leveledit.tileList.getSelectedIndex() != -1) {
-                    setTileVal(x, y, leveledit.tileList.getSelectedIndex());
+                if (leveledit.tileSelector.getSelectedIndex() != -1) {
+                    setTileVal(x, y, leveledit.tileSelector.getSelectedIndex());
                 }
                 break;
         }

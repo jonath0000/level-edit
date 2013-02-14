@@ -83,12 +83,10 @@ public class LevelEdit extends JFrame
     private JButton prevObjBtn;
     private JPanel  dummyTab;
     public  JSlider scrollbar;
-    public  JList   types; // captions of dummy types
-
-    // edit tiles btns
-    public JList tileList;   
+    public  JList   types; // captions of dummy types  
     
     public ToolSelector toolSelector;
+    public TileSelector tileSelector;
     
     // </editor-fold>
     
@@ -137,34 +135,6 @@ public class LevelEdit extends JFrame
         this.repaint();
     }
 
-    /**
-     * Replaces the tile select menu with new tiles
-     * @param tilePic   image with the tiles in a long row horizontally
-     * @param nTiles    number of tiles in the image
-     * @param w         width of a tile
-     * @param h         height of a tile
-     */
-    public void updateTileList(ImageIcon tilePic, int nTiles, int w, int h)
-    {
-	Image tiles = tilePic.getImage();
-	ImageIcon listitems [] = new ImageIcon [nTiles];
-	for (int i = 0; i < nTiles; i++)
-	{
-	    int row = i / Config.TILESPERROW;
-	    int tile = i % Config.TILESPERROW;
-
-	    BufferedImage newIm = 
-                    new BufferedImage(w,h,BufferedImage.TYPE_3BYTE_BGR);
-	    Graphics g = newIm.getGraphics();
-	    g.drawImage(tiles, 0, 0, w, h, 
-			tile*w,	row*h, (tile+1)*w, (row+1)*h, this );  
-	    ImageIcon icon = new ImageIcon(newIm);
-	    listitems[i] = icon;
-	}
-	tileList.setListData(listitems);
-	tileList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-	tileList.setVisibleRowCount(8);
-    }
     
     /**
      * Create new blank level. Ask for size.
@@ -469,14 +439,10 @@ public class LevelEdit extends JFrame
 	//
 	// TILETAB
 	//
-	tileList = new JList();
-	tileList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-	//tileList.setVisibleRowCount(8);
-	JScrollPane tileListScroller = new JScrollPane(tileList);
-	dummyTab.add(tileListScroller);
-	tileListScroller.setPreferredSize(new Dimension(200, 300));
-	container.add(tileListScroller,BorderLayout.EAST);
-	container.add(dummyTab,BorderLayout.SOUTH);
+        tileSelector = new TileSelector();	
+        container.add(tileSelector, BorderLayout.EAST);
+        
+	container.add(dummyTab, BorderLayout.SOUTH);
 	
 	//------------------------------------------------------
 	
@@ -495,13 +461,15 @@ public class LevelEdit extends JFrame
     public LevelEdit(String configFile)
     {
       	super("LevelEdit");
-	Container container = getContentPane();
-        createGui(container);
-
+        
         Config config = new Config(configFile);
         
-        updateTileList(config.tiles, Config.NUM_TILES, 
-                Config.TILESIZE, Config.TILESIZE);        
+	Container container = getContentPane();
+        createGui(container);
+  
+        tileSelector.setTiles(config.tiles, Config.NUM_TILES, 
+                Config.TILESIZE, Config.TILESIZE);
+        
         updateDummyList(config.typeNames, config.typeData);
         
 	// mapview
