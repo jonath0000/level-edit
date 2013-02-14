@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import levelmodel.Level;
 
 /**
- * Panel showing the level.getTileMap() and dummy objects.
+ * Panel showing the tile map and dummy objects.
  * 
  * Listens to mouse clicks and key events.
  *
@@ -75,7 +75,9 @@ public class MapView
 
     /**
      * Constructor.
+     * @param config 
      * @param owner Handle to the GUI class
+     * @param level  
      */
     public MapView(Config config, LevelEdit owner, Level level) {
         this.owner = owner;
@@ -87,24 +89,44 @@ public class MapView
     }
 
     // <editor-fold desc="Listeners">
+    /**
+     * 
+     * @param e
+     */
     @Override
     public void mousePressed(MouseEvent e) {
         owner.clickMapView(e.getX(), e.getY(), true);
         repaint();
     }
 
+    /**
+     * 
+     * @param e
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
     }
 
+    /**
+     * 
+     * @param e
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    /**
+     * 
+     * @param e
+     */
     @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    /**
+     * 
+     * @param e
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         owner.clickMapView(e.getX(), e.getY(), false);
@@ -112,12 +134,20 @@ public class MapView
     }
 
     // implement mousemovelistener
+    /**
+     * 
+     * @param e
+     */
     @Override
     public void mouseMoved(MouseEvent e) {
         // called during motion when no buttons are down
         e.consume();
     }
 
+    /**
+     * 
+     * @param e
+     */
     @Override
     public void mouseDragged(MouseEvent e) {
         // called during motion with buttons down
@@ -129,10 +159,18 @@ public class MapView
     }
 
     // implement keylistener
+    /**
+     * 
+     * @param e
+     */
     @Override
     public void keyTyped(KeyEvent e) {
     }
 
+    /**
+     * 
+     * @param e
+     */
     @Override
     public void keyPressed(KeyEvent e) {
 
@@ -198,6 +236,10 @@ public class MapView
     }
     
 
+    /**
+     * 
+     * @param e
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_CONTROL) {
@@ -288,7 +330,6 @@ public class MapView
      */
     private void paintMap(Graphics g, int[][] map) {
         
-        // get camera pos
         int x = getScrollX();
         int y = getScrollY();
 
@@ -342,7 +383,7 @@ public class MapView
     }
 
     /**
-     * Paint. :)
+     * Paint.
      * @param g
      */
     @Override
@@ -357,7 +398,7 @@ public class MapView
         paintMap(g, level.getTileMap().getMap(1));
         paintMap(g, level.getTileMap().getMap(0));
 
-        // draw the dummy objetcs
+        // draw the dummy objects
         DummyObject p;
         for (int i = 0; i < level.getDummyObjects().size(); i++) {
             p = (DummyObject) level.getDummyObjects().elementAt(i);
@@ -371,7 +412,7 @@ public class MapView
                         p.picX, p.picY, p.picW, p.picH,
                         this);
 
-                // no pic, draw a square
+            // no pic, draw a square
             } else {
                 g.setColor(new Color(0xFF0000));
                 g.drawRect(p.x - x, p.y - y, p.w, p.h);
@@ -397,7 +438,7 @@ public class MapView
                 level.getTileMap().getWidth() * Config.TILESIZE - x,
                 this.getHeight() - y);
 
-        // show where next entity will be created
+        // show where next dummy will be created
         g.setColor(new Color(0x0000FF));
         if (markerNextDummyPos != null) {
             g.drawImage(markerNextDummyPos.getImage(),

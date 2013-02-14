@@ -51,11 +51,6 @@ public class LevelEdit extends JFrame
     private JMenuItem exportAsBlockoFormat2Item;
     private JMenuItem helpItem;
 
-    // tool choose btns
-    private JButton toolNewDummy;
-    private JButton toolSelectDummy;
-    private JButton toolSetTile;
-
     // object edit btns    
     private JButton moveUp; 
     private JButton moveDown; 
@@ -75,6 +70,8 @@ public class LevelEdit extends JFrame
 
     // edit tiles btns
     public JList tileList;   
+    
+    public ToolSelector toolSelector;
     
     // </editor-fold>
     
@@ -165,17 +162,18 @@ public class LevelEdit extends JFrame
      * @param repeated If the click event is from a "press down".
      */
     public void clickMapView(int x, int y, boolean repeated) {
-        switch (selectedTool) {
-            case TOOL_NEW_DUMMY:
+
+        switch (toolSelector.getTool()) {
+            case NEW_DUMMY:
                 if (types.getSelectedIndex() != -1 && !repeated) {
                     DummyObject d = new DummyObject(typeData[types.getSelectedIndex()]);
                     level.getDummyObjects().newDummy(x, y, d);
                 }
                 break;
-            case TOOL_SELECT_DUMMY:
+            case SELECT_DUMMY:
                 level.getDummyObjects().selectDummy(x, y);
                 break;
-            case TOOL_SET_TILE:
+            case SET_TILE:
                 if (tileList.getSelectedIndex() != -1) {
                     mapView.setTileVal(x, y, tileList.getSelectedIndex());
                 }
@@ -184,16 +182,6 @@ public class LevelEdit extends JFrame
         mapView.requestFocusInWindow();
     }
 
-    /**
-     * Select one editing tool and deselect all others.
-     */
-    public void selectToolButton(JButton toolBtn)
-    {
-	toolNewDummy.setSelected(false);
-	toolSetTile.setSelected(false);
-	toolSelectDummy.setSelected(false);
-	toolBtn.setSelected(false);
-    }
 
     /**
      * Add dummy button clicked.
@@ -426,45 +414,9 @@ public class LevelEdit extends JFrame
 	dummyTab.setLayout(new GridLayout(1,9));	
 	JPanel moveButtons = new JPanel();
 	JPanel nudgeButtons = new JPanel();
-
-	// tool buttons
-	toolNewDummy = new JButton(new ImageIcon("res/toolNewDummy.png"));
-	toolSelectDummy = new JButton(new ImageIcon("res/toolSelectDummy.png"));
-	toolSetTile = new JButton(new ImageIcon("res/toolSetTile.png"));
-        toolNewDummy.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectedTool = TOOL_NEW_DUMMY;
-                selectToolButton(toolNewDummy);
-            }
-        });
-        toolSelectDummy.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectedTool = TOOL_SELECT_DUMMY;
-                selectToolButton(toolSelectDummy);
-            }
-        });
-        toolSetTile.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectedTool = TOOL_SET_TILE;
-                selectToolButton(toolSetTile);
-            }
-        });
-	JPanel pan = new JPanel();
-	pan.setLayout(new GridLayout(3,1));
-	pan.add(toolNewDummy);
-	pan.add(toolSelectDummy);
-	pan.add(toolSetTile);
-	ButtonGroup toolGroup = new ButtonGroup();
-	toolGroup.add(toolNewDummy);
-	toolGroup.add(toolSelectDummy);
-	toolGroup.add(toolSetTile);
-	dummyTab.add(pan);
+  
+        toolSelector = new ToolSelector();
+	dummyTab.add(toolSelector);
 
 	// dummylist
 	types = new JList (typeNames);
