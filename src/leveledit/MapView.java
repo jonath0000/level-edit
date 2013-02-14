@@ -272,11 +272,8 @@ public class MapView
 
         switch (toolSelector.getTool()) {
             case NEW_DUMMY:
-                if (leveledit.types.getSelectedIndex() != -1 && !repeated) {
-                    DummyObject d = new DummyObject(
-                            leveledit.typeData[leveledit.types.getSelectedIndex()]);
-                    level.getDummyObjects().newDummy(x, y, d);
-                }
+                DummyObject d = leveledit.dummyTypeSelector.createNewDummyObject();
+                level.getDummyObjects().newDummy(x, y, d);
                 break;
             case SELECT_DUMMY:
                 level.getDummyObjects().selectDummy(x, y);

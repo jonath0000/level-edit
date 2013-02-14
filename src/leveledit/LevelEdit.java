@@ -2,29 +2,20 @@ package leveledit;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import levelmodel.DummyObject;
 import java.io.File;
-import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSlider;
-import javax.swing.ListSelectionModel;
 import levelfileformats.Blocko2LevelFile;
 import levelfileformats.InternalLevelFile;
 import levelfileformats.MappyLevelFile;
@@ -82,13 +73,15 @@ public class LevelEdit extends JFrame
     private JButton nextObjBtn; 
     private JButton prevObjBtn;
     private JPanel  dummyTab;
-    public  JSlider scrollbar;
-    public  JList   types; // captions of dummy types  
+    public  JSlider scrollbar; 
     
     public ToolSelector toolSelector;
     public TileSelector tileSelector;
+    public DummyTypeSelector dummyTypeSelector;
     
     // </editor-fold>
+    
+    private Config config;
     
     // constants
     public static final String
@@ -110,30 +103,11 @@ public class LevelEdit extends JFrame
     /** Remember pos in file system. */
     private File currentDir;
     
-    // dummy type data
-    public String typeNames[] = new String [1];
-    public DummyObject typeData [] = new DummyObject [1];
-    
     /** Map view. */
     private MapView mapView; 
     
     /** Level object. */
     private Level level = new Level();
-    
-    
-    /** 
-     * Replaces the dummy list with new values
-     * 
-     * @param   captions    list of text for each item
-     * @param   dummys      list of dummyobjects
-     */
-    public void updateDummyList(String captions [], DummyObject dummys [])
-    {
-	typeNames = captions;
-	typeData = dummys;	
-	types.setListData(typeNames);
-        this.repaint();
-    }
 
     
     /**
@@ -275,14 +249,14 @@ public class LevelEdit extends JFrame
             if (event.getSource() == openItem) {
 
                 level.initFromFile(new InternalLevelFile(getOpenLevelPath()), 
-                        typeData);
+                        config.typeData);
             }
 	    
 	    // MENU -> import mappy           
             if (event.getSource() == importMappyItem) {
 
                 level.initFromFile(new MappyLevelFile(getOpenLevelPath()),
-                        typeData);
+                        config.typeData);
             }           
 
 	    mapView.requestFocusInWindow();
@@ -354,13 +328,9 @@ public class LevelEdit extends JFrame
   
         toolSelector = new ToolSelector();
 	dummyTab.add(toolSelector);
-
-	// dummylist
-	types = new JList (typeNames);
-	types.setVisibleRowCount (3);
-	types.setSelectionMode( ListSelectionModel.SINGLE_SELECTION) ;
-	JScrollPane dummyListScroller = new JScrollPane(types);
-	dummyTab.add(dummyListScroller);
+        
+        dummyTypeSelector = new DummyTypeSelector();
+        dummyTab.add(dummyTypeSelector);
 
 
 	//------------------------------------------------------
@@ -435,17 +405,11 @@ public class LevelEdit extends JFrame
 	dummyTab.add(moveButtons);
 	dummyTab.add(nudgeButtons);
 
-	//-----------------------------------------------------
-	//
-	// TILETAB
-	//
         tileSelector = new TileSelector();	
         container.add(tileSelector, BorderLayout.EAST);
         
 	container.add(dummyTab, BorderLayout.SOUTH);
-	
-	//------------------------------------------------------
-	
+
 	// init main window
        	setSize(SIZE_X,SIZE_Y);
 	setLocation(STARTLOC_X,STARTLOC_Y);
@@ -462,15 +426,15 @@ public class LevelEdit extends JFrame
     {
       	super("LevelEdit");
         
-        Config config = new Config(configFile);
+        config = new Config(configFile);
         
 	Container container = getContentPane();
         createGui(container);
   
         tileSelector.setTiles(config.tiles, Config.NUM_TILES, 
                 Config.TILESIZE, Config.TILESIZE);
-        
-        updateDummyList(config.typeNames, config.typeData);
+
+        dummyTypeSelector.setDummyList(config.typeNames, config.typeData);
         
 	// mapview
 	mapView = new MapView(config, toolSelector,level, this);
@@ -504,6 +468,7 @@ public class LevelEdit extends JFrame
 
         } catch (Exception e) {
             System.out.println("Error while initializing app.");
+            e.printStackTrace();
         }
     }
 }
