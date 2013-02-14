@@ -1,11 +1,30 @@
 package leveledit;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import levelmodel.DummyObject;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
 import java.io.File;
 import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.ListSelectionModel;
 import levelfileformats.Blocko2LevelFile;
 import levelfileformats.InternalLevelFile;
 import levelfileformats.MappyLevelFile;
@@ -60,11 +79,9 @@ public class LevelEdit extends JFrame
     private JButton nudgeDown;
     private JButton nudgeRight; 
     private JButton nudgeLeft;
-    private JButton newDummyButton; 
     private JButton nextObjBtn; 
     private JButton prevObjBtn;
     private JPanel  dummyTab;
-    private JLabel  message;
     public  JSlider scrollbar;
     public  JList   types; // captions of dummy types
 
@@ -98,12 +115,6 @@ public class LevelEdit extends JFrame
     // dummy type data
     public String typeNames[] = new String [1];
     public DummyObject typeData [] = new DummyObject [1];
-
-    // "tool": what to do when mapView is clicked
-    public static final int TOOL_NEW_DUMMY = 1;
-    public static final int TOOL_SELECT_DUMMY = 2;
-    public static final int TOOL_SET_TILE = 3;
-    protected int selectedTool = TOOL_SELECT_DUMMY;
     
     /** Map view. */
     private MapView mapView; 
@@ -153,47 +164,6 @@ public class LevelEdit extends JFrame
 	tileList.setListData(listitems);
 	tileList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 	tileList.setVisibleRowCount(8);
-    }
-
-    /**
-     * User clicks the "mapView" frame, ie. the tilemap frame.
-     * @param x  Mouse pos x
-     * @param y  Mouse pos y
-     * @param repeated If the click event is from a "press down".
-     */
-    public void clickMapView(int x, int y, boolean repeated) {
-
-        switch (toolSelector.getTool()) {
-            case NEW_DUMMY:
-                if (types.getSelectedIndex() != -1 && !repeated) {
-                    DummyObject d = new DummyObject(typeData[types.getSelectedIndex()]);
-                    level.getDummyObjects().newDummy(x, y, d);
-                }
-                break;
-            case SELECT_DUMMY:
-                level.getDummyObjects().selectDummy(x, y);
-                break;
-            case SET_TILE:
-                if (tileList.getSelectedIndex() != -1) {
-                    mapView.setTileVal(x, y, tileList.getSelectedIndex());
-                }
-                break;
-        }
-        mapView.requestFocusInWindow();
-    }
-
-
-    /**
-     * Add dummy button clicked.
-     */
-    public void addDummy() {
-        if (types.getSelectedIndex() != -1) {
-            
-            message.setText("Selected dummy: " + 
-                    typeData[types.getSelectedIndex()].name);
-            DummyObject d = new DummyObject(typeData[types.getSelectedIndex()]);
-            level.getDummyObjects().newDummyCommand(d);
-        }
     }
     
     /**
@@ -270,9 +240,6 @@ public class LevelEdit extends JFrame
         @Override
 	public void actionPerformed (ActionEvent event)
 	{		    	    	       
-	    if (event.getSource() == newDummyButton) {
-                addDummy();
-            }
 
             if (event.getSource() == nextObjBtn) {
                 level.getDummyObjects().selectNextDummy();
@@ -429,12 +396,7 @@ public class LevelEdit extends JFrame
 	//------------------------------------------------------
 	// add, prev, next buttons
 	JPanel middle = new JPanel();
-	middle.setLayout(new GridLayout(2,2));
-	message = new JLabel("-", JLabel.CENTER);
-	middle.add(message);
-	newDummyButton = new JButton("Add dummy");
-	newDummyButton.addActionListener(handler);
-	middle.add(newDummyButton);
+	middle.setLayout(new GridLayout(1,2));
 
 	nextObjBtn = new JButton("Select next");
 	nextObjBtn.addActionListener(handler);
@@ -543,7 +505,7 @@ public class LevelEdit extends JFrame
         updateDummyList(config.typeNames, config.typeData);
         
 	// mapview
-	mapView = new MapView(config, this, level);
+	mapView = new MapView(config, toolSelector,level, this);
         mapView.addKeyListener(mapView);
         mapView.addMouseListener(mapView);
         mapView.addMouseMotionListener(mapView);

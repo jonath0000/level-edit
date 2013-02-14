@@ -50,15 +50,17 @@ public class MapView
     
     /** Reference to level. */
     private Level level;
-       
+    
+    /** Reference to tool selector. */
+    private ToolSelector toolSelector;   
+    
+    private LevelEdit leveledit;
+    
     /** Scroll of map. */
     private int scrollX = 0;
     
     /** Scroll of map. */
-    private int scrollY = 0;
-    
-    /** Ref to owner class */
-    private LevelEdit owner;     
+    private int scrollY = 0; 
 
     /** Layer currently edited. */
     private int editlayer = 0;
@@ -79,10 +81,11 @@ public class MapView
      * @param owner Handle to the GUI class
      * @param level  
      */
-    public MapView(Config config, LevelEdit owner, Level level) {
-        this.owner = owner;
+    public MapView(Config config, ToolSelector toolSelector, Level level, LevelEdit leveledit) {
+        this.toolSelector = toolSelector;
         this.config = config;
         this.level = level;
+        this.leveledit = leveledit;
         setBackground(config.bgCol);
         markerSelectedDummy = new ImageIcon(MARKERSELECTEDDUMMY_PATH);
         markerNextDummyPos = new ImageIcon(MARKERNEXTDUMMYPOS_PATH);
@@ -95,7 +98,7 @@ public class MapView
      */
     @Override
     public void mousePressed(MouseEvent e) {
-        owner.clickMapView(e.getX(), e.getY(), true);
+        clickMapView(e.getX(), e.getY(), true);
         repaint();
     }
 
@@ -129,7 +132,7 @@ public class MapView
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-        owner.clickMapView(e.getX(), e.getY(), false);
+        clickMapView(e.getX(), e.getY(), false);
         repaint();
     }
 
@@ -151,8 +154,8 @@ public class MapView
     @Override
     public void mouseDragged(MouseEvent e) {
         // called during motion with buttons down
-        if (owner.selectedTool == LevelEdit.TOOL_SET_TILE) {
-            owner.clickMapView(e.getX(), e.getY(), true);
+        if (toolSelector.getTool() == ToolSelector.Tool.SET_TILE) {
+            clickMapView(e.getX(), e.getY(), true);
             repaint();
             e.consume();
         }
@@ -256,6 +259,37 @@ public class MapView
         }
     }
     // </editor-fold>
+    
+    
+    
+    /**
+     * User clicks the "mapView" frame, ie. the tilemap frame.
+     * @param x  Mouse pos x
+     * @param y  Mouse pos y
+     * @param repeated If the click event is from a "press down".
+     */
+    public void clickMapView(int x, int y, boolean repeated) {
+
+        switch (toolSelector.getTool()) {
+            case NEW_DUMMY:
+                if (leveledit.types.getSelectedIndex() != -1 && !repeated) {
+                    DummyObject d = new DummyObject(
+                            leveledit.typeData[leveledit.types.getSelectedIndex()]);
+                    level.getDummyObjects().newDummy(x, y, d);
+                }
+                break;
+            case SELECT_DUMMY:
+                level.getDummyObjects().selectDummy(x, y);
+                break;
+            case SET_TILE:
+                if (leveledit.tileList.getSelectedIndex() != -1) {
+                    setTileVal(x, y, leveledit.tileList.getSelectedIndex());
+                }
+                break;
+        }
+        requestFocusInWindow();
+    }
+    
     
     /**
      * Sets tile at mouse click, decides how to behave dependent on selected 
