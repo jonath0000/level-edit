@@ -19,8 +19,7 @@ public class TileSelector extends JScrollPane {
     public TileSelector() {
         super();        
         tileList = new JList();
-        this.setViewportView(tileList);
-        setPreferredSize(new Dimension(200, 300));
+        this.setViewportView(tileList);        
     }
     
     public void setTiles(ImageIcon tilePic, int nTiles, int w, int h) {
@@ -45,6 +44,7 @@ public class TileSelector extends JScrollPane {
 	tileList.setListData(listitems);
 	tileList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 	tileList.setVisibleRowCount(8);
+        setPreferredSize(new Dimension(200, h*8));
     }
     
     public int getSelectedIndex() {

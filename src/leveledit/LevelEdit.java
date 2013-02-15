@@ -6,7 +6,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -44,17 +43,11 @@ public class LevelEdit extends JFrame
 	""
     ;
 
-    private JButton nextObjBtn; 
-    private JButton prevObjBtn;
-    private JPanel  panel;
-    public  JSlider scrollbar; 
-    
+    private JPanel panel;    
     private ToolSelector toolSelector;
     private TileSelector tileSelector;
-    private DummyTypeSelector dummyTypeSelector;
-    
+    private DummyTypeSelector dummyTypeSelector;    
     private Menu menu;
-
     private Config config;
     
     // initial window props.
@@ -152,11 +145,11 @@ public class LevelEdit extends JFrame
 	public void actionPerformed (ActionEvent event)
 	{		    	    	       
 
-            if (event.getSource() == nextObjBtn) {
+            if (event.getSource() == menu.selectNextItem) {
                 level.getDummyObjects().selectNextDummy();
             }
 
-            if (event.getSource() == prevObjBtn) {
+            if (event.getSource() == menu.selectPrevItem) {
                 level.getDummyObjects().selectPrevDummy();
             }
 
@@ -243,9 +236,7 @@ public class LevelEdit extends JFrame
         setJMenuBar(menu);
 
 	panel = new JPanel();
-	panel.setLayout(new GridLayout(1,9));	
-	JPanel moveButtons = new JPanel();
-	JPanel nudgeButtons = new JPanel();
+	panel.setLayout(new GridLayout(1,3));	
   
         toolSelector = new ToolSelector();
 	panel.add(toolSelector);
@@ -253,22 +244,8 @@ public class LevelEdit extends JFrame
         dummyTypeSelector = new DummyTypeSelector();
         panel.add(dummyTypeSelector);
 
-	// add, prev, next buttons
-	JPanel middle = new JPanel();
-	middle.setLayout(new GridLayout(1,2));
-
-	nextObjBtn = new JButton("Select next");
-	nextObjBtn.addActionListener(handler);
-	middle.add(nextObjBtn);
-
-	prevObjBtn = new JButton("Select prev");
-	prevObjBtn.addActionListener(handler);
-	middle.add(prevObjBtn);
-	
-	panel.add(middle);
-
         tileSelector = new TileSelector();	
-        container.add(tileSelector, BorderLayout.EAST);
+        panel.add(tileSelector);
         
 	container.add(panel, BorderLayout.SOUTH);
 

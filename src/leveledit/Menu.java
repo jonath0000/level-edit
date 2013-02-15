@@ -27,6 +27,8 @@ public class Menu extends JMenuBar {
     protected JMenuItem nudgeRightItem;
     protected JMenuItem nudgeUpItem;
     protected JMenuItem nudgeDownItem;
+    protected JMenuItem selectNextItem;
+    protected JMenuItem selectPrevItem;
     
     private void addMenuItem(JMenuItem item,
             JMenu menu, ActionListener handler, String text) {
@@ -61,6 +63,9 @@ public class Menu extends JMenuBar {
         addMenuItem(nudgeRightItem, dummyMenu, handler, "Nudge right");
         addMenuItem(nudgeUpItem, dummyMenu, handler, "Nudge up");
         addMenuItem(nudgeDownItem, dummyMenu, handler, "Nudge down");
+        
+        addMenuItem(selectNextItem, dummyMenu, handler, "Select next");
+        addMenuItem(selectPrevItem, dummyMenu, handler, "Select prev");
         
 	add(fileMenu);
         add(dummyMenu);
