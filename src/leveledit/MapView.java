@@ -21,13 +21,11 @@ import levelmodel.Level;
 public class MapView
         extends JPanel
         implements MouseListener, MouseMotionListener, KeyListener {
-    
+
     /** window top to map start */
     private static final int Y_OFFSET = 70;
-    
     /** Default placement of new dummy. */
     private static final int STDNEWXPOS = 500;
-    
     /** Position for next created dummy. */
     private int newXPos = STDNEWXPOS;
     
@@ -45,7 +43,7 @@ public class MapView
     private static final String MARKERNEXTDUMMYPOS_PATH 
             = "res/markerNextDummyPos.png";
     
-    /** Storage of config. */
+    /** Reference to config. */
     private Config config;    
     
     /** Reference to level. */
@@ -54,7 +52,11 @@ public class MapView
     /** Reference to tool selector. */
     private ToolSelector toolSelector;   
     
-    private LevelEdit leveledit;
+    /** Reference to tile selector. */
+    private TileSelector tileSelector;
+    
+    /** Reference to dummy type selector. */
+    private DummyTypeSelector dummyTypeSelector;
     
     /** Scroll of map. */
     private int scrollX = 0;
@@ -77,15 +79,23 @@ public class MapView
 
     /**
      * Constructor.
-     * @param config 
-     * @param owner Handle to the GUI class
-     * @param level  
+     * @param config
+     * @param toolSelector
+     * @param tileSelector
+     * @param dummyTypeSelector
+     * @param level 
      */
-    public MapView(Config config, ToolSelector toolSelector, Level level, LevelEdit leveledit) {
+    public MapView(
+            Config config, 
+            ToolSelector toolSelector, 
+            TileSelector tileSelector,
+            DummyTypeSelector dummyTypeSelector,
+            Level level) {
         this.toolSelector = toolSelector;
         this.config = config;
+        this.tileSelector = tileSelector;
+        this.dummyTypeSelector = dummyTypeSelector;
         this.level = level;
-        this.leveledit = leveledit;
         setBackground(config.bgCol);
         markerSelectedDummy = new ImageIcon(MARKERSELECTEDDUMMY_PATH);
         markerNextDummyPos = new ImageIcon(MARKERNEXTDUMMYPOS_PATH);
@@ -272,15 +282,15 @@ public class MapView
 
         switch (toolSelector.getTool()) {
             case NEW_DUMMY:
-                DummyObject d = leveledit.dummyTypeSelector.createNewDummyObject();
+                DummyObject d = dummyTypeSelector.createNewDummyObject();
                 level.getDummyObjects().newDummy(x, y, d);
                 break;
             case SELECT_DUMMY:
                 level.getDummyObjects().selectDummy(x, y);
                 break;
             case SET_TILE:
-                if (leveledit.tileSelector.getSelectedIndex() != -1) {
-                    setTileVal(x, y, leveledit.tileSelector.getSelectedIndex());
+                if (tileSelector.getSelectedIndex() != -1) {
+                    setTileVal(x, y, tileSelector.getSelectedIndex());
                 }
                 break;
         }

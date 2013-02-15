@@ -437,7 +437,8 @@ public class LevelEdit extends JFrame
         dummyTypeSelector.setDummyList(config.typeNames, config.typeData);
         
 	// mapview
-	mapView = new MapView(config, toolSelector,level, this);
+	mapView = new MapView(config, toolSelector, tileSelector, 
+                dummyTypeSelector, level);
         mapView.addKeyListener(mapView);
         mapView.addMouseListener(mapView);
         mapView.addMouseMotionListener(mapView);
