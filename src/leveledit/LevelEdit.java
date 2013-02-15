@@ -9,10 +9,6 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -47,48 +43,19 @@ public class LevelEdit extends JFrame
 	"                                         \n"+
 	""
     ;
-   
-    
-    // <editor-fold desc="GUI elements">
 
-    // menu bar
-    private JMenuItem newMapItem;    
-    private JMenuItem saveItem;
-    private JMenuItem saveAsItem;
-    private JMenuItem openItem;
-    private JMenuItem importMappyItem;  
-    private JMenuItem exportAsBlockoFormatItem;
-    private JMenuItem exportAsBlockoFormat2Item;
-    private JMenuItem helpItem;
-
-    // object edit btns    
-    private JButton moveUp; 
-    private JButton moveDown; 
-    private JButton moveRight; 
-    private JButton moveLeft;
-    private JButton nudgeUp;
-    private JButton nudgeDown;
-    private JButton nudgeRight; 
-    private JButton nudgeLeft;
     private JButton nextObjBtn; 
     private JButton prevObjBtn;
-    private JPanel  dummyTab;
+    private JPanel  panel;
     public  JSlider scrollbar; 
     
-    public ToolSelector toolSelector;
-    public TileSelector tileSelector;
-    public DummyTypeSelector dummyTypeSelector;
+    private ToolSelector toolSelector;
+    private TileSelector tileSelector;
+    private DummyTypeSelector dummyTypeSelector;
     
-    // </editor-fold>
-    
+    private Menu menu;
+
     private Config config;
-    
-    // constants
-    public static final String
-	LABEL_UP           = "^",
-	LABEL_DOWN         = "v",
-	LABEL_RIGHT        = ">",
-	LABEL_LEFT         = "<";
     
     // initial window props.
     private static final int
@@ -193,67 +160,64 @@ public class LevelEdit extends JFrame
                 level.getDummyObjects().selectPrevDummy();
             }
 
-            // buttons move & nudge
-            if (level.getDummyObjects().selected() != null) {
-                // move
-                if (event.getSource() == moveUp) {
-                    level.getDummyObjects().moveSelectedDummy(0, -Config.TILESIZE);
-                } else if (event.getSource() == moveDown) {
-                    level.getDummyObjects().moveSelectedDummy(0, Config.TILESIZE);
-                } else if (event.getSource() == moveLeft) {
-                    level.getDummyObjects().moveSelectedDummy(-Config.TILESIZE, 0);
-                } else if (event.getSource() == moveRight) {
-                    level.getDummyObjects().moveSelectedDummy(Config.TILESIZE, 0);
-                } // nudge
-                else if (event.getSource() == nudgeUp) {
-                    level.getDummyObjects().moveSelectedDummy(0, -1);
-                } else if (event.getSource() == nudgeDown) {
-                    level.getDummyObjects().moveSelectedDummy(0, 1);
-                } else if (event.getSource() == nudgeLeft) {
-                    level.getDummyObjects().moveSelectedDummy(-1, 0);
-                } else if (event.getSource() == nudgeRight) {
-                    level.getDummyObjects().moveSelectedDummy(1, 0);
-                }
-            }
+            // move
+            if (event.getSource() == menu.moveUpItem) {
+                level.getDummyObjects().moveSelectedDummy(0, -Config.TILESIZE);
+            } else if (event.getSource() == menu.moveDownItem) {
+                level.getDummyObjects().moveSelectedDummy(0, Config.TILESIZE);
+            } else if (event.getSource() == menu.moveLeftItem) {
+                level.getDummyObjects().moveSelectedDummy(-Config.TILESIZE, 0);
+            } else if (event.getSource() == menu.moveRightItem) {
+                level.getDummyObjects().moveSelectedDummy(Config.TILESIZE, 0);
+            } // nudge
+            else if (event.getSource() == menu.nudgeUpItem) {
+                level.getDummyObjects().moveSelectedDummy(0, -1);
+            } else if (event.getSource() == menu.nudgeDownItem) {
+                level.getDummyObjects().moveSelectedDummy(0, 1);
+            } else if (event.getSource() == menu.nudgeLeftItem) {
+                level.getDummyObjects().moveSelectedDummy(-1, 0);
+            } else if (event.getSource() == menu.nudgeRightItem) {
+                level.getDummyObjects().moveSelectedDummy(1, 0);
+            }       
 
             // MENU -> "Save" (LevelEdit format)
-            if (event.getSource() == saveItem) {
+            if (event.getSource() == menu.saveItem) {
                 level.writeToFile(new InternalLevelFile(
                         getSaveLevelPath(true)));
             }
 
             // MENU -> "Save as" LevelEdit format
-            if (event.getSource() == saveAsItem) {
+            if (event.getSource() == menu.saveAsItem) {
                 level.writeToFile(new InternalLevelFile(
                         getSaveLevelPath(false)));
             }
 
             // MENU -> Export as blocko format 2
-            if (event.getSource() == exportAsBlockoFormat2Item) {
+            if (event.getSource() == menu.exportAsBlockoFormat2Item) {
                 level.writeToFile(new Blocko2LevelFile(
                         getSaveLevelPath(false)));
             }
 
             // HELP
-            if (event.getSource() == helpItem) {
+            if (event.getSource() == menu.helpItem) {
                 showHelp();
             }
 
 	    
 	    // MENU -> New map
-	    if (event.getSource() == newMapItem){
+	    if (event.getSource() == menu.newMapItem){
                 newLevel();		
 	    }
 
             // MENU -> open
-            if (event.getSource() == openItem) {
+            if (event.getSource() == menu.openItem) {
 
                 level.initFromFile(new InternalLevelFile(getOpenLevelPath()), 
                         config.typeData);
             }
 	    
 	    // MENU -> import mappy           
-            if (event.getSource() == importMappyItem) {
+            if (event.getSource() == menu.importMappyItem) {
 
                 level.initFromFile(new MappyLevelFile(getOpenLevelPath()),
                         config.typeData);
@@ -275,65 +239,20 @@ public class LevelEdit extends JFrame
 	LevelEditHandler handler = new LevelEditHandler(); 	
 	handler.parentframe = this;
         
-	//------------------------------------------------------
-	// menu bar init
-	JMenuBar bar = new JMenuBar();
-	setJMenuBar(bar);
+        menu = new Menu(handler);
+        setJMenuBar(menu);
 
-	JMenu fileMenu = new JMenu ("File");
-
-	JMenu helpMenu = new JMenu ("Help");
-	helpItem = new JMenuItem ("Help");
-	helpItem.addActionListener(handler);
-	helpMenu.add(helpItem);
-
-	newMapItem = new JMenuItem ("New map");
-	newMapItem.addActionListener(handler);
-	fileMenu.add(newMapItem);
-
-	openItem = new JMenuItem ("Open");
-	openItem.addActionListener(handler);
-	fileMenu.add(openItem);
-
-	importMappyItem = new JMenuItem ("Import Mappy file");
-	importMappyItem.addActionListener(handler);
-	fileMenu.add(importMappyItem);
-
-	saveItem = new JMenuItem ("Save");
-	saveItem.addActionListener(handler);
-	fileMenu.add(saveItem);
-
-	saveAsItem = new JMenuItem ("Save As...");
-	saveAsItem.addActionListener(handler);
-	fileMenu.add(saveAsItem);
-
-	exportAsBlockoFormatItem = new JMenuItem ("Export to Blocko format");
-	exportAsBlockoFormatItem.addActionListener(handler);
-	fileMenu.add(exportAsBlockoFormatItem);
-
-	exportAsBlockoFormat2Item = new JMenuItem ("Export to Blocko format 2");
-	exportAsBlockoFormat2Item.addActionListener(handler);
-	fileMenu.add(exportAsBlockoFormat2Item);
-
-	bar.add(fileMenu);
-	bar.add(helpMenu);
-
-	//-----------------------------------------------------
-	// DUMMYTAB
-	//
-	dummyTab  = new JPanel();
-	dummyTab.setLayout(new GridLayout(1,9));	
+	panel = new JPanel();
+	panel.setLayout(new GridLayout(1,9));	
 	JPanel moveButtons = new JPanel();
 	JPanel nudgeButtons = new JPanel();
   
         toolSelector = new ToolSelector();
-	dummyTab.add(toolSelector);
+	panel.add(toolSelector);
         
         dummyTypeSelector = new DummyTypeSelector();
-        dummyTab.add(dummyTypeSelector);
+        panel.add(dummyTypeSelector);
 
-
-	//------------------------------------------------------
 	// add, prev, next buttons
 	JPanel middle = new JPanel();
 	middle.setLayout(new GridLayout(1,2));
@@ -346,69 +265,12 @@ public class LevelEdit extends JFrame
 	prevObjBtn.addActionListener(handler);
 	middle.add(prevObjBtn);
 	
-	dummyTab.add(middle);
-
-	//-----------------------------------------------------------
-	// move, nudge direction btns.
-	moveButtons.setLayout(new GridLayout(3,3)); 
-
-	// 1 row
-	moveButtons.add(new JPanel());
-	moveUp = new JButton(LABEL_UP);
-	moveButtons.add(moveUp);
-	moveUp.addActionListener(handler);
-	moveButtons.add(new JPanel());
-	
-	// 2 row
-	moveLeft = new JButton(LABEL_LEFT); 
-	moveButtons.add(moveLeft);
-	moveLeft.addActionListener(handler);
-	moveButtons.add(new JLabel("MOVE", JLabel.CENTER));
-	moveRight = new JButton(LABEL_RIGHT); 
-	moveButtons.add(moveRight);
-	moveRight.addActionListener(handler);
-
-	// 3 row
-	moveButtons.add(new JPanel());
-	moveDown = new JButton(LABEL_DOWN); 
-	moveButtons.add(moveDown);
-	moveDown.addActionListener(handler);
-	moveButtons.add(new JPanel());
-      
-	//--------------------------------------------------------
-
-	nudgeButtons.setLayout(new GridLayout(3,3));
-
-	// 1 row
-	nudgeButtons.add(new JPanel());
-	nudgeUp = new JButton(LABEL_UP);
-	nudgeButtons.add(nudgeUp);
-	nudgeUp.addActionListener(handler);
-	nudgeButtons.add(new JPanel());
-	
-	// 2 row
-	nudgeLeft = new JButton(LABEL_LEFT);
-	nudgeButtons.add(nudgeLeft);
-	nudgeLeft.addActionListener(handler);
-	nudgeButtons.add(new JLabel("NUDGE",JLabel.CENTER));
-	nudgeRight = new JButton(LABEL_RIGHT);
-	nudgeButtons.add(nudgeRight);
-	nudgeRight.addActionListener(handler);
-	
-	// 3 row
-	nudgeButtons.add(new JLabel());
-	nudgeDown = new JButton(LABEL_DOWN);
-	nudgeButtons.add(nudgeDown);
-	nudgeDown.addActionListener(handler);
-	nudgeButtons.add(new JLabel());
-
-	dummyTab.add(moveButtons);
-	dummyTab.add(nudgeButtons);
+	panel.add(middle);
 
         tileSelector = new TileSelector();	
         container.add(tileSelector, BorderLayout.EAST);
         
-	container.add(dummyTab, BorderLayout.SOUTH);
+	container.add(panel, BorderLayout.SOUTH);
 
 	// init main window
        	setSize(SIZE_X,SIZE_Y);
