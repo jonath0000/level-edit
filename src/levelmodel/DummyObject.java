@@ -16,7 +16,7 @@ public class DummyObject {
     public String additionalData;
 
     /**
-     * Create a dummy object from new parameters
+     * Create a dummy object from new parameters.
      * @param x
      * @param y
      * @param w

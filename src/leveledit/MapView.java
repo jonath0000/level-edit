@@ -99,6 +99,7 @@ public class MapView
         setBackground(config.bgCol);
         markerSelectedDummy = new ImageIcon(MARKERSELECTEDDUMMY_PATH);
         markerNextDummyPos = new ImageIcon(MARKERNEXTDUMMYPOS_PATH);
+        repaint();
     }
 
     // <editor-fold desc="Listeners">
@@ -108,7 +109,7 @@ public class MapView
      */
     @Override
     public void mousePressed(MouseEvent e) {
-        clickMapView(e.getX(), e.getY(), true);
+        click(e.getX(), e.getY(), true);
         repaint();
     }
 
@@ -142,7 +143,7 @@ public class MapView
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-        clickMapView(e.getX(), e.getY(), false);
+        click(e.getX(), e.getY(), false);
         repaint();
     }
 
@@ -165,7 +166,7 @@ public class MapView
     public void mouseDragged(MouseEvent e) {
         // called during motion with buttons down
         if (toolSelector.getTool() == ToolSelector.Tool.SET_TILE) {
-            clickMapView(e.getX(), e.getY(), true);
+            click(e.getX(), e.getY(), true);
             repaint();
             e.consume();
         }
@@ -278,7 +279,7 @@ public class MapView
      * @param y  Mouse pos y
      * @param repeated If the click event is from a "press down".
      */
-    public void clickMapView(int x, int y, boolean repeated) {
+    public void click(int x, int y, boolean repeated) {
 
         switch (toolSelector.getTool()) {
             case NEW_DUMMY:

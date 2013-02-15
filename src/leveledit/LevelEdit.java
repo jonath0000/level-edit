@@ -10,7 +10,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 import levelfileformats.Blocko2LevelFile;
 import levelfileformats.InternalLevelFile;
 import levelfileformats.MappyLevelFile;
@@ -20,13 +19,9 @@ import levelmodel.Level;
  * The GUI class of the LevelEdit application.
  * Sets up all the buttons, menus and stuff in the main window.
  * 
- * <p>TODO: Not the best way to set up a GUI in java.
- * This should be revised.
- * 
  */
-public class LevelEdit extends JFrame
-{
-    // Help text
+public class LevelEdit extends JFrame {
+
     private static final String HELP_TEXT = 
 	"Editor help                              \n"+
 	"-----------                              \n"+
@@ -49,25 +44,14 @@ public class LevelEdit extends JFrame
     private DummyTypeSelector dummyTypeSelector;    
     private Menu menu;
     private Config config;
-    
-    // initial window props.
-    private static final int
-	SIZE_X             = 1200,
-	SIZE_Y             = 500,
-	STARTLOC_X         = 10,
-	STARTLOC_Y         = 100;
+    private MapView mapView; 
+    private Level level = new Level();
 
     /** For showing open file. */
     private File currentFile = null;
 
     /** Remember pos in file system. */
     private File currentDir;
-    
-    /** Map view. */
-    private MapView mapView; 
-    
-    /** Level object. */
-    private Level level = new Level();
 
     
     /**
@@ -204,14 +188,12 @@ public class LevelEdit extends JFrame
 
             // MENU -> open
             if (event.getSource() == menu.openItem) {
-
                 level.initFromFile(new InternalLevelFile(getOpenLevelPath()), 
                         config.typeData);
             }
 	    
 	    // MENU -> import mappy           
             if (event.getSource() == menu.importMappyItem) {
-
                 level.initFromFile(new MappyLevelFile(getOpenLevelPath()),
                         config.typeData);
             }           
@@ -250,8 +232,8 @@ public class LevelEdit extends JFrame
 	container.add(panel, BorderLayout.SOUTH);
 
 	// init main window
-       	setSize(SIZE_X,SIZE_Y);
-	setLocation(STARTLOC_X,STARTLOC_Y);
+       	setSize(1200,500);
+	setLocation(10,10);
 	setVisible(true);
 	setResizable(true);
         
@@ -259,7 +241,7 @@ public class LevelEdit extends JFrame
         
     /**
      * Setup app.
-     * @param configfile a config file in the LevelEdit format.
+     * @param configFile Config file path.
      */
     public LevelEdit(String configFile)
     {
@@ -282,10 +264,6 @@ public class LevelEdit extends JFrame
         mapView.addMouseListener(mapView);
         mapView.addMouseMotionListener(mapView);
 	container.add(mapView, BorderLayout.CENTER);
-	mapView.setVisible(true);
-	repaint();
-	mapView.repaint();
-	mapView.requestFocusInWindow();
     }
 
     /**
@@ -308,7 +286,6 @@ public class LevelEdit extends JFrame
 
         } catch (Exception e) {
             System.out.println("Error while initializing app.");
-            e.printStackTrace();
         }
     }
 }
