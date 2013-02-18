@@ -77,8 +77,8 @@ public class DummyObjectList {
         for (int i = dummyObjects.size() - 1; i >= 0; i--) {
             // backwards so top-viewed will be chosen
             DummyObject d = (DummyObject) dummyObjects.get(i);
-            if (x > d.x - x && x < d.x + d.w - x
-                    && y > d.y - y && y < d.y + d.h - y) {
+            if (x > d.x && x < d.x + d.w
+                    && y > d.y && y < d.y + d.h) {
                 return d;
             }
         }

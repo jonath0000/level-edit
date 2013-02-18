@@ -498,20 +498,21 @@ public class MapView
         }
 
         // show getSelected dummy
+        DummyObject d = level.getDummyObjects().getSelected();
         g.setColor(new Color(0x00FF00));
-        if (level.getDummyObjects().getSelected() != null) {
+        if (d != null) {
             if (markerSelectedDummy != null) {
                 g.drawImage(markerSelectedDummy.getImage(),
-                        (level.getDummyObjects().getSelected().x + 
-                        level.getDummyObjects().getSelected().w / 2 
+                        (d.x + 
+                        d.w / 2 
                         - (markerSelectedDummy.getImage()).getWidth(this) / 2) 
                         - x,
-                        level.getDummyObjects().getSelected().y - 30 - y,
+                        d.y - 30 - y,
                         this);
             } else {
-                g.drawRect(level.getDummyObjects().getSelected().x - x, 
-                        level.getDummyObjects().getSelected().y - 4 - y, 
-                        level.getDummyObjects().getSelected().w, 
+                g.drawRect(d.x - x, 
+                        d.y - 4 - y, 
+                        d.w, 
                         4);
             }
         }
