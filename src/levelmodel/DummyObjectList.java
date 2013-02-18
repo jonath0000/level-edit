@@ -4,46 +4,66 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Holds all DummyObjectList, draws and manages them.
+ * Holds all DummyObjectList and manages them in a coordinate system.
  * 
  */
 public class DummyObjectList {
 
-    public List<DummyObject> dummyObjects = new ArrayList<DummyObject>();
-    public DummyObject selectedDummy;
-    private int newXPos;
+    /**
+     * Storage of objects.
+     */
+    private List<DummyObject> dummyObjects = new ArrayList<DummyObject>();
+    
+    /**
+     * Current selection.
+     */
+    private DummyObject selectedDummy;
 
-    public void DummyObjects() {
-        this.newXPos = 0;
-    }
-
-    public DummyObject selected() {
+    /**
+     * Get selected dummy.
+     * @return
+     */
+    public DummyObject getSelected() {
         return selectedDummy;
     }
 
+    /**
+     * Get specific index in list.
+     * @param i Index.
+     * @return DummyObject at index.
+     */
     public DummyObject elementAt(int i) {
         return dummyObjects.get(i);
     }
 
+    /**
+     * Size of list.
+     * @return Size.
+     */
     public int size() {
         return dummyObjects.size();
     }
     
-
+    
     /**
-     * Camera position x
-     * @return camX
+     * Delete dummy.
+     * @param d DummyObject to delete.
      */
-    public int getScrollX() {
-        return 0;//camX;
-    }
-
-    /**
-     * Camera position y
-     * @return camY
-     */
-    public int getScrollY() {
-        return 0;//camY;
+    private void deleteDummy(DummyObject d) {
+        
+        // handle getSelected dummy
+        if (d == selectedDummy) {
+            if (dummyObjects.size() == 1) {
+                selectedDummy = null;
+            } else if (dummyObjects.size() > 1) {
+                selectNextDummy();
+            } else {
+                return;
+            }
+        }
+        
+        // delete from list
+        dummyObjects.remove(d);
     }
 
     /**
@@ -53,18 +73,17 @@ public class DummyObjectList {
      * @return DummyObject at coordinate or null.
      */
     private DummyObject dummyAt(int x, int y) {
-        int sx = getScrollX();
-        int sy = getScrollY();
 
         for (int i = dummyObjects.size() - 1; i >= 0; i--) {
             // backwards so top-viewed will be chosen
             DummyObject d = (DummyObject) dummyObjects.get(i);
-            if (x > d.x - sx && x < d.x + d.w - sx
-                    && y > d.y - sy && y < d.y + d.h - sy) {
+            if (x > d.x - x && x < d.x + d.w - x
+                    && y > d.y - y && y < d.y + d.h - y) {
                 return d;
             }
         }
         
+        System.out.println("No dummy at " + x + "," + y);
         return null;
     }
     
@@ -145,19 +164,6 @@ public class DummyObjectList {
         selectedDummy = d;
     }
 
-    /**
-     * Adds a new dummy to the dummylist, but also moves it to 
-     * "ground level".
-     * @param d A new created dummy.
-     */
-    public void newDummyCommand(DummyObject d) {
-        // find "ground" level
-        d.y = 0;//getScrollY() + this.getHeight() - d.h - 40;
-        int x = getScrollX();
-        d.x = x + newXPos;
-
-        newDummy(d);
-    }
 
     /**
      * Adds a dummy to the dummylist, but also sets its
@@ -167,34 +173,13 @@ public class DummyObjectList {
      * @param d A new created dummy
      */
     public void newDummy(int x, int y, DummyObject d) {
-        d.x = x + getScrollX();
-        d.y = y + getScrollY();
+        d.x = x;
+        d.y = y;
         newDummy(d);
-    }
-
-    /**
-     * Delete dummy.
-     * @param d DummyObject to delete.
-     */
-    private void deleteDummy(DummyObject d) {
-        
-        // handle selected dummy
-        if (d == selectedDummy) {
-            if (dummyObjects.size() == 1) {
-                selectedDummy = null;
-            } else if (dummyObjects.size() > 1) {
-                selectNextDummy();
-            } else {
-                return;
-            }
-        }
-        
-        // delete from list
-        dummyObjects.remove(d);
     }
     
     /**
-     * Removes the currently selected dummy from the dummy list
+     * Removes the currently getSelected dummy from the dummy list
      */
     public void deleteSelectedDummy() {
         deleteDummy(selectedDummy);

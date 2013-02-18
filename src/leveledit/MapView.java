@@ -27,13 +27,13 @@ public class MapView
     /** Position for next created dummy. */
     private int newXPos = STDNEWXPOS;
     
-    /** Image for selected dummy. */
+    /** Image for getSelected dummy. */
     private ImageIcon markerSelectedDummy;
     
     /** Image for next dummy placement. */
     private ImageIcon markerNextDummyPos;
     
-    /** Path to selected dummy image. */
+    /** Path to getSelected dummy image. */
     private static final String MARKERSELECTEDDUMMY_PATH 
             = "res/markerSelectedDummy.png";
     
@@ -309,7 +309,7 @@ public class MapView
     
     
     /**
-     * Sets tile at mouse click, decides how to behave dependent on selected 
+     * Sets tile at mouse click, decides how to behave dependent on getSelected 
      * tool.
      * @param x Mouse x
      * @param y Mouse y
@@ -497,21 +497,21 @@ public class MapView
                     this.getHeight());
         }
 
-        // show selected dummy
+        // show getSelected dummy
         g.setColor(new Color(0x00FF00));
-        if (level.getDummyObjects().selectedDummy != null) {
+        if (level.getDummyObjects().getSelected() != null) {
             if (markerSelectedDummy != null) {
                 g.drawImage(markerSelectedDummy.getImage(),
-                        (level.getDummyObjects().selectedDummy.x + 
-                        level.getDummyObjects().selectedDummy.w / 2 
+                        (level.getDummyObjects().getSelected().x + 
+                        level.getDummyObjects().getSelected().w / 2 
                         - (markerSelectedDummy.getImage()).getWidth(this) / 2) 
                         - x,
-                        level.getDummyObjects().selectedDummy.y - 30 - y,
+                        level.getDummyObjects().getSelected().y - 30 - y,
                         this);
             } else {
-                g.drawRect(level.getDummyObjects().selectedDummy.x - x, 
-                        level.getDummyObjects().selectedDummy.y - 4 - y, 
-                        level.getDummyObjects().selectedDummy.w, 
+                g.drawRect(level.getDummyObjects().getSelected().x - x, 
+                        level.getDummyObjects().getSelected().y - 4 - y, 
+                        level.getDummyObjects().getSelected().w, 
                         4);
             }
         }
