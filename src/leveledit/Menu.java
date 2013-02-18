@@ -1,9 +1,12 @@
 package leveledit;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 /**
  * The application menu bar.
@@ -29,13 +32,27 @@ public class Menu extends JMenuBar {
     protected JMenuItem nudgeDownItem;
     protected JMenuItem selectNextItem;
     protected JMenuItem selectPrevItem;
-    
-    private void addMenuItem(JMenuItem item,
-            JMenu menu, ActionListener handler, String text) {
-        item = new JMenuItem (text);
+   
+    private JMenuItem addMenuItem(
+            JMenu menu, ActionListener handler, 
+            String text) {
+        JMenuItem item = new JMenuItem(text);
 	item.addActionListener(handler);
-	menu.add(item);
+        menu.add(item);      
+        return item;
     }
+    
+    private JMenuItem addMenuItem(
+            JMenu menu, ActionListener handler, 
+            String text, int keyCode, int keyMask) {
+        JMenuItem item = new JMenuItem(text);
+	item.addActionListener(handler);
+	item.setAccelerator(KeyStroke.getKeyStroke(
+            keyCode, keyMask));    
+        menu.add(item);
+        return item;
+    }
+   
     
     public Menu(ActionListener handler) {
         super();
@@ -44,28 +61,28 @@ public class Menu extends JMenuBar {
         JMenu dummyMenu = new JMenu("Dummy");
 	JMenu helpMenu = new JMenu("Help");       
 
-        addMenuItem(newMapItem, fileMenu, handler, "New map");
-        addMenuItem(openItem, fileMenu, handler, "Open");
-        addMenuItem(importMappyItem, fileMenu, handler, "Import Mappy file");
-        addMenuItem(saveItem, fileMenu, handler, "Save");
-        addMenuItem(saveAsItem, fileMenu, handler, "Save as...");
-        addMenuItem(exportAsBlockoFormatItem, fileMenu, handler, "Export to Blocko format");
-        addMenuItem(exportAsBlockoFormat2Item, fileMenu, handler, "Export to Blocko format 2");
+        newMapItem = addMenuItem(fileMenu, handler, "New map", KeyEvent.VK_N, ActionEvent.CTRL_MASK);
+        openItem = addMenuItem(fileMenu, handler, "Open", KeyEvent.VK_O, ActionEvent.CTRL_MASK);
+        importMappyItem = addMenuItem(fileMenu, handler, "Import Mappy file");
+        saveItem = addMenuItem(fileMenu, handler, "Save", KeyEvent.VK_S, ActionEvent.CTRL_MASK);
+        saveAsItem = addMenuItem(fileMenu, handler, "Save as...");
+        exportAsBlockoFormatItem = addMenuItem(fileMenu, handler, "Export to Blocko format");
+        exportAsBlockoFormat2Item = addMenuItem(fileMenu, handler, "Export to Blocko format 2");
 
-        addMenuItem(helpItem, helpMenu, handler, "Help");
+        helpItem = addMenuItem(helpMenu, handler, "Help");
 
-        addMenuItem(moveLeftItem, dummyMenu, handler, "Move left");
-        addMenuItem(moveRightItem, dummyMenu, handler, "Move right");
-        addMenuItem(moveUpItem, dummyMenu, handler, "Move up");
-        addMenuItem(moveDownItem, dummyMenu, handler, "Move down");
+        moveLeftItem = addMenuItem(dummyMenu, handler, "Move left", KeyEvent.VK_LEFT, 0);
+        moveRightItem = addMenuItem(dummyMenu, handler, "Move right", KeyEvent.VK_RIGHT, 0);
+        moveUpItem = addMenuItem(dummyMenu, handler, "Move up", KeyEvent.VK_UP, 0);
+        moveDownItem = addMenuItem(dummyMenu, handler, "Move down", KeyEvent.VK_DOWN, 0);
         
-        addMenuItem(nudgeLeftItem, dummyMenu, handler, "Nudge left");
-        addMenuItem(nudgeRightItem, dummyMenu, handler, "Nudge right");
-        addMenuItem(nudgeUpItem, dummyMenu, handler, "Nudge up");
-        addMenuItem(nudgeDownItem, dummyMenu, handler, "Nudge down");
+        nudgeLeftItem = addMenuItem(dummyMenu, handler, "Nudge left", KeyEvent.VK_LEFT, ActionEvent.ALT_MASK);
+        nudgeRightItem = addMenuItem(dummyMenu, handler, "Nudge right", KeyEvent.VK_RIGHT, ActionEvent.ALT_MASK);
+        nudgeUpItem = addMenuItem(dummyMenu, handler, "Nudge up", KeyEvent.VK_UP, ActionEvent.ALT_MASK);
+        nudgeDownItem = addMenuItem(dummyMenu, handler, "Nudge down", KeyEvent.VK_DOWN, ActionEvent.ALT_MASK);
         
-        addMenuItem(selectNextItem, dummyMenu, handler, "Select next");
-        addMenuItem(selectPrevItem, dummyMenu, handler, "Select prev");
+        selectNextItem = addMenuItem(dummyMenu, handler, "Select next", KeyEvent.VK_Q, 0);
+        selectPrevItem = addMenuItem(dummyMenu, handler, "Select prev", KeyEvent.VK_W, 0);
         
 	add(fileMenu);
         add(dummyMenu);

@@ -128,8 +128,9 @@ public class LevelEdit extends JFrame {
         @Override
 	public void actionPerformed (ActionEvent event)
 	{		    	    	       
-
+System.out.println(event.getSource() + " == " + menu.selectNextItem);
             if (event.getSource() == menu.selectNextItem) {
+                System.out.println("Hå");
                 level.getDummyObjects().selectNextDummy();
             }
 

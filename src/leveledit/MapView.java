@@ -185,7 +185,7 @@ public class MapView
      */
     @Override
     public void keyPressed(KeyEvent e) {
-
+/*
         if (e.getKeyCode() == java.awt.event.KeyEvent.VK_UP) {
             level.getDummyObjects().moveSelectedDummy(0, -Config.TILESIZE);
         }
@@ -243,7 +243,7 @@ public class MapView
             this.lineKeyDown = true;
             System.out.println("Line tool modifier down.");
         }
-
+*/
         repaint();
     }
     
