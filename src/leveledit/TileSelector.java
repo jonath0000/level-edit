@@ -50,4 +50,8 @@ public class TileSelector extends JScrollPane {
     public int getSelectedIndex() {
         return tileList.getSelectedIndex();
     }
+    
+    public void setSelectedIndex(int n) {
+        tileList.setSelectedIndex(n);
+    }
 }

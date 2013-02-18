@@ -47,11 +47,12 @@ public class DummyObjectList {
     }
 
     /**
-     * Select dummy from mouse click
-     * @param x Mouse x
-     * @param y Mouse y
+     * Dummy object at x, y.
+     * @param x X coord.
+     * @param y X coord.
+     * @return DummyObject at coordinate or null.
      */
-    public void selectDummy(int x, int y) {
+    private DummyObject dummyAt(int x, int y) {
         int sx = getScrollX();
         int sy = getScrollY();
 
@@ -60,8 +61,36 @@ public class DummyObjectList {
             DummyObject d = (DummyObject) dummyObjects.get(i);
             if (x > d.x - sx && x < d.x + d.w - sx
                     && y > d.y - sy && y < d.y + d.h - sy) {
-                selectedDummy = d;
+                return d;
             }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Select dummy at x, y if any.
+     * @param x Mouse x
+     * @param y Mouse y
+     */
+    public void selectDummy(int x, int y) {
+        
+        DummyObject d = dummyAt(x, y);
+        if (d != null) {
+            selectedDummy = d;
+        }
+    }
+    
+    /**
+     * Delete dummy at x, y if any.
+     * @param x Mouse x
+     * @param y Mouse y
+     */
+    public void deleteDummy(int x, int y) {
+        
+        DummyObject d = dummyAt(x, y);
+        if (d != null) {
+            deleteDummy(d);
         }
     }
 
@@ -144,20 +173,31 @@ public class DummyObjectList {
     }
 
     /**
+     * Delete dummy.
+     * @param d DummyObject to delete.
+     */
+    private void deleteDummy(DummyObject d) {
+        
+        // handle selected dummy
+        if (d == selectedDummy) {
+            if (dummyObjects.size() == 1) {
+                selectedDummy = null;
+            } else if (dummyObjects.size() > 1) {
+                selectNextDummy();
+            } else {
+                return;
+            }
+        }
+        
+        // delete from list
+        dummyObjects.remove(d);
+    }
+    
+    /**
      * Removes the currently selected dummy from the dummy list
      */
     public void deleteSelectedDummy() {
-        DummyObject d = selectedDummy;
-        if (dummyObjects.size() == 1) {
-            selectedDummy = null;
-        } else if (dummyObjects.size() > 1) {
-            selectNextDummy();
-        } else {
-            return;
-        }
-
-        dummyObjects.remove(d);
-
+        deleteDummy(selectedDummy);
     }
 
     /**

@@ -40,6 +40,14 @@ public class TileMap {
     }
             
     
+    private boolean checkBounds(int x, int y) {
+        int [][] map;
+        map = maps.get(0);
+        if (x >= 0 && x < map[0].length && y >= 0 && y < map.length)
+            return true;
+        return false;
+    }
+    
     /**
      * Get tile value at x,y.
      * @param x Tile x.
@@ -58,7 +66,8 @@ public class TileMap {
      * @param n Layer to get.
      * @param val Value to set.
      */
-    public void setTileVal(int x, int y, int n, int val) {
+    public void setTileVal(int x, int y, int n, int val) {       
+        if (!checkBounds(x, y)) return;
         maps.get(n)[y][x] = val;
     }
    

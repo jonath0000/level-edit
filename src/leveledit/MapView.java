@@ -22,8 +22,6 @@ public class MapView
         extends JPanel
         implements MouseListener, MouseMotionListener, KeyListener {
 
-    /** window top to map start */
-    private static final int Y_OFFSET = 70;
     /** Default placement of new dummy. */
     private static final int STDNEWXPOS = 500;
     /** Position for next created dummy. */
@@ -274,7 +272,7 @@ public class MapView
     
     
     /**
-     * User clicks the "mapView" frame, ie. the tilemap frame.
+     * Map click to tool action.
      * @param x  Mouse pos x
      * @param y  Mouse pos y
      * @param repeated If the click event is from a "press down".
@@ -282,14 +280,25 @@ public class MapView
     public void click(int x, int y, boolean repeated) {
 
         switch (toolSelector.getTool()) {
+            
             case NEW_DUMMY:
                 DummyObject d = dummyTypeSelector.createNewDummyObject();
                 level.getDummyObjects().newDummy(x, y, d);
                 break;
+                
             case SELECT_DUMMY:
                 level.getDummyObjects().selectDummy(x, y);
                 break;
+                
+            case DELETE_DUMMY:
+                level.getDummyObjects().deleteDummy(x, y);
+                break;    
+                
             case SET_TILE:
+            case DELETE_TILE:
+            case FILL_TILE:
+            case LINE_TILE:
+            case PICKUP_TILE:
                 if (tileSelector.getSelectedIndex() != -1) {
                     setTileVal(x, y, tileSelector.getSelectedIndex());
                 }
@@ -301,50 +310,44 @@ public class MapView
     
     /**
      * Sets tile at mouse click, decides how to behave dependent on selected 
-     * tile editing mode.
+     * tool.
      * @param x Mouse x
      * @param y Mouse y
      * @param tileIndex Tile index number
      */
     public void setTileVal(int x, int y, int tileIndex) {
-        
-        // to map coords
-        x = x + getScrollX();
-        y = y + getScrollY();
 
         // to tile index
-        int tX = x / Config.TILESIZE;
-        int tY = y / Config.TILESIZE;
+        int tX = (x + getScrollX()) / Config.TILESIZE;
+        int tY = (y + getScrollY()) / Config.TILESIZE;
 
+        // tiles are 1 indexed.
+        tileIndex++;
+        
         // set tile
-        if (tX >= 0 && tX < level.getTileMap().getWidth() &&
-                tY >= 0 && tY < level.getTileMap().getHeight()) {
-            int mapToEdit;
-            if (this.editlayer == 1) {
-                mapToEdit = 1;
-            } else {
-                mapToEdit = 0;
-            }
-
-            int val = tileIndex + 1;
-
-            if (this.fillKeyDown) {
-                level.getTileMap().fillRecursive(mapToEdit, tX, tY,
-                        level.getTileMap().getTileVal(tX, tY, mapToEdit),
-                        val);
-            } else if (this.lineKeyDown) {
-                level.getTileMap().drawLine(mapToEdit, lastEditedTileX,
-                        lastEditedTileY, tX, tY, val);
-            } else {
-                if (this.deleteTileKeyDown) {
-                    val = 0;
-                }
-                level.getTileMap().setTileVal(tX, tY, mapToEdit, val);
-            }
-
-            lastEditedTileX = tX;
-            lastEditedTileY = tY;
+        switch (toolSelector.getTool()) {
+            case SET_TILE:
+                level.getTileMap().setTileVal(tX, tY, editlayer, tileIndex);
+                break;
+            case DELETE_TILE:
+                level.getTileMap().setTileVal(tX, tY, editlayer, 0);
+                break;
+            case PICKUP_TILE:
+                tileSelector.setSelectedIndex(tileIndex);
+                break;
+            case FILL_TILE:
+                level.getTileMap().fillRecursive(editlayer, tX, tY,
+                    level.getTileMap().getTileVal(tX, tY, editlayer),
+                    tileIndex);
+                break;
+            case LINE_TILE:
+                level.getTileMap().drawLine(editlayer, lastEditedTileX,
+                    lastEditedTileY, tX, tY, tileIndex);
+                break;
         }
+
+        lastEditedTileX = tX;
+        lastEditedTileY = tY;
     }
 
     /**

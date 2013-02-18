@@ -3,7 +3,6 @@ package leveledit;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -18,6 +17,7 @@ public class ToolSelector extends JPanel {
         SET_TILE,
         DELETE_TILE,
         FILL_TILE,
+        PICKUP_TILE,
         LINE_TILE,
         NEW_DUMMY,
         SELECT_DUMMY,
@@ -25,11 +25,32 @@ public class ToolSelector extends JPanel {
     }
     
     private Tool tool;
+
+    private class ToolButton extends JButton {
+        public Tool tool;
+        public ToolButton(ImageIcon image, Tool tool) {
+            super(image);
+            this.tool = tool;
+        }
+    }
+        
+    private class ButtonHandler implements ActionListener {
+        
+        @Override
+	public void actionPerformed (ActionEvent event) {
+            
+            tool = ((ToolButton)event.getSource()).tool;
+
+        }
+    }
     
-    // tool choose btns
-    private JButton toolNewDummy;
-    private JButton toolSelectDummy;
-    private JButton toolSetTile;
+    private ButtonHandler buttonHandler = new ButtonHandler();
+    
+    private void createButton(Tool tool, String image) {
+        ToolButton button = new ToolButton(new ImageIcon(image), tool);
+        button.addActionListener(buttonHandler);
+        add(button);
+    }
     
     public ToolSelector() {
         
@@ -37,54 +58,16 @@ public class ToolSelector extends JPanel {
         
         tool = Tool.SET_TILE;
 
-	toolNewDummy = new JButton(new ImageIcon("res/toolNewDummy.png"));
-	toolSelectDummy = new JButton(new ImageIcon("res/toolSelectDummy.png"));
-	toolSetTile = new JButton(new ImageIcon("res/toolSetTile.png"));
+        createButton(Tool.NEW_DUMMY,    "res/toolNewDummy.png");
+        createButton(Tool.SELECT_DUMMY, "res/toolSelectDummy.png");
+        createButton(Tool.DELETE_DUMMY, "res/toolDeleteDummy.png");
+        createButton(Tool.SET_TILE,     "res/toolSetTile.png");
+        createButton(Tool.DELETE_TILE,  "res/toolDeleteTile.png");
+        createButton(Tool.FILL_TILE,    "res/toolFillTile.png");
+        createButton(Tool.PICKUP_TILE,  "res/toolPickupTile.png");
+        createButton(Tool.LINE_TILE,    "res/toolLineTile.png");
         
-        toolNewDummy.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tool = Tool.NEW_DUMMY;
-                selectToolButton(toolNewDummy);
-            }
-        });
-        toolSelectDummy.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tool = Tool.SELECT_DUMMY;
-                selectToolButton(toolSelectDummy);
-            }
-        });
-        toolSetTile.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tool = Tool.SET_TILE;
-                selectToolButton(toolSetTile);
-            }
-        });
-
-	setLayout(new GridLayout(3,1));
-	add(toolNewDummy);
-	add(toolSelectDummy);
-	add(toolSetTile);
-	ButtonGroup toolGroup = new ButtonGroup();
-	toolGroup.add(toolNewDummy);
-	toolGroup.add(toolSelectDummy);
-	toolGroup.add(toolSetTile);
-    }
-    
-    /**
-     * Select one editing tool and deselect all others.
-     */
-    public void selectToolButton(JButton toolBtn)
-    {
-	toolNewDummy.setSelected(false);
-	toolSetTile.setSelected(false);
-	toolSelectDummy.setSelected(false);
-	toolBtn.setSelected(false);
+	setLayout(new GridLayout(3,3));
     }
 
     
