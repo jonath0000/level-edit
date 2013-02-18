@@ -23,18 +23,36 @@ public class TileMap {
         }
     }
     
+    /**
+     * Set map array.
+     * @param map Map data.
+     * @param n Layer.
+     */
     public void setMap(int [][] map, int n) {
         maps.set(n, map);
     }
     
+    /**
+     * Get map array for layer.
+     * @param n Layer.
+     * @return Map data.
+     */
     public int [][] getMap(int n) {
         return maps.get(n);
     }
     
+    /**
+     * Width of map in tiles.
+     * @return Width.
+     */
     public int getWidth() {
         return maps.get(0)[0].length;
     }
     
+    /**
+     * Height of map in tiles.
+     * @return Height.
+     */
     public int getHeight() {
         return maps.get(0).length;
     }
@@ -74,6 +92,7 @@ public class TileMap {
     
     /**
      * "Flood fill" operation from tile x,y.
+     * @todo Will get stack overflow with this method!
      * 
      * @param n      Layer.
      * @param tx     Source x.
