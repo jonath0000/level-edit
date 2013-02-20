@@ -19,25 +19,13 @@ import levelmodel.Level;
 public class MapView
         extends JPanel
         implements MouseListener, MouseMotionListener {
-
-    /** Default placement of new dummy. */
-    private static final int STDNEWXPOS = 500;
-    /** Position for next created dummy. */
-    private int newXPos = STDNEWXPOS;
     
     /** Image for getSelected dummy. */
     private ImageIcon markerSelectedDummy;
     
-    /** Image for next dummy placement. */
-    private ImageIcon markerNextDummyPos;
-    
     /** Path to getSelected dummy image. */
     private static final String MARKERSELECTEDDUMMY_PATH 
             = "res/markerSelectedDummy.png";
-    
-    /** Path to next dummy image. */
-    private static final String MARKERNEXTDUMMYPOS_PATH 
-            = "res/markerNextDummyPos.png";
     
     /** Reference to config. */
     private Config config;    
@@ -62,14 +50,10 @@ public class MapView
 
     /** Layer currently edited. */
     private int editlayer = 0;
-    /** key to delete tiles */
-    private boolean deleteTileKeyDown = false;
-    /** key to fill */
-    private boolean fillKeyDown = false;
-    /** Key to draw lines */
-    private boolean lineKeyDown = false;
+
     /** Last edited tile, used to draw lines. */
     private int lastEditedTileX = 0;
+
     /** Last edited tile, used to draw lines. */
     private int lastEditedTileY = 0;
 
@@ -94,7 +78,6 @@ public class MapView
         this.level = level;
         setBackground(config.bgCol);
         markerSelectedDummy = new ImageIcon(MARKERSELECTEDDUMMY_PATH);
-        markerNextDummyPos = new ImageIcon(MARKERNEXTDUMMYPOS_PATH);
         repaint();
     }
 
@@ -185,7 +168,7 @@ public class MapView
     
     
     /**
-     * Sets tile at mouse click, decides how to behave dependent on getSelected 
+     * Sets tile at mouse click, decides how to behave dependent on selected 
      * tool.
      * @param x Mouse x
      * @param y Mouse y
@@ -240,6 +223,13 @@ public class MapView
     public void selectPrevLayer() {
         if (editlayer <= 0) return;
         editlayer -- ;
+    }
+    
+    /**
+     * Get currently edited layer. 
+     */
+    public int getSelectedLayer() {
+        return editlayer;
     }
     
     /**
@@ -349,8 +339,9 @@ public class MapView
         int y = getScrollY();
 
         // draw tiles
-        paintMap(g, level.getTileMap().getMap(1));
-        paintMap(g, level.getTileMap().getMap(0));
+        for (int i = 0; i <level.getTileMap().getNumLayers(); i++) {
+            paintMap(g, level.getTileMap().getMap(i));
+        }
 
         // draw the dummy objects
         DummyObject p;
@@ -391,20 +382,6 @@ public class MapView
                 0 - y,
                 level.getTileMap().getWidth() * Config.TILESIZE - x,
                 this.getHeight() - y);
-
-        // show where next dummy will be created
-        g.setColor(new Color(0x0000FF));
-        if (markerNextDummyPos != null) {
-            g.drawImage(markerNextDummyPos.getImage(),
-                    newXPos - 10,
-                    this.getHeight() - 40,
-                    this);
-        } else {
-            g.drawLine(newXPos - markerNextDummyPos.getImage().getWidth(this) / 2,
-                    level.getTileMap().getHeight() * Config.TILESIZE - y,
-                    newXPos,
-                    this.getHeight());
-        }
 
         // show getSelected dummy
         DummyObject d = level.getDummyObjects().getSelected();

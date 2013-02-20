@@ -24,6 +24,22 @@ public class TileMap {
     }
     
     /**
+     * Add a blank map to the last index.
+     */
+    public void addMap() {
+        maps.add(new int [getHeight()][getWidth()]);       
+    }
+    
+    
+    /**
+     * Delete map layer n.
+     * @param n Layer.
+     */
+    public void deleteMap(int n) {
+        maps.remove(n);
+    }
+    
+    /**
      * Set map array.
      * @param map Map data.
      * @param n Layer.

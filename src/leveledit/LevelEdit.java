@@ -3,6 +3,7 @@ package leveledit;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -162,11 +163,14 @@ public class LevelEdit extends JFrame {
             // scroll
             if (event.getSource() == menu.scrollUpItem) {
                 mapView.scrollY(-Config.TILESIZE);
-            } else if (event.getSource() == menu.scrollDownItem) {
+            } 
+            if (event.getSource() == menu.scrollDownItem) {
                 mapView.scrollY(Config.TILESIZE);
-            } else if (event.getSource() == menu.scrollLeftItem) {
+            } 
+            if (event.getSource() == menu.scrollLeftItem) {
                 mapView.scrollX(-Config.TILESIZE);
-            } else if (event.getSource() == menu.scrollRightItem) {
+            } 
+            if (event.getSource() == menu.scrollRightItem) {
                 mapView.scrollX(Config.TILESIZE);
             } 
             
@@ -177,6 +181,13 @@ public class LevelEdit extends JFrame {
             if (event.getSource() == menu.prevLayerItem) {
                 mapView.selectPrevLayer();
             }
+            if (event.getSource() == menu.addLayerItem) {
+                level.getTileMap().addMap();
+            }       
+            if (event.getSource() == menu.deleteLayerItem) {
+                level.getTileMap().deleteMap(mapView.getSelectedLayer());
+            }   
+
 
             // MENU -> "Save" (LevelEdit format)
             if (event.getSource() == menu.saveItem) {
@@ -256,8 +267,9 @@ public class LevelEdit extends JFrame {
 	container.add(panel, BorderLayout.SOUTH);
 
 	// init main window
-       	setSize(1200,500);
-	setLocation(10,10);
+       	setSize(Toolkit.getDefaultToolkit().getScreenSize().width - 40,
+                Toolkit.getDefaultToolkit().getScreenSize().height - 60);
+	setLocation(20,20);
 	setVisible(true);
 	setResizable(true);
         
