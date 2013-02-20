@@ -23,18 +23,23 @@ import levelmodel.Level;
 public class LevelEdit extends JFrame {
 
     private static final String HELP_TEXT = 
-	"Editor help                              \n"+
-	"-----------                              \n"+
+	"Quick help:                              \n"+
+        "                                         \n"+
+        "Before using you should set up a config  \n"+    
+        "file specifying your project. See the    \n"+  
+        "stand-alone documentation for help on    \n"+    
+        "this.                                    \n"+      
 	"                                         \n"+
-	"Keys:                                    \n"+
 	"A,W,S,D - move camera                    \n"+
-	"Tiletool + CTRL + click - erase          \n"+
-	"Tiletool + F + click - flood fill        \n"+
-	"Q,E - select next/prev dummy             \n"+
-	"1,2 - edit FG / BG tile layer            \n"+
-	"UP/DOWN/LEFT/RIGHT - move selected dummy.\n"+
-	"                                         \n"+
-	"                                         \n"+
+        "                                         \n"+
+	"Dummy objects are game objects such as   \n"+
+        "characters, pickups, trigger areas etc.  \n"+ 
+        "Select from the list on screen and use   \n"+
+        "the tools to create and move these.      \n"+
+        "                                         \n"+
+        "Use the tile tools to edit the tile map. \n"+    
+        "The tile map can include several layers. \n"+    
+
 	""
     ;
 
