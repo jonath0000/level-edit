@@ -153,6 +153,25 @@ public class LevelEdit extends JFrame {
             } else if (event.getSource() == menu.nudgeRightItem) {
                 level.getDummyObjects().moveSelectedDummy(1, 0);
             }       
+            
+            // scroll
+            if (event.getSource() == menu.scrollUpItem) {
+                mapView.scrollY(-Config.TILESIZE);
+            } else if (event.getSource() == menu.scrollDownItem) {
+                mapView.scrollY(Config.TILESIZE);
+            } else if (event.getSource() == menu.scrollLeftItem) {
+                mapView.scrollX(-Config.TILESIZE);
+            } else if (event.getSource() == menu.scrollRightItem) {
+                mapView.scrollX(Config.TILESIZE);
+            } 
+            
+            // tile layer
+            if (event.getSource() == menu.nextLayerItem) {
+                mapView.selectNextLayer();
+            }
+            if (event.getSource() == menu.prevLayerItem) {
+                mapView.selectPrevLayer();
+            }
 
             // MENU -> "Save" (LevelEdit format)
             if (event.getSource() == menu.saveItem) {
@@ -260,7 +279,6 @@ public class LevelEdit extends JFrame {
 	// mapview
 	mapView = new MapView(config, toolSelector, tileSelector, 
                 dummyTypeSelector, level);
-        mapView.addKeyListener(mapView);
         mapView.addMouseListener(mapView);
         mapView.addMouseMotionListener(mapView);
 	container.add(mapView, BorderLayout.CENTER);

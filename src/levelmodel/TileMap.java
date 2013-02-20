@@ -56,6 +56,14 @@ public class TileMap {
     public int getHeight() {
         return maps.get(0).length;
     }
+    
+    /**
+     * Number of layers.
+     * @return Number of layers in tile map.
+     */
+    public int getNumLayers() {
+        return maps.size();
+    }
             
     
     private boolean checkBounds(int x, int y) {

@@ -3,8 +3,6 @@ package leveledit;
 import levelmodel.DummyObject;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -20,7 +18,7 @@ import levelmodel.Level;
  */
 public class MapView
         extends JPanel
-        implements MouseListener, MouseMotionListener, KeyListener {
+        implements MouseListener, MouseMotionListener {
 
     /** Default placement of new dummy. */
     private static final int STDNEWXPOS = 500;
@@ -101,44 +99,25 @@ public class MapView
     }
 
     // <editor-fold desc="Listeners">
-    /**
-     * 
-     * @param e
-     */
+
     @Override
     public void mousePressed(MouseEvent e) {
         click(e.getX(), e.getY(), true);
         repaint();
     }
 
-    /**
-     * 
-     * @param e
-     */
     @Override
     public void mouseReleased(MouseEvent e) {
     }
 
-    /**
-     * 
-     * @param e
-     */
     @Override
     public void mouseEntered(MouseEvent e) {
     }
 
-    /**
-     * 
-     * @param e
-     */
     @Override
     public void mouseExited(MouseEvent e) {
     }
 
-    /**
-     * 
-     * @param e
-     */
     @Override
     public void mouseClicked(MouseEvent e) {
         click(e.getX(), e.getY(), false);
@@ -146,20 +125,13 @@ public class MapView
     }
 
     // implement mousemovelistener
-    /**
-     * 
-     * @param e
-     */
+
     @Override
     public void mouseMoved(MouseEvent e) {
         // called during motion when no buttons are down
         e.consume();
     }
 
-    /**
-     * 
-     * @param e
-     */
     @Override
     public void mouseDragged(MouseEvent e) {
         // called during motion with buttons down
@@ -171,103 +143,6 @@ public class MapView
         }
     }
 
-    // implement keylistener
-    /**
-     * 
-     * @param e
-     */
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    /**
-     * 
-     * @param e
-     */
-    @Override
-    public void keyPressed(KeyEvent e) {
-/*
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_UP) {
-            level.getDummyObjects().moveSelectedDummy(0, -Config.TILESIZE);
-        }
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_DOWN) {
-            level.getDummyObjects().moveSelectedDummy(0, Config.TILESIZE);
-        }
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_LEFT) {
-            level.getDummyObjects().moveSelectedDummy(-Config.TILESIZE, 0);
-        }
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_RIGHT) {
-            level.getDummyObjects().moveSelectedDummy(Config.TILESIZE, 0);
-        }
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_Q) {
-            level.getDummyObjects().selectPrevDummy();
-        }
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_E) {
-            level.getDummyObjects().selectNextDummy();
-        }
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_DELETE) {
-            level.getDummyObjects().deleteSelectedDummy();
-        }
-
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_A) {
-            scrollX -= Config.TILESIZE;
-        }
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_D) {
-            scrollX += Config.TILESIZE;
-        }
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_W) {
-            scrollY -= Config.TILESIZE;
-        }
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_S) {
-            scrollY += Config.TILESIZE;
-        }
-
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_CONTROL) {
-            this.deleteTileKeyDown = true;
-        }
-
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_F) {
-            this.fillKeyDown = true;
-        }
-
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_1) {
-            this.editlayer = 0;
-            System.out.println("Editing fg tile layer");
-        }
-
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_2) {
-            this.editlayer = 1;
-            System.out.println("Editing bg tile layer");
-        }
-
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_L) {
-            this.lineKeyDown = true;
-            System.out.println("Line tool modifier down.");
-        }
-*/
-        repaint();
-    }
-    
-
-    /**
-     * 
-     * @param e
-     */
-    @Override
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_CONTROL) {
-            this.deleteTileKeyDown = false;
-        }
-
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_F) {
-            this.fillKeyDown = false;
-        }
-
-        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_L) {
-            this.lineKeyDown = false;
-            System.out.println("Line tool modifier released.");
-        }
-    }
     // </editor-fold>
     
     
@@ -352,20 +227,53 @@ public class MapView
     }
 
     /**
+     * Select next layer in tilemap for editing.
+     */
+    public void selectNextLayer() {
+        if (editlayer + 1 >= level.getTileMap().getNumLayers()) return;
+        editlayer ++ ;
+    }
+    
+    /**
+     * Select previous layer in tilemap for editing.
+     */
+    public void selectPrevLayer() {
+        if (editlayer <= 0) return;
+        editlayer -- ;
+    }
+    
+    /**
      * Scroll position x
      * @return scrollX
      */
-    int getScrollX() {
+    public int getScrollX() {
         return scrollX;
     }
-
+ 
     /**
      * Scroll position y
      * @return scrollY
      */
-    int getScrollY() {
+    public int getScrollY() {
         return scrollY;
     }
+    
+    /**
+     * Scroll in x direction.
+     * @param length Pixels to scroll.
+     */
+    public void scrollX(int length) {
+        scrollX += length;
+    }
+    
+    /**
+     * Scroll in y direction.
+     * @param length Pixels to scroll.
+     */
+    public void scrollY(int length) {
+        scrollY += length;
+    }
+
 
     //<editor-fold desc="Paint methods.">
     
@@ -517,6 +425,13 @@ public class MapView
                         4);
             }
         }
+        
+        // show tilemap layer
+        g.setColor(new Color(0x000000));
+        g.drawString("Editing tilemap layer " + (editlayer+1) + "/" + 
+                level.getTileMap().getNumLayers(), 5, getHeight() 
+                - g.getFontMetrics().getHeight());
+        
     }
     //</editor-fold>
    
