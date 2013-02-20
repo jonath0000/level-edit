@@ -142,15 +142,15 @@ public class MapView
             
             case NEW_DUMMY:
                 DummyObject d = dummyTypeSelector.createNewDummyObject();
-                level.getDummyObjects().newDummy(x, y, d);
+                level.getDummyObjects().newDummy(x + scrollX, y + scrollY, d);
                 break;
                 
             case SELECT_DUMMY:
-                level.getDummyObjects().selectDummy(x, y);
+                level.getDummyObjects().selectDummy(x + scrollX, y + scrollY);
                 break;
                 
             case DELETE_DUMMY:
-                level.getDummyObjects().deleteDummy(x, y);
+                level.getDummyObjects().deleteDummy(x + scrollX, y + scrollY);
                 break;    
                 
             case SET_TILE:
