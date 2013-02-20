@@ -163,7 +163,8 @@ public class MapView
     @Override
     public void mouseDragged(MouseEvent e) {
         // called during motion with buttons down
-        if (toolSelector.getTool() == ToolSelector.Tool.SET_TILE) {
+        if (toolSelector.getTool() == ToolSelector.Tool.SET_TILE
+                || toolSelector.getTool() == ToolSelector.Tool.DELETE_TILE) {
             click(e.getX(), e.getY(), true);
             repaint();
             e.consume();

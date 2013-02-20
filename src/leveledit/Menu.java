@@ -21,6 +21,7 @@ public class Menu extends JMenuBar {
     protected JMenuItem importMappyItem;  
     protected JMenuItem exportAsBlockoFormatItem;
     protected JMenuItem exportAsBlockoFormat2Item;
+    protected JMenuItem quitItem;
     protected JMenuItem helpItem;
     protected JMenuItem moveLeftItem;
     protected JMenuItem moveRightItem;
@@ -32,6 +33,14 @@ public class Menu extends JMenuBar {
     protected JMenuItem nudgeDownItem;
     protected JMenuItem selectNextItem;
     protected JMenuItem selectPrevItem;
+    protected JMenuItem scrollLeftItem;
+    protected JMenuItem scrollRightItem;
+    protected JMenuItem scrollUpItem;
+    protected JMenuItem scrollDownItem;
+    protected JMenuItem addLayerItem;
+    protected JMenuItem deleteLayerItem;
+    protected JMenuItem nextLayerItem;
+    protected JMenuItem prevLayerItem;
    
     private JMenuItem addMenuItem(
             JMenu menu, ActionListener handler, 
@@ -58,16 +67,19 @@ public class Menu extends JMenuBar {
         super();
         
         JMenu fileMenu = new JMenu("File");
-        JMenu dummyMenu = new JMenu("Dummy");
+        JMenu levelMenu = new JMenu("Level");
+        JMenu dummyMenu = new JMenu("Dummy");     
+        JMenu tileMenu = new JMenu("Tilemap"); 
 	JMenu helpMenu = new JMenu("Help");       
 
-        newMapItem = addMenuItem(fileMenu, handler, "New map", KeyEvent.VK_N, ActionEvent.CTRL_MASK);
+        newMapItem = addMenuItem(fileMenu, handler, "New", KeyEvent.VK_N, ActionEvent.CTRL_MASK);
         openItem = addMenuItem(fileMenu, handler, "Open", KeyEvent.VK_O, ActionEvent.CTRL_MASK);
         importMappyItem = addMenuItem(fileMenu, handler, "Import Mappy file");
-        saveItem = addMenuItem(fileMenu, handler, "Save", KeyEvent.VK_S, ActionEvent.CTRL_MASK);
+        saveItem = addMenuItem(fileMenu, handler, "Save", KeyEvent.VK_S, ActionEvent.CTRL_MASK);        
         saveAsItem = addMenuItem(fileMenu, handler, "Save as...");
         exportAsBlockoFormatItem = addMenuItem(fileMenu, handler, "Export to Blocko format");
         exportAsBlockoFormat2Item = addMenuItem(fileMenu, handler, "Export to Blocko format 2");
+        quitItem = addMenuItem(fileMenu, handler, "Quit");
 
         helpItem = addMenuItem(helpMenu, handler, "Help");
 
@@ -82,10 +94,22 @@ public class Menu extends JMenuBar {
         nudgeDownItem = addMenuItem(dummyMenu, handler, "Nudge down", KeyEvent.VK_DOWN, ActionEvent.ALT_MASK);
         
         selectNextItem = addMenuItem(dummyMenu, handler, "Select next", KeyEvent.VK_Q, 0);
-        selectPrevItem = addMenuItem(dummyMenu, handler, "Select prev", KeyEvent.VK_W, 0);
+        selectPrevItem = addMenuItem(dummyMenu, handler, "Select prev", KeyEvent.VK_E, 0);
+        
+        scrollLeftItem = addMenuItem(levelMenu, handler, "Scroll left", KeyEvent.VK_A, 0);
+        scrollRightItem = addMenuItem(levelMenu, handler, "Scroll right", KeyEvent.VK_D, 0);
+        scrollUpItem = addMenuItem(levelMenu, handler, "Scroll up", KeyEvent.VK_W, 0);
+        scrollDownItem = addMenuItem(levelMenu, handler, "Scroll down", KeyEvent.VK_S, 0);
+        
+        addLayerItem = addMenuItem(tileMenu, handler, "Add layer");
+        deleteLayerItem = addMenuItem(tileMenu, handler, "Delete layer");
+        nextLayerItem = addMenuItem(tileMenu, handler, "Select next layer", KeyEvent.VK_Q, ActionEvent.ALT_MASK);
+        prevLayerItem = addMenuItem(tileMenu, handler, "Select previous layer", KeyEvent.VK_E, ActionEvent.ALT_MASK);
         
 	add(fileMenu);
+        add(levelMenu);
         add(dummyMenu);
+        add(tileMenu);
 	add(helpMenu);
     }
     

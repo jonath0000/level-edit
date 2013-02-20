@@ -122,15 +122,11 @@ public class LevelEdit extends JFrame {
      * Handle all actions in main window.
      */
     private class LevelEditHandler implements ActionListener
-    {
-	LevelEdit parentframe;
-	
+    {	
         @Override
 	public void actionPerformed (ActionEvent event)
 	{		    	    	       
-System.out.println(event.getSource() + " == " + menu.selectNextItem);
             if (event.getSource() == menu.selectNextItem) {
-                System.out.println("Hå");
                 level.getDummyObjects().selectNextDummy();
             }
 
@@ -175,6 +171,10 @@ System.out.println(event.getSource() + " == " + menu.selectNextItem);
                 level.writeToFile(new Blocko2LevelFile(
                         getSaveLevelPath(false)));
             }
+            
+            if (event.getSource() == menu.quitItem) {
+                System.exit(0);
+            }
 
             // HELP
             if (event.getSource() == menu.helpItem) {
@@ -213,7 +213,6 @@ System.out.println(event.getSource() + " == " + menu.selectNextItem);
     private void createGui(Container container)
     {
 	LevelEditHandler handler = new LevelEditHandler(); 	
-	handler.parentframe = this;
         
         menu = new Menu(handler);
         setJMenuBar(menu);
