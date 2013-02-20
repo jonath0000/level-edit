@@ -32,8 +32,6 @@ public class ResFileReader {
 	    Class c = this.getClass();
 	    FileInputStream is = new FileInputStream(path);
 	    byte b[] = new byte[1];
-
-	    int fas = 0;
 	    while ( is.read(b) != -1 ) {
 		file.append(new String(b));
 	    }

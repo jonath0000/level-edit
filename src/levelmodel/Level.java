@@ -10,7 +10,7 @@ public class Level {
 
     public Level() {
         dummyObjects = new DummyObjectList();
-        tileMap = new TileMap(10, 10, 2);
+        tileMap = new TileMap(30, 30, 2);
     }            
     
     public DummyObjectList getDummyObjects() {
@@ -36,6 +36,7 @@ public class Level {
     public void initFromFile(LevelFileInterface lf, DummyObject [] dummyTypes) {
         
         dummyObjects.flushData();
+        tileMap = new TileMap(10, 10, 1);
         lf.read(dummyObjects, dummyTypes, tileMap);
     }
 

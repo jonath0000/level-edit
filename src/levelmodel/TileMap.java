@@ -30,6 +30,13 @@ public class TileMap {
         maps.add(new int [getHeight()][getWidth()]);       
     }
     
+    /**
+     * Add given map to the last index.
+     */
+    public void addMap(int [][] map) {
+        maps.add(map);       
+    }
+    
     
     /**
      * Delete map layer n.

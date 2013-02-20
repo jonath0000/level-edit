@@ -40,34 +40,26 @@ implements LevelFileInterface {
 	    f.write(new String("# "+"\r\n\r\n").getBytes());
 
 	    // map array
-	    f.write(new String("[map]"+"\r\n").getBytes());
-	    f.write(new String(Integer.toString(tileMap.getWidth())).getBytes());
-	    f.write(new String(" "+Integer.toString(tileMap.getHeight())+"\r\n").getBytes());
-	    String data = new String();
-	    int w = tileMap.getWidth();
-	    int h = tileMap.getHeight();   
-	    for (int j = 0; j < h; j++){
-		for (int i = 0; i < w; i++){
+            for (int n = 0; n < tileMap.getNumLayers(); n++) {
+                
+                // for backwards compat.:
+                String layerNum = "" + (n + 1);
+                if (n == 0) layerNum = "";
+                
+                f.write(new String("[map"+layerNum+"]" + "\r\n").getBytes());
+                f.write(new String(Integer.toString(tileMap.getWidth())).getBytes());
+                f.write(new String(" " + Integer.toString(tileMap.getHeight()) + "\r\n").getBytes());
+                String data = new String();
+                int w = tileMap.getWidth();
+                int h = tileMap.getHeight();
+                for (int j = 0; j < h; j++) {
+                    for (int i = 0; i < w; i++) {
 
-		    data += Integer.toString(tileMap.getTileVal(i, j, 0))+" ";
-		}
-	    }
-	    f.write(new String(data+"\r\n\r\n").getBytes());	    
-
-	    // map array 2 (bg)
-	    f.write(new String("[map2]"+"\r\n").getBytes());
-	    f.write(new String(Integer.toString(tileMap.getWidth())).getBytes());// w
-	    f.write(new String(" "+Integer.toString(tileMap.getHeight())+"\r\n").getBytes());// h
-	    data = new String();
-	    w = tileMap.getWidth();
-	    h = tileMap.getHeight();	    
-	    for (int j = 0; j < h; j++){
-		for (int i = 0; i < w; i++){
-
-		    data += Integer.toString(tileMap.getTileVal(i, j, 1))+" ";
-		}
-	    }
-	    f.write(new String(data+"\r\n\r\n").getBytes());
+                        data += Integer.toString(tileMap.getTileVal(i, j, n)) + " ";
+                    }
+                }
+                f.write(new String(data + "\r\n\r\n").getBytes());
+            }
 	    
 	    // objects
 	    f.write(new String("[init]"+"\r\n").getBytes());
@@ -105,26 +97,21 @@ implements LevelFileInterface {
 	    ResFileReader r;
 	    r = new ResFileReader(path);
 	    
-	    // load tilemap
+	    // load tilemap, post names are map, map2, map3 etc.
 	    r.gotoPost("map", false);
 	    tileMap.setMap(r.readMapArray(), 0);
 
-	    // load bg layer, support old file format
-	    try {
-		r.gotoPost("map2", false);
-		tileMap.setMap(r.readMapArray(), 1);
-	    } catch (Exception e)
-	    {
-		System.out.println(this.getClass().getName() + "." + "initLevelFromFile(): " 
-				   + "Read old format! Converting to new format!");
-		// create tilemap
-		int x = tileMap.getWidth();
-		int y = tileMap.getHeight();
-		    tileMap.setMap(new int [y][x], 1);
-		for (int i = 0; i < x; i++)
-		    for (int j = 0; j < y; j++)
-		tileMap.setTileVal(x, y, 1, 0);
-	    }
+            boolean layersLeft = true;
+            int mapIndex = 2;
+            while(layersLeft) {
+                try {
+                    r.gotoPost("map"+mapIndex, false);
+                    tileMap.addMap(r.readMapArray());
+                    mapIndex ++;
+                } catch (Exception e) {
+                    layersLeft = false;
+                }
+            }
 
 	    // load objects
 	    r.gotoPost("init",false);
