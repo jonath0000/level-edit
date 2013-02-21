@@ -29,8 +29,8 @@ public class TileSelector extends JScrollPane {
         
 	for (int i = 0; i < nTiles; i++) {
             
-	    int row = i / Config.TILESPERROW;
-	    int tile = i % Config.TILESPERROW;
+	    int row = i / Config.tilesPerRow;
+	    int tile = i % Config.tilesPerRow;
 
 	    BufferedImage newIm = 
                     new BufferedImage(w,h,BufferedImage.TYPE_3BYTE_BGR);

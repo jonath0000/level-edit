@@ -177,8 +177,8 @@ public class MapView
     public void setTileVal(int x, int y, int tileIndex) {
 
         // to tile index
-        int tX = (x + getScrollX()) / Config.TILESIZE;
-        int tY = (y + getScrollY()) / Config.TILESIZE;
+        int tX = (x + getScrollX()) / Config.tileSize;
+        int tY = (y + getScrollY()) / Config.tileSize;
 
         // tiles are 1 indexed.
         tileIndex++;
@@ -289,36 +289,36 @@ public class MapView
 
                     // get row
                     tile--; // translate tile index to image index
-                    int row = tile / Config.TILESPERROW;
-                    tile = tile % Config.TILESPERROW;
+                    int row = tile / Config.tilesPerRow;
+                    tile = tile % Config.tilesPerRow;
 
                     // non-mirrored
-                    if (map[j][i] <= Config.MIRROR_CONST) {
+                    if (map[j][i] <= Config.mirrorTileVal) {
                         g.drawImage(config.tiles.getImage(),
                                 //dest
-                                i * Config.TILESIZE - x,
-                                j * Config.TILESIZE - y,
-                                (i + 1) * Config.TILESIZE - x,
-                                (j + 1) * Config.TILESIZE - y,
+                                i * Config.tileSize - x,
+                                j * Config.tileSize - y,
+                                (i + 1) * Config.tileSize - x,
+                                (j + 1) * Config.tileSize - y,
                                 // src
-                                (tile) * Config.TILESIZE,
-                                row * Config.TILESIZE,
-                                (tile + 1) * Config.TILESIZE,
-                                (0 + row + 1) * Config.TILESIZE,
+                                (tile) * Config.tileSize,
+                                row * Config.tileSize,
+                                (tile + 1) * Config.tileSize,
+                                (0 + row + 1) * Config.tileSize,
                                 this);
                     } // mirrored tiles
                     else {
                         g.drawImage(config.tiles.getImage(),
                                 //dest
-                                i * Config.TILESIZE - x, 
-                                j * Config.TILESIZE - y,
-                                (i + 1) * Config.TILESIZE - x, 
-                                (j + 1) * Config.TILESIZE - y,
+                                i * Config.tileSize - x, 
+                                j * Config.tileSize - y,
+                                (i + 1) * Config.tileSize - x, 
+                                (j + 1) * Config.tileSize - y,
                                 // src
-                                (map[j][i] - Config.MIRROR_CONST + 1) * Config.TILESIZE, 
+                                (map[j][i] - Config.mirrorTileVal + 1) * Config.tileSize, 
                                 0,
-                                (map[j][i] - Config.MIRROR_CONST) * Config.TILESIZE, 
-                                Config.TILESIZE,
+                                (map[j][i] - Config.mirrorTileVal) * Config.tileSize, 
+                                Config.tileSize,
                                 this);
                     }
                 }
@@ -375,12 +375,12 @@ public class MapView
                 0 - x,
                 this.getHeight() - y);
         g.drawLine(0,
-                level.getTileMap().getHeight() * Config.TILESIZE - y,
+                level.getTileMap().getHeight() * Config.tileSize - y,
                 this.getWidth(),
-                level.getTileMap().getHeight() * Config.TILESIZE - y);
-        g.drawLine(level.getTileMap().getWidth() * Config.TILESIZE - x,
+                level.getTileMap().getHeight() * Config.tileSize - y);
+        g.drawLine(level.getTileMap().getWidth() * Config.tileSize - x,
                 0 - y,
-                level.getTileMap().getWidth() * Config.TILESIZE - x,
+                level.getTileMap().getWidth() * Config.tileSize - x,
                 this.getHeight() - y);
 
         // show getSelected dummy

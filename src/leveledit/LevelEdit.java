@@ -52,12 +52,7 @@ public class LevelEdit extends JFrame {
     private Config config;
     private MapView mapView; 
     private Level level = new Level();
-
-    /** For showing open file. */
     private File currentFile = null;
-
-    /** Remember pos in file system. */
-    private File currentDir;
 
     
     /**
@@ -83,7 +78,6 @@ public class LevelEdit extends JFrame {
             
             JFileChooser fc = new JFileChooser("");
             fc.showSaveDialog(this);
-            fc.setCurrentDirectory(currentDir);
             File selFile = fc.getSelectedFile();
             
             if (selFile != null) {                                
@@ -142,13 +136,13 @@ public class LevelEdit extends JFrame {
 
             // move
             if (event.getSource() == menu.moveUpItem) {
-                level.getDummyObjects().moveSelectedDummy(0, -Config.TILESIZE);
+                level.getDummyObjects().moveSelectedDummy(0, -Config.tileSize);
             } else if (event.getSource() == menu.moveDownItem) {
-                level.getDummyObjects().moveSelectedDummy(0, Config.TILESIZE);
+                level.getDummyObjects().moveSelectedDummy(0, Config.tileSize);
             } else if (event.getSource() == menu.moveLeftItem) {
-                level.getDummyObjects().moveSelectedDummy(-Config.TILESIZE, 0);
+                level.getDummyObjects().moveSelectedDummy(-Config.tileSize, 0);
             } else if (event.getSource() == menu.moveRightItem) {
-                level.getDummyObjects().moveSelectedDummy(Config.TILESIZE, 0);
+                level.getDummyObjects().moveSelectedDummy(Config.tileSize, 0);
             } // nudge
             else if (event.getSource() == menu.nudgeUpItem) {
                 level.getDummyObjects().moveSelectedDummy(0, -1);
@@ -162,16 +156,16 @@ public class LevelEdit extends JFrame {
             
             // scroll
             if (event.getSource() == menu.scrollUpItem) {
-                mapView.scrollY(-Config.TILESIZE);
+                mapView.scrollY(-Config.tileSize);
             } 
             if (event.getSource() == menu.scrollDownItem) {
-                mapView.scrollY(Config.TILESIZE);
+                mapView.scrollY(Config.tileSize);
             } 
             if (event.getSource() == menu.scrollLeftItem) {
-                mapView.scrollX(-Config.TILESIZE);
+                mapView.scrollX(-Config.tileSize);
             } 
             if (event.getSource() == menu.scrollRightItem) {
-                mapView.scrollX(Config.TILESIZE);
+                mapView.scrollX(Config.tileSize);
             } 
             
             // tile layer
@@ -288,8 +282,8 @@ public class LevelEdit extends JFrame {
 	Container container = getContentPane();
         createGui(container);
   
-        tileSelector.setTiles(config.tiles, Config.NUM_TILES, 
-                Config.TILESIZE, Config.TILESIZE);
+        tileSelector.setTiles(config.tiles, Config.numTiles, 
+                Config.tileSize, Config.tileSize);
 
         dummyTypeSelector.setDummyList(config.typeNames, config.typeData);
         

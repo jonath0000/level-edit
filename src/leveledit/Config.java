@@ -9,13 +9,7 @@ import javax.swing.ImageIcon;
  * Represents the current project configuration in a config file.
  * @todo Could/should be done as XML file instead. 
  */
-public class Config {
-    
-    // Hard-coded values.
-    public static final int TILESIZE = 16;
-    public static final int TILESPERROW = 8;
-    public static final int NUM_TILES = 200;
-    public static final int MIRROR_CONST = 300;
+public class Config {       
     
     // Values read from file. 
     public ImageIcon tiles;
@@ -23,6 +17,10 @@ public class Config {
     public Color bgCol;
     public String typeNames [];
     public DummyObject typeData [];
+    public static int tileSize = 16;
+    public static int tilesPerRow = 8;
+    public static int numTiles = 200;
+    public static int mirrorTileVal = 100;
     
     public Config(String path) {
 	System.out.println("Loading config file");
@@ -37,7 +35,15 @@ public class Config {
 	    tiles = new ImageIcon(strTiles);
 	    if (tiles.getImageLoadStatus() != MediaTracker.COMPLETE) 
                 throw new Exception("Couldn't load tile image!");
-
+            tileSize = r.getNextWordAsInt();
+            numTiles = r.getNextWordAsInt();
+            tilesPerRow = r.getNextWordAsInt();
+            
+            // mirror tile val
+            r.gotoPost("tile_mirror_idx", false);
+            r.nextLine();
+            mirrorTileVal = r.getWordAsInt();
+            
 	    // dummy pic path
 	    r.gotoPost("dummypics", false);
 	    r.nextLine();
@@ -82,7 +88,7 @@ public class Config {
 	    bgCol = new Color(Integer.parseInt(hexrgb,16));
 	}
 	catch (Exception e) {
-	    System.out.println("Error reading config file!");
+            e.printStackTrace();
 	}
     }
     
