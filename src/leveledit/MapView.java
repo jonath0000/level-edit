@@ -3,6 +3,7 @@ package leveledit;
 import levelmodel.DummyObject;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.MediaTracker;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -78,7 +79,9 @@ public class MapView
         this.level = level;
         setBackground(config.bgCol);
         markerSelectedDummy = new ImageIcon(MARKERSELECTEDDUMMY_PATH);
-        repaint();
+        if (markerSelectedDummy.getImageLoadStatus() != MediaTracker.COMPLETE) {
+            System.out.println("Error! Couldn't get image!");
+        }
     }
 
     // <editor-fold desc="Listeners">

@@ -228,8 +228,6 @@ public class LevelEdit extends JFrame {
                         config.typeData);
             }           
 
-	    mapView.requestFocusInWindow();
-	    repaint();
 	    mapView.repaint();
 	}	
     }
@@ -293,6 +291,7 @@ public class LevelEdit extends JFrame {
         mapView.addMouseListener(mapView);
         mapView.addMouseMotionListener(mapView);
 	container.add(mapView, BorderLayout.CENTER);
+        mapView.repaint();
     }
 
     /**
@@ -304,7 +303,7 @@ public class LevelEdit extends JFrame {
         String configFile;
         if (args.length < 1) {
             System.out.println("No config specified, using default.");
-            configFile = "src/leveledit/default.config";
+            configFile = "Example_res/example.config";
         } else {
             configFile = args[0];
         }
