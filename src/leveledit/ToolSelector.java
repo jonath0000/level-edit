@@ -72,6 +72,8 @@ public class ToolSelector extends JPanel {
 
     
     public Tool getTool() {
+        
+        
         return tool;
     }
 }

@@ -57,7 +57,10 @@ public class MapView
 
     /** Last edited tile, used to draw lines. */
     private int lastEditedTileY = 0;
-
+        
+    /** Want second click to draw the line. */
+    private boolean lineToolFirstClick = true;
+    
     /**
      * Constructor.
      * @param config
@@ -203,13 +206,24 @@ public class MapView
                     tileIndex);
                 break;
             case LINE_TILE:
-                level.getTileMap().drawLine(editlayer, lastEditedTileX,
-                    lastEditedTileY, tX, tY, tileIndex);
+                    
+                
+                if (lineToolFirstClick) {
+                    lineToolFirstClick = false;
+                    level.getTileMap().setTileVal(tX, tY, editlayer, tileIndex);
+                }
+                else {
+                    level.getTileMap().drawLine(editlayer, lastEditedTileX,
+                        lastEditedTileY, tX, tY, tileIndex);
+                }
                 break;
         }
 
         lastEditedTileX = tX;
         lastEditedTileY = tY;
+        if (toolSelector.getTool() != ToolSelector.Tool.LINE_TILE) {
+            lineToolFirstClick = true;
+        }
     }
 
     /**
