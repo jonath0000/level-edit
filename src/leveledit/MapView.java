@@ -198,7 +198,7 @@ public class MapView
                 tileSelector.setSelectedIndex(tileIndex);
                 break;
             case FILL_TILE:
-                level.getTileMap().fillRecursive(editlayer, tX, tY,
+                level.getTileMap().fill(editlayer, tX, tY,
                     level.getTileMap().getTileVal(tX, tY, editlayer),
                     tileIndex);
                 break;

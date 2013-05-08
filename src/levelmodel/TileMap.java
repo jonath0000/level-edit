@@ -10,6 +10,8 @@ import java.util.List;
 public class TileMap {
     private List<int[][]> maps; 
     
+    private static final int FILL_TEMP_VAL = -50000;
+    
     /**
      * Create new tilemap size w*h with n layers.
      * @param w Size x.
@@ -121,9 +123,39 @@ public class TileMap {
     }
    
     
+    
+    private boolean isTileInMap(int x, int y, int [][] map) {
+        if (x >= 0 && x < map[0].length && y >= 0 && y < map.length)
+            return true;
+        return false;
+    }
+    
+    
+    private boolean markSameValuedNeighbourENWS(int val, int x, int y, int [][] map) {
+        boolean found = false;
+        
+        if (isTileInMap(x, y+1, map) && map[y+1][x] == val) {
+            map[y+1][x] = FILL_TEMP_VAL;
+            found = true;
+        }
+        if (isTileInMap(x, y-1, map) && map[y-1][x] == val) {
+            map[y-1][x] = FILL_TEMP_VAL;
+            found = true;
+        }
+        if (isTileInMap(x+1, y, map) && map[y][x+1] == val) {
+            map[y][x+1] = FILL_TEMP_VAL;
+            found = true;
+        }
+        if (isTileInMap(x-1, y, map) && map[y][x-1] == val) {
+            map[y][x-1] = FILL_TEMP_VAL;
+            found = true;
+        }
+        return found;
+    }
+    
+    
     /**
      * "Flood fill" operation from tile x,y.
-     * @todo Will get stack overflow with this method!
      * 
      * @param n      Layer.
      * @param tx     Source x.
@@ -131,24 +163,41 @@ public class TileMap {
      * @param oldval Value to replace.
      * @param newval Value to insert.
      */
-    public void fillRecursive(int n, int tx, int ty, int oldval, int newval)
-    {
+    public void fill(int n, int tx, int ty, int oldval, int newval) {
         int [][] map;
         map = maps.get(n);
         
-	if (tx >= 0 && tx < map[0].length && ty >= 0 && ty < map.length)
+       
+	if (isTileInMap(tx, ty, map))
 	{	
-	    if(map[ty][tx] == oldval)
-	    {
-		map[ty][tx] = newval;
-		fillRecursive(n, tx+1, ty,   oldval, newval);
-		fillRecursive(n, tx-1, ty,   oldval, newval);
-		fillRecursive(n, tx,   ty+1, oldval, newval);
-		fillRecursive(n, tx,   ty-1, oldval, newval);
-	    }
-	}
+             // mark tiles as beloning to area
+            map[ty][tx] = FILL_TEMP_VAL;
+            
+            boolean foundOne;
+            do {
+                foundOne = false;
+                for (int xi = 0; xi < map[0].length; xi++) {
+                    for (int yi = 0; yi < map.length; yi++) {
+                        if (map[yi][xi] == FILL_TEMP_VAL &&
+                            markSameValuedNeighbourENWS(oldval, xi, yi, map)) {
+                            foundOne = true;
+                        }
+                    }
+                }
+            } while (foundOne);
+            
+            
+            // change tile values 
+            for (int xi = 0; xi < map[0].length; xi++) {
+                for (int yi = 0; yi < map.length; yi++) {
+                    if (map[yi][xi] == FILL_TEMP_VAL)
+                        map[yi][xi] = newval;
+                }
+            }
+        }        
+        
     }
-
+    
     /**
      * Draw vertical or horizontal line.
      * 
