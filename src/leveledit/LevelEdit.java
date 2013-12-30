@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import levelfileformats.Blocko2LevelFile;
+import levelfileformats.CommaSeparatedTileMapLevelFile;
 import levelfileformats.InternalLevelFile;
 import levelfileformats.MappyLevelFile;
 import levelmodel.Level;
@@ -200,6 +201,13 @@ public class LevelEdit extends JFrame {
                 level.writeToFile(new Blocko2LevelFile(
                         getSaveLevelPath(false)));
             }
+            
+            // MENU -> Export as comma separated
+            if (event.getSource() == menu.exportAsCommaSeparatedItem) {
+                level.writeToFile(new CommaSeparatedTileMapLevelFile(
+                        getSaveLevelPath(false)));
+            }
+            
             
             if (event.getSource() == menu.quitItem) {
                 System.exit(0);

@@ -21,6 +21,7 @@ public class Menu extends JMenuBar {
     protected JMenuItem importMappyItem;  
     protected JMenuItem exportAsBlockoFormatItem;
     protected JMenuItem exportAsBlockoFormat2Item;
+    protected JMenuItem exportAsCommaSeparatedItem;
     protected JMenuItem quitItem;
     protected JMenuItem helpItem;
     protected JMenuItem moveLeftItem;
@@ -79,6 +80,7 @@ public class Menu extends JMenuBar {
         saveAsItem = addMenuItem(fileMenu, handler, "Save as...");
         exportAsBlockoFormatItem = addMenuItem(fileMenu, handler, "Export to Blocko format");
         exportAsBlockoFormat2Item = addMenuItem(fileMenu, handler, "Export to Blocko format 2");
+        exportAsCommaSeparatedItem = addMenuItem(fileMenu, handler, "Export as comma separated");
         quitItem = addMenuItem(fileMenu, handler, "Quit");
 
         helpItem = addMenuItem(helpMenu, handler, "Help");
