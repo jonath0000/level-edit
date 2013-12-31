@@ -36,8 +36,8 @@ public class CommaSeparatedTileMapLevelFile implements LevelFileInterface {
 			out.print(tileMap.getWidth());
 			out.print("," + tileMap.getHeight());
 
-			for (int i = 0; i < tileMap.getWidth(); i++) {
-				for (int j = 0; j < tileMap.getHeight(); j++) {
+			for (int j = 0; j < tileMap.getHeight(); j++) {
+				for (int i = 0; i < tileMap.getWidth(); i++) {
 					out.print("," + tileMap.getTileVal(i, j, 0));
 				}
 			}
