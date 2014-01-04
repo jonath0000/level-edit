@@ -15,6 +15,7 @@ import levelfileformats.Blocko2LevelFile;
 import levelfileformats.CommaSeparatedTileMapLevelFile;
 import levelfileformats.InternalLevelFile;
 import levelfileformats.MappyLevelFile;
+import levelfileformats.XmlObjectListLevelFile;
 import levelmodel.Level;
 
 /**
@@ -208,6 +209,11 @@ public class LevelEdit extends JFrame {
                         getSaveLevelPath(false)));
             }
             
+            // MENU -> Export as XML object list 
+            if (event.getSource() == menu.exportAsXmlObjectListItem) {
+                level.writeToFile(new XmlObjectListLevelFile(
+                        getSaveLevelPath(false)));
+            }
             
             if (event.getSource() == menu.quitItem) {
                 System.exit(0);
