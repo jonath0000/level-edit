@@ -160,10 +160,12 @@ public class LevelEdit extends JFrame {
 			}
 
 			if (event.getSource() == menu.editDummyCustomDataItem) {
-				level.getDummyObjects().getSelected().additionalData = 
-						JOptionPane.showInputDialog("Custom data for object " 
-								+ level.getDummyObjects().getSelected().name, 
-								level.getDummyObjects().getSelected().additionalData);
+				String newCustomData = JOptionPane.showInputDialog("Custom data for object " 
+						+ level.getDummyObjects().getSelected().name, 
+						level.getDummyObjects().getSelected().additionalData);
+				if (newCustomData != null) {
+					level.getDummyObjects().getSelected().additionalData = newCustomData;
+				}
 			}
 
 			// scroll
