@@ -136,41 +136,47 @@ public class MapView
     
     
     
-    /**
-     * Map click to tool action.
-     * @param x  Mouse pos x
-     * @param y  Mouse pos y
-     * @param repeated If the click event is from a "press down".
-     */
-    public void click(int x, int y, boolean repeated) {
+	/**
+	 * Map click to tool action.
+	 * 
+	 * @param x
+	 *            Mouse pos x
+	 * @param y
+	 *            Mouse pos y
+	 * @param repeated
+	 *            If the click event is from a "press down".
+	 */
+	public void click(int x, int y, boolean repeated) {
 
-        switch (toolSelector.getTool()) {
-            
-            case NEW_DUMMY:
-                DummyObject d = dummyTypeSelector.createNewDummyObject();
-                level.getDummyObjects().newDummy(x + scrollX, y + scrollY, d);
-                break;
-                
-            case SELECT_DUMMY:
-                level.getDummyObjects().selectDummy(x + scrollX, y + scrollY);
-                break;
-                
-            case DELETE_DUMMY:
-                level.getDummyObjects().deleteDummy(x + scrollX, y + scrollY);
-                break;    
-                
-            case SET_TILE:
-            case DELETE_TILE:
-            case FILL_TILE:
-            case LINE_TILE:
-            case PICKUP_TILE:
-                if (tileSelector.getSelectedIndex() != -1) {
-                    setTileVal(x, y, tileSelector.getSelectedIndex());
-                }
-                break;
-        }
-        requestFocusInWindow();
-    }
+		switch (toolSelector.getTool()) {
+
+		case NEW_DUMMY:
+			if (!repeated) {
+				DummyObject d = dummyTypeSelector.createNewDummyObject();
+				level.getDummyObjects().newDummy(x + scrollX, y + scrollY, d);
+			}
+			break;
+
+		case SELECT_DUMMY:
+			level.getDummyObjects().selectDummy(x + scrollX, y + scrollY);
+			break;
+
+		case DELETE_DUMMY:
+			level.getDummyObjects().deleteDummy(x + scrollX, y + scrollY);
+			break;
+
+		case SET_TILE:
+		case DELETE_TILE:
+		case FILL_TILE:
+		case LINE_TILE:
+		case PICKUP_TILE:
+			if (tileSelector.getSelectedIndex() != -1) {
+				setTileVal(x, y, tileSelector.getSelectedIndex());
+			}
+			break;
+		}
+		requestFocusInWindow();
+	}
     
     
     /**
