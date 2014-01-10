@@ -7,6 +7,9 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -89,8 +92,7 @@ public class LevelEdit extends JFrame {
 			selFile = fc.getSelectedFile();			
 
 			if (selFile != null && updateCurrent) {
-				currentFile = selFile;
-				setTitle("LevelEdit - " + currentFile.getAbsolutePath());
+				currentFile = selFile;				
 			}
 
 		} else {
@@ -204,12 +206,22 @@ public class LevelEdit extends JFrame {
 
 			// MENU -> "Save" (LevelEdit format)
 			if (event.getSource() == menu.saveItem) {
-				level.writeToFile(new InternalLevelFile(getSaveLevelPath(true, true)));
+				String path = getSaveLevelPath(true, true);
+				level.writeToFile(new InternalLevelFile(path));
+				if (path != null) {
+					setTitle("LevelEdit - " + currentFile.getAbsolutePath() 
+							+ " | Last save: " + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
+				}
 			}
 
 			// MENU -> "Save as" LevelEdit format
 			if (event.getSource() == menu.saveAsItem) {
-				level.writeToFile(new InternalLevelFile(getSaveLevelPath(false, true)));
+				String path = getSaveLevelPath(false, true);
+				level.writeToFile(new InternalLevelFile(path));
+				if (path != null) {
+					setTitle("LevelEdit - " + currentFile.getAbsolutePath() 
+							+ " | Last save: " + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
+				}
 			}
 
 			// MENU -> Export as blocko format 2
