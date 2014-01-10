@@ -71,27 +71,33 @@ public class LevelEdit extends JFrame {
 	/**
 	 * Show a "save" dialog to get path.
 	 * 
-	 * @param useCurrent
-	 *            If to use already opened level if any.
+	 * @param useCurrent If to use already opened level if any.
+	 * @param updateCurrent If to update the current file (We don't want that for export formats).
 	 * @return Path to save to.
 	 */
-	public String getSaveLevelPath(boolean useCurrent) {
+	public String getSaveLevelPath(boolean useCurrent, boolean updateCurrent) {
+		
+		File selFile = null;
+		if (useCurrent) {
+			selFile = currentFile;
+		}
+		
 		if (!useCurrent || currentFile == null) {
 
 			JFileChooser fc = new JFileChooser("");
 			fc.showSaveDialog(this);
-			File selFile = fc.getSelectedFile();
+			selFile = fc.getSelectedFile();			
 
-			if (selFile != null) {
+			if (selFile != null && updateCurrent) {
 				currentFile = selFile;
 				setTitle("LevelEdit - " + currentFile.getAbsolutePath());
 			}
 
 		} else {
-			System.out.println("Wrote file " + currentFile.getAbsolutePath());
+			System.out.println("Save to file " + selFile.getAbsolutePath());
 		}
 
-		return currentFile.getAbsolutePath();
+		return selFile.getAbsolutePath();
 	}
 
 	/**
@@ -198,29 +204,29 @@ public class LevelEdit extends JFrame {
 
 			// MENU -> "Save" (LevelEdit format)
 			if (event.getSource() == menu.saveItem) {
-				level.writeToFile(new InternalLevelFile(getSaveLevelPath(true)));
+				level.writeToFile(new InternalLevelFile(getSaveLevelPath(true, true)));
 			}
 
 			// MENU -> "Save as" LevelEdit format
 			if (event.getSource() == menu.saveAsItem) {
-				level.writeToFile(new InternalLevelFile(getSaveLevelPath(false)));
+				level.writeToFile(new InternalLevelFile(getSaveLevelPath(false, true)));
 			}
 
 			// MENU -> Export as blocko format 2
 			if (event.getSource() == menu.exportAsBlockoFormat2Item) {
-				level.writeToFile(new Blocko2LevelFile(getSaveLevelPath(false)));
+				level.writeToFile(new Blocko2LevelFile(getSaveLevelPath(false, false)));
 			}
 
 			// MENU -> Export as comma separated
 			if (event.getSource() == menu.exportAsCommaSeparatedItem) {
 				level.writeToFile(new CommaSeparatedTileMapLevelFile(
-						getSaveLevelPath(false)));
+						getSaveLevelPath(false, false)));
 			}
 
 			// MENU -> Export as XML object list
 			if (event.getSource() == menu.exportAsXmlObjectListItem) {
 				level.writeToFile(new XmlObjectListLevelFile(
-						getSaveLevelPath(false)));
+						getSaveLevelPath(false, false)));
 			}
 
 			if (event.getSource() == menu.quitItem) {
