@@ -35,6 +35,8 @@ public class Menu extends JMenuBar {
     protected JMenuItem nudgeDownItem;
     protected JMenuItem selectNextItem;
     protected JMenuItem selectPrevItem;
+    protected JMenuItem deleteDummyItem;
+    protected JMenuItem editDummyCustomDataItem;
     protected JMenuItem scrollLeftItem;
     protected JMenuItem scrollRightItem;
     protected JMenuItem scrollUpItem;
@@ -42,7 +44,7 @@ public class Menu extends JMenuBar {
     protected JMenuItem addLayerItem;
     protected JMenuItem deleteLayerItem;
     protected JMenuItem nextLayerItem;
-    protected JMenuItem prevLayerItem;
+    protected JMenuItem prevLayerItem;    
    
     private JMenuItem addMenuItem(
             JMenu menu, ActionListener handler, 
@@ -99,6 +101,9 @@ public class Menu extends JMenuBar {
         
         selectNextItem = addMenuItem(dummyMenu, handler, "Select next", KeyEvent.VK_Q, 0);
         selectPrevItem = addMenuItem(dummyMenu, handler, "Select prev", KeyEvent.VK_E, 0);
+        
+        deleteDummyItem = addMenuItem(dummyMenu, handler, "Delete", KeyEvent.VK_DELETE, 0);
+        editDummyCustomDataItem = addMenuItem(dummyMenu, handler, "Edit custom data", KeyEvent.VK_E, ActionEvent.CTRL_MASK);
         
         scrollLeftItem = addMenuItem(levelMenu, handler, "Scroll left", KeyEvent.VK_A, 0);
         scrollRightItem = addMenuItem(levelMenu, handler, "Scroll right", KeyEvent.VK_D, 0);
