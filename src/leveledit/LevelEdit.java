@@ -87,7 +87,7 @@ public class LevelEdit extends JFrame {
 		
 		if (!useCurrent || currentFile == null) {
 
-			JFileChooser fc = new JFileChooser("");
+			JFileChooser fc = new JFileChooser(currentFile);
 			fc.showSaveDialog(this);
 			selFile = fc.getSelectedFile();			
 
@@ -109,7 +109,7 @@ public class LevelEdit extends JFrame {
 	 */
 	public String getOpenLevelPath() {
 
-		JFileChooser fc = new JFileChooser("");
+		JFileChooser fc = new JFileChooser(currentFile);
 		int returnVal = fc.showOpenDialog(this);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -257,14 +257,20 @@ public class LevelEdit extends JFrame {
 
 			// MENU -> open
 			if (event.getSource() == menu.openItem) {
-				level.initFromFile(new InternalLevelFile(getOpenLevelPath()),
-						config.typeData);
+				String path = getOpenLevelPath();
+				if (path != null) {
+					level.initFromFile(new InternalLevelFile(path),
+							config.typeData);
+				}
 			}
 
 			// MENU -> import mappy
 			if (event.getSource() == menu.importMappyItem) {
-				level.initFromFile(new MappyLevelFile(getOpenLevelPath()),
+				String path = getOpenLevelPath();
+				if (path != null) {
+					level.initFromFile(new MappyLevelFile(path),
 						config.typeData);
+				}
 			}
 
 			mapView.repaint();
