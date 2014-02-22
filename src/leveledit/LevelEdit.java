@@ -344,6 +344,8 @@ public class LevelEdit extends JFrame {
 		super("LevelEdit");
 
 		config = new Config(configFile);
+		
+		currentFile = new File(config.projectPath);
 
 		Container container = getContentPane();
 		createGui(container);
