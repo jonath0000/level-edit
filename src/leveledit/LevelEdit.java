@@ -359,6 +359,7 @@ public class LevelEdit extends JFrame {
 		mapView.addMouseListener(mapView);
 		mapView.addMouseMotionListener(mapView);
 		container.add(mapView, BorderLayout.CENTER);
+		mapView.revalidate();
 		mapView.repaint();
 	}
 
