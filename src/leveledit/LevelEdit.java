@@ -98,8 +98,13 @@ public class LevelEdit extends JFrame {
 		}
 		
 		if (!useCurrent || currentFile == null) {
-
-			JFileChooser fc = new JFileChooser(currentFile);
+			
+			JFileChooser fc;
+			if (currentFile != null) {
+				fc = new JFileChooser(currentFile);
+			} else {
+				fc = new JFileChooser(new File(config.projectPath));
+			}
 			fc.showSaveDialog(this);
 			selFile = fc.getSelectedFile();			
 
@@ -121,7 +126,12 @@ public class LevelEdit extends JFrame {
 	 */
 	public String getOpenLevelPath() {
 
-		JFileChooser fc = new JFileChooser(currentFile);
+		JFileChooser fc;
+		if (currentFile != null) {
+			fc = new JFileChooser(currentFile);
+		} else {
+			fc = new JFileChooser(new File(config.projectPath));
+		}
 		int returnVal = fc.showOpenDialog(this);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -359,9 +369,7 @@ public class LevelEdit extends JFrame {
 	public LevelEdit(String configFile) {
 		super("LevelEdit");
 
-		config = new Config(configFile);
-		
-		currentFile = new File(config.projectPath);
+		config = new Config(configFile);				
 
 		Container container = getContentPane();
 		createGui(container);
