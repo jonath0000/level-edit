@@ -14,6 +14,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
+
 import levelfileformats.Blocko2LevelFile;
 import levelfileformats.CommaSeparatedTileMapLevelFile;
 import levelfileformats.InternalLevelFile;
@@ -328,11 +330,15 @@ public class LevelEdit extends JFrame {
 		toolSelector = new ToolSelector();
 		panel.add(toolSelector);
 
+		JToolBar dummyToolBar = new JToolBar();
 		dummyTypeSelector = new DummyTypeSelector();
-		panel.add(dummyTypeSelector);
+		dummyToolBar.add(dummyTypeSelector);
+		panel.add(dummyToolBar);
 
+		JToolBar tileToolBar = new JToolBar();
 		tileSelector = new TileSelector();
-		panel.add(tileSelector);
+		tileToolBar.add(tileSelector);
+		panel.add(tileToolBar);
 
 		container.add(panel, BorderLayout.SOUTH);
 

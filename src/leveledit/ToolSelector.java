@@ -6,12 +6,13 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
 /**
  * Panel to select editing tool.
  * 
  */
-public class ToolSelector extends JPanel {
+public class ToolSelector extends JToolBar {
     
     public enum Tool {
         SET_TILE,
