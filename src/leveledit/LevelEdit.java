@@ -72,6 +72,16 @@ public class LevelEdit extends JFrame {
 	}
 
 	/**
+	 * Show "export" dialog.
+	 * @return Path to export file to.
+	 */
+	private String getExportLevelPath() {
+		JFileChooser fc = new JFileChooser(new File(config.exportPath));
+		fc.showSaveDialog(this);
+		return fc.getSelectedFile().getAbsolutePath();
+	}
+	
+	/**
 	 * Show a "save" dialog to get path.
 	 * 
 	 * @param useCurrent If to use already opened level if any.
@@ -243,24 +253,24 @@ public class LevelEdit extends JFrame {
 
 			// MENU -> Export as blocko format 2
 			if (event.getSource() == menu.exportAsBlockoFormat2Item) {
-				level.writeToFile(new Blocko2LevelFile(getSaveLevelPath(false, false)));
+				level.writeToFile(new Blocko2LevelFile(getExportLevelPath()));
 			}
 
 			// MENU -> Export as comma separated
 			if (event.getSource() == menu.exportAsCommaSeparatedItem) {
 				level.writeToFile(new CommaSeparatedTileMapLevelFile(
-						getSaveLevelPath(false, false)));
+						getExportLevelPath()));
 			}
 
 			// MENU -> Export as XML object list
 			if (event.getSource() == menu.exportAsXmlObjectListItem) {
 				level.writeToFile(new XmlObjectListLevelFile(
-						getSaveLevelPath(false, false)));
+						getExportLevelPath()));
 			}
 			
 			// MENU -> Export as XML object list and comma separated
 			if (event.getSource() == menu.exportAsXmlObjectListAndCommaSeparatedItem) {
-				String filename = getSaveLevelPath(false, false);
+				String filename = getExportLevelPath();
 				level.writeToFile(new XmlObjectListLevelFile(filename + "_objects.xml"));
 				level.writeToFile(new CommaSeparatedTileMapLevelFile(filename + ".tilemap"));
 			}

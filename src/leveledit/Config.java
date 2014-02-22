@@ -23,6 +23,7 @@ public class Config {
 	public static int numTiles = 200;
 	public static int mirrorTileVal = 100;
 	public String projectPath = ".";
+	public String exportPath = ".";
 
 	public Config(String path) {
 		System.out.println("Loading config file " + path);
@@ -40,7 +41,16 @@ public class Config {
 			projectPath = r.getWord();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("[projectPath] not configured, using default location.");
+			System.out.println("[project_path] not configured, using default location.");
+		}
+		
+		try {	
+			r.gotoPost("export_path", false);
+			r.nextLine();
+			exportPath = r.getWord();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("[export_path] not configured, using default location.");
 		}
 		
 		try {			
