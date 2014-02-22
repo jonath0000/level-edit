@@ -240,6 +240,13 @@ public class LevelEdit extends JFrame {
 				level.writeToFile(new XmlObjectListLevelFile(
 						getSaveLevelPath(false, false)));
 			}
+			
+			// MENU -> Export as XML object list and comma separated
+			if (event.getSource() == menu.exportAsXmlObjectListAndCommaSeparatedItem) {
+				String filename = getSaveLevelPath(false, false);
+				level.writeToFile(new XmlObjectListLevelFile(filename + "_objects.xml"));
+				level.writeToFile(new CommaSeparatedTileMapLevelFile(filename + ".tilemap"));
+			}
 
 			if (event.getSource() == menu.quitItem) {
 				System.exit(0);
