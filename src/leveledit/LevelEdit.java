@@ -132,9 +132,14 @@ public class LevelEdit extends JFrame {
 	/**
 	 * Handle all actions in main window.
 	 */
-	private class LevelEditHandler implements ActionListener {
+	private class LevelEditHandler implements ActionListener {			
 		@Override
 		public void actionPerformed(ActionEvent event) {
+			
+			if (event.getSource() == menu.undoItem) {
+				System.out.println("TODO: undo!");
+			}
+			
 			if (event.getSource() == menu.selectNextItem) {
 				level.getDummyObjects().selectNextDummy();
 			}
