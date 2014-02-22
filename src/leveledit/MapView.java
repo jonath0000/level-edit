@@ -61,6 +61,9 @@ public class MapView
     /** Want second click to draw the line. */
     private boolean lineToolFirstClick = true;
     
+    /** For saving undo state while press. */
+    private long lastMousePressStateSaveTime = 0;
+    
     /**
      * Constructor.
      * @param config
@@ -90,7 +93,7 @@ public class MapView
     // <editor-fold desc="Listeners">
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(MouseEvent e) {    	
         click(e.getX(), e.getY(), true);
         repaint();
     }
@@ -152,6 +155,7 @@ public class MapView
 
 		case NEW_DUMMY:
 			if (!repeated) {
+				level.isAboutToAlterState();
 				DummyObject d = dummyTypeSelector.createNewDummyObject();
 				level.getDummyObjects().newDummy(x + scrollX, y + scrollY, d);
 			}
@@ -162,13 +166,32 @@ public class MapView
 			break;
 
 		case DELETE_DUMMY:
+			level.isAboutToAlterState();
 			level.getDummyObjects().deleteDummy(x + scrollX, y + scrollY);
 			break;
 
 		case SET_TILE:
 		case DELETE_TILE:
+			if (!repeated || System.currentTimeMillis() - lastMousePressStateSaveTime > 500) {
+				lastMousePressStateSaveTime = System.currentTimeMillis();
+				level.isAboutToAlterState();
+			}
+			if (tileSelector.getSelectedIndex() != -1) {
+				setTileVal(x, y, tileSelector.getSelectedIndex());
+			}
+			break;
+			
 		case FILL_TILE:
 		case LINE_TILE:
+			if (!repeated || System.currentTimeMillis() - lastMousePressStateSaveTime > 500) {
+				lastMousePressStateSaveTime = System.currentTimeMillis();
+				level.isAboutToAlterState();
+			}
+			if (tileSelector.getSelectedIndex() != -1) {
+				setTileVal(x, y, tileSelector.getSelectedIndex());
+			}
+			break;
+			
 		case PICKUP_TILE:
 			if (tileSelector.getSelectedIndex() != -1) {
 				setTileVal(x, y, tileSelector.getSelectedIndex());
@@ -219,6 +242,7 @@ public class MapView
                     level.getTileMap().setTileVal(tX, tY, editlayer, tileIndex);
                 }
                 else {
+                	level.isAboutToAlterState();
                     level.getTileMap().drawLine(editlayer, lastEditedTileX,
                         lastEditedTileY, tX, tY, tileIndex);
                 }

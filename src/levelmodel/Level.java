@@ -5,31 +5,37 @@ package levelmodel;
  * 
  */
 public class Level {
-    private TileMap tileMap;
-    private DummyObjectList dummyObjects;
+	
+	private LevelStateHistory levelStateHistory;
 
     /**
      * Create level with some default values.
      */
     public Level() {
-        dummyObjects = new DummyObjectList();
-        tileMap = new TileMap(30, 30, 2);
+    	levelStateHistory = new LevelStateHistory(new LevelState(new TileMap(30, 30, 2), new DummyObjectList()));
     }            
+    
+    /**
+     * Using class should notify before state changes, i.e. dummys are changed or
+     * tilemap is changed. This will save the state for undo.
+     */
+    public void isAboutToAlterState() {    	
+    	levelStateHistory.newState();
+    }
+    
+    /**
+     * Move to previous state.
+     */
+    public void undo() {
+    	levelStateHistory.undo();
+    }
     
     /**
      * Get the dummy objects.
      * @return Dummy objects for this level.
      */
     public DummyObjectList getDummyObjects() {
-        return dummyObjects;
-    }
-
-    /**
-     * Set the dummy objects.
-     * @param dummyObjects Dummy objects.
-     */
-    public void setDummyObjects(DummyObjectList dummyObjects) {
-        this.dummyObjects = dummyObjects;
+        return levelStateHistory.getCurrentState().getDummyObjects();
     }
 
     /**
@@ -37,15 +43,7 @@ public class Level {
      * @return TileMap object.
      */
     public TileMap getTileMap() {
-        return tileMap;
-    }
-
-    /**
-     * Set tilemap object.
-     * @param tileMap TileMap object.
-     */
-    public void setTileMap(TileMap tileMap) {
-        this.tileMap = tileMap;
+        return levelStateHistory.getCurrentState().getTileMap();
     }
     
     /**
@@ -55,9 +53,10 @@ public class Level {
      */
     public void initFromFile(LevelFileInterface lf, DummyObject [] dummyTypes) {
         
-        dummyObjects.flushData();
-        tileMap = new TileMap(10, 10, 1);
-        lf.read(dummyObjects, dummyTypes, tileMap);
+    	levelStateHistory.newState(new LevelState(new TileMap(10, 10, 1), new DummyObjectList()));
+        lf.read(levelStateHistory.getCurrentState().getDummyObjects(), 
+        		dummyTypes, 
+        		levelStateHistory.getCurrentState().getTileMap());
     }
 
     /**
@@ -68,8 +67,7 @@ public class Level {
      */
     public void initBlankMap(int x, int y) {
 
-        dummyObjects.flushData();
-        tileMap = new TileMap(x, y, 2);
+    	levelStateHistory.newState(new LevelState(new TileMap(x, y, 2), new DummyObjectList()));
     }    
     
     /**
@@ -77,6 +75,6 @@ public class Level {
      * @param lf Specifies file format.
      */
     public void writeToFile(LevelFileInterface lf) {
-        lf.write(dummyObjects, tileMap);
+        lf.write(levelStateHistory.getCurrentState().getDummyObjects(), levelStateHistory.getCurrentState().getTileMap());
     }
 }

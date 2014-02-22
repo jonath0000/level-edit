@@ -19,6 +19,23 @@ public class DummyObjectList {
      */
     private DummyObject selectedDummy;
 
+    public DummyObjectList() {
+    	
+    }
+    
+    /**
+     * Create as copy.
+     * @param listToCopy Deep copy this object.
+     */
+    public DummyObjectList(DummyObjectList listToCopy) {
+    	if (listToCopy != null) {
+	    	for (int i = 0; i < listToCopy.size(); i++) {
+	    		DummyObject d = listToCopy.elementAt(i);
+	    		newDummy(new DummyObject(d)); // copy constructor
+	    	}
+    	}
+    }
+    
     /**
      * Get selected dummy.
      * @return

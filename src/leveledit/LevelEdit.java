@@ -137,7 +137,7 @@ public class LevelEdit extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 			
 			if (event.getSource() == menu.undoItem) {
-				System.out.println("TODO: undo!");
+				level.undo();
 			}
 			
 			if (event.getSource() == menu.selectNextItem) {
@@ -150,25 +150,34 @@ public class LevelEdit extends JFrame {
 
 			// move
 			if (event.getSource() == menu.moveUpItem) {
+				level.isAboutToAlterState();
 				level.getDummyObjects().moveSelectedDummy(0, -Config.tileSize);
 			} else if (event.getSource() == menu.moveDownItem) {
+				level.isAboutToAlterState();
 				level.getDummyObjects().moveSelectedDummy(0, Config.tileSize);
 			} else if (event.getSource() == menu.moveLeftItem) {
+				level.isAboutToAlterState();
 				level.getDummyObjects().moveSelectedDummy(-Config.tileSize, 0);
 			} else if (event.getSource() == menu.moveRightItem) {
+				level.isAboutToAlterState();
 				level.getDummyObjects().moveSelectedDummy(Config.tileSize, 0);
 			} // nudge
 			else if (event.getSource() == menu.nudgeUpItem) {
+				level.isAboutToAlterState();
 				level.getDummyObjects().moveSelectedDummy(0, -1);
 			} else if (event.getSource() == menu.nudgeDownItem) {
+				level.isAboutToAlterState();
 				level.getDummyObjects().moveSelectedDummy(0, 1);
 			} else if (event.getSource() == menu.nudgeLeftItem) {
+				level.isAboutToAlterState();
 				level.getDummyObjects().moveSelectedDummy(-1, 0);
 			} else if (event.getSource() == menu.nudgeRightItem) {
+				level.isAboutToAlterState();
 				level.getDummyObjects().moveSelectedDummy(1, 0);
 			}
 
 			if (event.getSource() == menu.deleteDummyItem) {
+				level.isAboutToAlterState();
 				level.getDummyObjects().deleteSelectedDummy();
 			}
 
@@ -177,6 +186,7 @@ public class LevelEdit extends JFrame {
 						+ level.getDummyObjects().getSelected().name, 
 						level.getDummyObjects().getSelected().additionalData);
 				if (newCustomData != null) {
+					level.isAboutToAlterState();
 					level.getDummyObjects().getSelected().additionalData = newCustomData;
 				}
 			}
@@ -203,9 +213,11 @@ public class LevelEdit extends JFrame {
 				mapView.selectPrevLayer();
 			}
 			if (event.getSource() == menu.addLayerItem) {
+				level.isAboutToAlterState();
 				level.getTileMap().addMap();
 			}
 			if (event.getSource() == menu.deleteLayerItem) {
+				level.isAboutToAlterState();
 				level.getTileMap().deleteMap(mapView.getSelectedLayer());
 			}
 
