@@ -17,7 +17,7 @@ public class DummyObjectList {
     /**
      * Current selection.
      */
-    private DummyObject selectedDummy;
+    private DummyObject selectedDummy = null;
 
     public DummyObjectList() {
     	
@@ -25,15 +25,23 @@ public class DummyObjectList {
     
     /**
      * Create as copy.
-     * @param listToCopy Deep copy this object.
+     * @param oldDummyObjectList Deep copy this object.
      */
-    public DummyObjectList(DummyObjectList listToCopy) {
-    	if (listToCopy != null) {
-	    	for (int i = 0; i < listToCopy.size(); i++) {
-	    		DummyObject d = listToCopy.elementAt(i);
-	    		newDummy(new DummyObject(d)); // copy constructor
+    public DummyObjectList(DummyObjectList oldDummyObjectList) {
+    	if (oldDummyObjectList != null) {
+    		
+    		DummyObject oldSelectedDummy = oldDummyObjectList.getSelected();
+    		
+	    	for (int i = 0; i < oldDummyObjectList.size(); i++) {
+	    		DummyObject oldDummy = oldDummyObjectList.elementAt(i);
+	    		DummyObject newDummy = new DummyObject(oldDummy);
+	    		dummyObjects.add(newDummy); // copy constructor
+	    		
+	    		if (oldDummy.equals(oldSelectedDummy)) {
+	    			selectedDummy = newDummy;
+	    		}
 	    	}
-    	}
+    	}    	
     }
     
     /**

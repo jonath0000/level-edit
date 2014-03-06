@@ -173,16 +173,16 @@ public class LevelEdit extends JFrame {
 			// move
 			if (event.getSource() == menu.moveUpItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(0, -Config.sourceImageTileSize);
+				level.getDummyObjects().moveSelectedDummy(0, -Config.representationTileSize);
 			} else if (event.getSource() == menu.moveDownItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(0, Config.sourceImageTileSize);
+				level.getDummyObjects().moveSelectedDummy(0, Config.representationTileSize);
 			} else if (event.getSource() == menu.moveLeftItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(-Config.sourceImageTileSize, 0);
+				level.getDummyObjects().moveSelectedDummy(-Config.representationTileSize, 0);
 			} else if (event.getSource() == menu.moveRightItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(Config.sourceImageTileSize, 0);
+				level.getDummyObjects().moveSelectedDummy(Config.representationTileSize, 0);
 			} // nudge
 			else if (event.getSource() == menu.nudgeUpItem) {
 				level.isAboutToAlterState();
@@ -215,16 +215,16 @@ public class LevelEdit extends JFrame {
 
 			// scroll
 			if (event.getSource() == menu.scrollUpItem) {
-				mapView.scrollY(-Config.sourceImageTileSize);
+				mapView.scrollY(-Config.representationTileSize);
 			}
 			if (event.getSource() == menu.scrollDownItem) {
-				mapView.scrollY(Config.sourceImageTileSize);
+				mapView.scrollY(Config.representationTileSize);
 			}
 			if (event.getSource() == menu.scrollLeftItem) {
-				mapView.scrollX(-Config.sourceImageTileSize);
+				mapView.scrollX(-Config.representationTileSize);
 			}
 			if (event.getSource() == menu.scrollRightItem) {
-				mapView.scrollX(Config.sourceImageTileSize);
+				mapView.scrollX(Config.representationTileSize);
 			}
 
 			// tile layer
