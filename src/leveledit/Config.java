@@ -26,7 +26,7 @@ public class Config {
 	public String projectPath = ".";
 	public String exportPath = ".";
 
-	public Config(String path) {
+	public Config(String path, String tileMapImageOverride) {
 		System.out.println("Loading config file " + path);
 		ResFileReader r;
 		try {			
@@ -59,6 +59,9 @@ public class Config {
 			r.gotoPost("tiles", false);
 			r.nextLine();
 			String strTiles = r.getWord();
+			if (tileMapImageOverride != null && tileMapImageOverride.length() > 0) {
+				strTiles = tileMapImageOverride;
+			}
 			tiles = new ImageIcon(strTiles);
 			if (tiles.getImageLoadStatus() != MediaTracker.COMPLETE)
 				throw new Exception("Couldn't load tile image!");

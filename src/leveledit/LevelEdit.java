@@ -365,11 +365,12 @@ public class LevelEdit extends JFrame {
 	 * Setup app.
 	 * 
 	 * @param configFile Config file path.
+	 * @param tileMapImage Override of image in config.
 	 */
-	public LevelEdit(String configFile) {
+	public LevelEdit(String configFile, String tileMapImage) {
 		super("LevelEdit");
 
-		config = new Config(configFile);				
+		config = new Config(configFile, tileMapImage);	
 
 		Container container = getContentPane();
 		createGui(container);
@@ -392,19 +393,30 @@ public class LevelEdit extends JFrame {
 	/**
 	 * App main entry.
 	 * 
-	 * @param args arg 0 path to a config file.
+	 * Args: 
+	 *   arg0: path to a config file.
+	 *   arg1: override of config file tile image.
+	 * 
+	 * @param args arg 0 
 	 */
 	public static void main(String[] args) {
 		String configFile;
+		String tileMapImage = null;
+		
 		if (args.length < 1) {
 			System.out.println("No config specified, using default.");
 			configFile = "Example_res/example.config";
 		} else {
 			configFile = args[0];
 		}
+		
+		if (args.length >= 2) {
+			System.out.println("Overriding config file tilemap image with " + args[1]);
+			tileMapImage = args[1];
+		}
 
 		try {
-			LevelEdit app = new LevelEdit(configFile);
+			LevelEdit app = new LevelEdit(configFile, tileMapImage);
 			app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		} catch (Exception e) {
