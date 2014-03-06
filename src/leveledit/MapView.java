@@ -212,8 +212,8 @@ public class MapView
     public void setTileVal(int x, int y, int tileIndex) {
 
         // to tile index
-        int tX = (x + getScrollX()) / Config.tileSize;
-        int tY = (y + getScrollY()) / Config.tileSize;
+        int tX = (x + getScrollX()) / Config.representationTileSize;
+        int tY = (y + getScrollY()) / Config.representationTileSize;
 
         // tiles are 1 indexed.
         tileIndex++;
@@ -343,29 +343,29 @@ public class MapView
                     if (map[j][i] <= Config.mirrorTileVal) {
                         g.drawImage(config.tiles.getImage(),
                                 //dest
-                                i * Config.tileSize - x,
-                                j * Config.tileSize - y,
-                                (i + 1) * Config.tileSize - x,
-                                (j + 1) * Config.tileSize - y,
+                                i * Config.representationTileSize - x,
+                                j * Config.representationTileSize - y,
+                                (i + 1) * Config.representationTileSize - x,
+                                (j + 1) * Config.representationTileSize - y,
                                 // src
-                                (tile) * Config.tileSize,
-                                row * Config.tileSize,
-                                (tile + 1) * Config.tileSize,
-                                (0 + row + 1) * Config.tileSize,
+                                (tile) * Config.sourceImageTileSize,
+                                row * Config.sourceImageTileSize,
+                                (tile + 1) * Config.sourceImageTileSize,
+                                (0 + row + 1) * Config.sourceImageTileSize,
                                 this);
                     } // mirrored tiles
                     else {
                         g.drawImage(config.tiles.getImage(),
                                 //dest
-                                i * Config.tileSize - x, 
-                                j * Config.tileSize - y,
-                                (i + 1) * Config.tileSize - x, 
-                                (j + 1) * Config.tileSize - y,
+                                i * Config.representationTileSize - x, 
+                                j * Config.representationTileSize - y,
+                                (i + 1) * Config.representationTileSize - x, 
+                                (j + 1) * Config.representationTileSize - y,
                                 // src
-                                (map[j][i] - Config.mirrorTileVal + 1) * Config.tileSize, 
+                                (map[j][i] - Config.mirrorTileVal + 1) * Config.sourceImageTileSize, 
                                 0,
-                                (map[j][i] - Config.mirrorTileVal) * Config.tileSize, 
-                                Config.tileSize,
+                                (map[j][i] - Config.mirrorTileVal) * Config.sourceImageTileSize, 
+                                Config.sourceImageTileSize,
                                 this);
                     }
                 }
@@ -422,12 +422,12 @@ public class MapView
                 0 - x,
                 this.getHeight() - y);
         g.drawLine(0,
-                level.getTileMap().getHeight() * Config.tileSize - y,
+                level.getTileMap().getHeight() * Config.representationTileSize - y,
                 this.getWidth(),
-                level.getTileMap().getHeight() * Config.tileSize - y);
-        g.drawLine(level.getTileMap().getWidth() * Config.tileSize - x,
+                level.getTileMap().getHeight() * Config.representationTileSize - y);
+        g.drawLine(level.getTileMap().getWidth() * Config.representationTileSize - x,
                 0 - y,
-                level.getTileMap().getWidth() * Config.tileSize - x,
+                level.getTileMap().getWidth() * Config.representationTileSize - x,
                 this.getHeight() - y);
 
         // show getSelected dummy

@@ -22,7 +22,7 @@ public class TileSelector extends JScrollPane {
 		this.setViewportView(tileList);
 	}
 
-	public void setTiles(ImageIcon tilePic, int nTiles, int w, int h) {
+	public void setTiles(ImageIcon tilePic, int nTiles, int sourceWidth, int sourceHeight, int representationWidth, int representationHeight) {
 
 		Image tiles = tilePic.getImage();
 		ImageIcon listitems[] = new ImageIcon[nTiles];
@@ -32,17 +32,18 @@ public class TileSelector extends JScrollPane {
 			int row = i / Config.tilesPerRow;
 			int tile = i % Config.tilesPerRow;
 
-			BufferedImage newIm = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);
+			BufferedImage newIm = new BufferedImage(representationWidth, representationHeight, BufferedImage.TYPE_3BYTE_BGR);
 			Graphics g = newIm.getGraphics();
-			g.drawImage(tiles, 0, 0, w, h, tile * w, row * h, (tile + 1) * w, (row + 1) * h, this);
+			g.drawImage(tiles, 0, 0, representationWidth, representationHeight, tile * sourceWidth, row * sourceHeight, (tile + 1)
+					* sourceWidth, (row + 1) * sourceHeight, this);
 			ImageIcon icon = new ImageIcon(newIm);
 			listitems[i] = icon;
 		}
-		
-		tileList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+
+		tileList.setLayoutOrientation(JList.VERTICAL_WRAP);
 		tileList.setVisibleRowCount(8);
-		setPreferredSize(new Dimension(w * 8, h * 8));
-		tileList.setListData(listitems);	
+		setPreferredSize(new Dimension(representationWidth * 8, representationHeight * 8));
+		tileList.setListData(listitems);
 	}
 
 	public int getSelectedIndex() {

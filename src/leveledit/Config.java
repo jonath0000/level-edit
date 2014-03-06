@@ -18,7 +18,8 @@ public class Config {
 	public Color bgCol;
 	public String typeNames[];
 	public DummyObject typeData[];
-	public static int tileSize = 16;
+	public static int sourceImageTileSize = 16;
+	public static int representationTileSize = 32;
 	public static int tilesPerRow = 8;
 	public static int numTiles = 200;
 	public static int mirrorTileVal = 100;
@@ -61,7 +62,7 @@ public class Config {
 			tiles = new ImageIcon(strTiles);
 			if (tiles.getImageLoadStatus() != MediaTracker.COMPLETE)
 				throw new Exception("Couldn't load tile image!");
-			tileSize = r.getNextWordAsInt();
+			sourceImageTileSize = r.getNextWordAsInt();
 			numTiles = r.getNextWordAsInt();
 			tilesPerRow = r.getNextWordAsInt();
 

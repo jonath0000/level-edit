@@ -173,16 +173,16 @@ public class LevelEdit extends JFrame {
 			// move
 			if (event.getSource() == menu.moveUpItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(0, -Config.tileSize);
+				level.getDummyObjects().moveSelectedDummy(0, -Config.sourceImageTileSize);
 			} else if (event.getSource() == menu.moveDownItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(0, Config.tileSize);
+				level.getDummyObjects().moveSelectedDummy(0, Config.sourceImageTileSize);
 			} else if (event.getSource() == menu.moveLeftItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(-Config.tileSize, 0);
+				level.getDummyObjects().moveSelectedDummy(-Config.sourceImageTileSize, 0);
 			} else if (event.getSource() == menu.moveRightItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(Config.tileSize, 0);
+				level.getDummyObjects().moveSelectedDummy(Config.sourceImageTileSize, 0);
 			} // nudge
 			else if (event.getSource() == menu.nudgeUpItem) {
 				level.isAboutToAlterState();
@@ -215,16 +215,16 @@ public class LevelEdit extends JFrame {
 
 			// scroll
 			if (event.getSource() == menu.scrollUpItem) {
-				mapView.scrollY(-Config.tileSize);
+				mapView.scrollY(-Config.sourceImageTileSize);
 			}
 			if (event.getSource() == menu.scrollDownItem) {
-				mapView.scrollY(Config.tileSize);
+				mapView.scrollY(Config.sourceImageTileSize);
 			}
 			if (event.getSource() == menu.scrollLeftItem) {
-				mapView.scrollX(-Config.tileSize);
+				mapView.scrollX(-Config.sourceImageTileSize);
 			}
 			if (event.getSource() == menu.scrollRightItem) {
-				mapView.scrollX(Config.tileSize);
+				mapView.scrollX(Config.sourceImageTileSize);
 			}
 
 			// tile layer
@@ -374,8 +374,8 @@ public class LevelEdit extends JFrame {
 		Container container = getContentPane();
 		createGui(container);
 
-		tileSelector.setTiles(config.tiles, Config.numTiles, Config.tileSize,
-				Config.tileSize);
+		tileSelector.setTiles(config.tiles, Config.numTiles, Config.sourceImageTileSize,
+				Config.sourceImageTileSize, Config.representationTileSize, Config.representationTileSize);
 
 		dummyTypeSelector.setDummyList(config.typeNames, config.typeData);
 
