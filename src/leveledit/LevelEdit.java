@@ -408,7 +408,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 				String path = getOpenLevelPath();
 				if (path != null) {
 					level.initFromFile(new InternalLevelFile(path),
-							(DummyObject[])config.typeData.toArray());
+							config.typeData.toArray(new DummyObject[0]));
 				}
 			}
 
@@ -417,7 +417,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 				String path = getOpenLevelPath();
 				if (path != null) {
 					level.initFromFile(new MappyLevelFile(path),
-							(DummyObject[])config.typeData.toArray());
+							(DummyObject[])config.typeData.toArray(new DummyObject[0]));
 				}
 			}
 			
