@@ -3,6 +3,7 @@ package leveledit;
 import levelmodel.DummyObject;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -317,7 +318,7 @@ public class MapView
     /**
      * Draw a tile map to screen
      * @param g Graphics object
-     * @param map A int[][] array of tile values.
+     * @param map array of tile values.
      */
     private void paintMap(Graphics g, int[][] map) {
         
@@ -328,20 +329,27 @@ public class MapView
         int w = map[0].length;
         int h = map.length;
 
+        int tileX = x / Config.representationTileSize;
+        int tileY = y / Config.representationTileSize;
+        int tileWidth = this.getWidth() / Config.representationTileSize;
+        int tileHeight =  this.getHeight() / Config.representationTileSize;
+        
+        Image tileImage = config.tiles.getImage();
+        
         // draw tiles
-        for (int i = 0; i < w; i++) {
-            for (int j = 0; j < h; j++) {
-                if (map[j][i] != 0) {
+        for (int i = tileX; i < tileX + tileWidth; i++) {
+            for (int j = tileY; j < tileY + tileHeight; j++) {
+                if (i >= 0 && j >= 0 && i < w && j < h && map[j][i] != 0) {
                     int tile = map[j][i];
 
                     // get row
                     tile--; // translate tile index to image index
                     int row = tile / Config.tilesPerRow;
                     tile = tile % Config.tilesPerRow;
-
+                  
                     // non-mirrored
                     if (map[j][i] <= Config.mirrorTileVal) {
-                        g.drawImage(config.tiles.getImage(),
+                        g.drawImage(tileImage,
                                 //dest
                                 i * Config.representationTileSize - x,
                                 j * Config.representationTileSize - y,
@@ -355,7 +363,7 @@ public class MapView
                                 this);
                     } // mirrored tiles
                     else {
-                        g.drawImage(config.tiles.getImage(),
+                        g.drawImage(tileImage,
                                 //dest
                                 i * Config.representationTileSize - x, 
                                 j * Config.representationTileSize - y,
