@@ -112,8 +112,8 @@ public class Menu extends JMenuBar {
 		scrollRightItem = addMenuItem(levelMenu, handler, "Scroll right", KeyEvent.VK_D, 0);
 		scrollUpItem = addMenuItem(levelMenu, handler, "Scroll up", KeyEvent.VK_W, 0);
 		scrollDownItem = addMenuItem(levelMenu, handler, "Scroll down", KeyEvent.VK_S, 0);
-		zoomInItem = addMenuItem(levelMenu, handler, "Zoom in", KeyEvent.VK_PLUS, 0);
-		zoomOutItem = addMenuItem(levelMenu, handler, "Zoom out", KeyEvent.VK_MINUS, 0);
+		zoomInItem = addMenuItem(levelMenu, handler, "Zoom in", KeyEvent.VK_PERIOD, 0);
+		zoomOutItem = addMenuItem(levelMenu, handler, "Zoom out", KeyEvent.VK_COMMA, 0);
 		
 		addLayerItem = addMenuItem(tileMenu, handler, "Add layer");
 		deleteLayerItem = addMenuItem(tileMenu, handler, "Delete layer");

@@ -39,6 +39,7 @@ public class LevelEdit extends JFrame {
 			+ "this.                                    \n"
 			+ "                                         \n"
 			+ "A,W,S,D - move camera                    \n"
+			+ ". ,     - zoom camera                    \n"
 			+ "                                         \n"
 			+ "Dummy objects are game objects such as   \n"
 			+ "characters, pickups, trigger areas etc.  \n"
@@ -232,10 +233,10 @@ public class LevelEdit extends JFrame {
 			}
 			
 			if (event.getSource() == menu.zoomInItem) {
-				System.out.println("TODO");
+				mapView.zoom(2.0f);
 			}
 			if (event.getSource() == menu.zoomOutItem) {
-				System.out.println("TODO");
+				mapView.zoom(0.5f);
 			}
 
 			// tile layer

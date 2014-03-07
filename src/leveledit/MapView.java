@@ -65,6 +65,9 @@ public class MapView
     /** For saving undo state while press. */
     private long lastMousePressStateSaveTime = 0;
     
+    /** Scale of view */
+    private float scale = 1.0f;
+    
     /**
      * Constructor.
      * @param config
@@ -95,7 +98,7 @@ public class MapView
 
     @Override
     public void mousePressed(MouseEvent e) {    	
-        click(e.getX(), e.getY(), true);
+        click(screenToModelCoord(e.getX()), screenToModelCoord(e.getY()), true);
         repaint();
     }
 
@@ -113,7 +116,7 @@ public class MapView
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        click(e.getX(), e.getY(), false);
+        click(screenToModelCoord(e.getX()), screenToModelCoord(e.getY()), false);
         repaint();
     }
 
@@ -130,7 +133,7 @@ public class MapView
         // called during motion with buttons down
         if (toolSelector.getTool() == ToolSelector.Tool.SET_TILE
                 || toolSelector.getTool() == ToolSelector.Tool.DELETE_TILE) {
-            click(e.getX(), e.getY(), true);
+            click(screenToModelCoord(e.getX()), screenToModelCoord(e.getY()), true);
             repaint();
             e.consume();
         }
@@ -144,9 +147,9 @@ public class MapView
 	 * Map click to tool action.
 	 * 
 	 * @param x
-	 *            Mouse pos x
+	 *            Mouse pos x (model coords)
 	 * @param y
-	 *            Mouse pos y
+	 *            Mouse pos y (model coords)
 	 * @param repeated
 	 *            If the click event is from a "press down".
 	 */
@@ -206,8 +209,8 @@ public class MapView
     /**
      * Sets tile at mouse click, decides how to behave dependent on selected 
      * tool.
-     * @param x Mouse x
-     * @param y Mouse y
+     * @param x Mouse x (model coords)
+     * @param y Mouse y (model coords)
      * @param tileIndex Tile index number
      */
     public void setTileVal(int x, int y, int tileIndex) {
@@ -248,6 +251,14 @@ public class MapView
                         lastEditedTileY, tX, tY, tileIndex);
                 }
                 break;
+		case DELETE_DUMMY:
+			break;
+		case NEW_DUMMY:
+			break;
+		case SELECT_DUMMY:
+			break;
+		default:
+			break;
         }
 
         lastEditedTileX = tX;
@@ -301,7 +312,7 @@ public class MapView
      * @param length Pixels to scroll.
      */
     public void scrollX(int length) {
-        scrollX += length;
+        scrollX += length/scale;
     }
     
     /**
@@ -309,11 +320,29 @@ public class MapView
      * @param length Pixels to scroll.
      */
     public void scrollY(int length) {
-        scrollY += length;
+        scrollY += length/scale;
     }
 
+    
+    /**
+     * Zoom view.
+     * @param scaleFactor Positive will zoom in, negative out.
+     */
+    public void zoom(float scaleFactor) {
+    	scale *= scaleFactor;
+    	System.out.println("Change zoom to " + scale);
+    }
+    
+    
+    private int screenToModelCoord(int screenCoord) {
+    	return (int)(screenCoord / scale);
+    }
 
-    //<editor-fold desc="Paint methods.">
+    
+    private int modelToScreenCoord(int modelCoord) {
+    	return (int)(modelCoord * scale);
+    }
+
     
     /**
      * Draw a tile map to screen
@@ -322,57 +351,56 @@ public class MapView
      */
     private void paintMap(Graphics g, int[][] map) {
         
-        int x = getScrollX();
-        int y = getScrollY();
+        int scrollXModel = getScrollX();
+        int scrollYModel = getScrollY();
+        
+        int tileMapWidth = map[0].length;
+        int tileMapHeight = map.length;
 
-        // get tiles in screen
-        int w = map[0].length;
-        int h = map.length;
-
-        int tileX = x / Config.representationTileSize;
-        int tileY = y / Config.representationTileSize;
-        int tileWidth = this.getWidth() / Config.representationTileSize;
-        int tileHeight =  this.getHeight() / Config.representationTileSize;
+        int tileScrollX = scrollXModel / Config.representationTileSize;
+        int tileScrollY = scrollYModel / Config.representationTileSize;
+        int tileViewWidth = screenToModelCoord(this.getWidth()) / Config.representationTileSize;
+        int tileViewHeight = screenToModelCoord(this.getHeight()) / Config.representationTileSize;
         
         Image tileImage = config.tiles;
         
         // draw tiles
-        for (int i = tileX; i < tileX + tileWidth; i++) {
-            for (int j = tileY; j < tileY + tileHeight; j++) {
-                if (i >= 0 && j >= 0 && i < w && j < h && map[j][i] != 0) {
-                    int tile = map[j][i];
+        for (int tx = tileScrollX; tx < tileScrollX + tileViewWidth; tx++) {
+            for (int ty = tileScrollY; ty < tileScrollY + tileViewHeight; ty++) {
+                if (tx >= 0 && ty >= 0 && tx < tileMapWidth && ty < tileMapHeight && map[ty][tx] != 0) {
+                    int tileValue = map[ty][tx];
 
                     // get row
-                    tile--; // translate tile index to image index
-                    int row = tile / Config.tilesPerRow;
-                    tile = tile % Config.tilesPerRow;
+                    tileValue--; // translate tile index to image index
+                    int row = tileValue / Config.tilesPerRow;
+                    tileValue = tileValue % Config.tilesPerRow;
                   
                     // non-mirrored
-                    if (map[j][i] <= Config.mirrorTileVal) {
+                    if (map[ty][tx] <= Config.mirrorTileVal) {
                         g.drawImage(tileImage,
                                 //dest
-                                i * Config.representationTileSize - x,
-                                j * Config.representationTileSize - y,
-                                (i + 1) * Config.representationTileSize - x,
-                                (j + 1) * Config.representationTileSize - y,
+                                modelToScreenCoord(tx * Config.representationTileSize - scrollXModel),
+                                modelToScreenCoord(ty * Config.representationTileSize - scrollYModel),
+                                modelToScreenCoord((tx + 1) * Config.representationTileSize - scrollXModel),
+                                modelToScreenCoord((ty + 1) * Config.representationTileSize - scrollYModel),
                                 // src
-                                (tile) * Config.sourceImageTileSize,
+                                (tileValue) * Config.sourceImageTileSize,
                                 row * Config.sourceImageTileSize,
-                                (tile + 1) * Config.sourceImageTileSize,
+                                (tileValue + 1) * Config.sourceImageTileSize,
                                 (0 + row + 1) * Config.sourceImageTileSize,
                                 this);
                     } // mirrored tiles
                     else {
                         g.drawImage(tileImage,
                                 //dest
-                                i * Config.representationTileSize - x, 
-                                j * Config.representationTileSize - y,
-                                (i + 1) * Config.representationTileSize - x, 
-                                (j + 1) * Config.representationTileSize - y,
+                        		modelToScreenCoord(tx * Config.representationTileSize - scrollXModel), 
+                                modelToScreenCoord(ty * Config.representationTileSize - scrollYModel),
+                                modelToScreenCoord((tx + 1) * Config.representationTileSize - scrollXModel), 
+                                modelToScreenCoord((ty + 1) * Config.representationTileSize - scrollYModel),
                                 // src
-                                (map[j][i] - Config.mirrorTileVal + 1) * Config.sourceImageTileSize, 
+                                (map[ty][tx] - Config.mirrorTileVal + 1) * Config.sourceImageTileSize, 
                                 0,
-                                (map[j][i] - Config.mirrorTileVal) * Config.sourceImageTileSize, 
+                                (map[ty][tx] - Config.mirrorTileVal) * Config.sourceImageTileSize, 
                                 Config.sourceImageTileSize,
                                 this);
                     }
@@ -390,14 +418,14 @@ public class MapView
 
         super.paint(g);
 
-        int x = getScrollX();
-        int y = getScrollY();
-
         // draw tiles
         for (int i = 0; i <level.getTileMap().getNumLayers(); i++) {
             paintMap(g, level.getTileMap().getMap(i));
         }
 
+        int scrollXModel = getScrollX();
+        int scrollYModel = getScrollY();
+        
         // draw the dummy objects
         DummyObject p;
         for (int i = 0; i < level.getDummyObjects().size(); i++) {
@@ -407,7 +435,10 @@ public class MapView
             if (p.pic) {
                 g.drawImage(config.dummyPics.getImage(),
                         //dest
-                        p.x - x, p.y - y, p.x + p.w - x, p.y + p.h - y,
+                		modelToScreenCoord(p.x - scrollXModel), 
+                        modelToScreenCoord(p.y - scrollYModel), 
+                        modelToScreenCoord(p.x + p.w - scrollXModel), 
+                        modelToScreenCoord(p.y + p.h - scrollYModel),
                         // src
                         p.picX, p.picY, p.picW, p.picH,
                         this);
@@ -415,28 +446,29 @@ public class MapView
             // no pic, draw a square
             } else {
                 g.setColor(new Color(0xFF0000));
-                g.drawRect(p.x - x, p.y - y, p.w, p.h);
+                g.drawRect(modelToScreenCoord(p.x - scrollXModel), modelToScreenCoord(p.y - scrollYModel), 
+                		modelToScreenCoord(p.w), modelToScreenCoord(p.h));
             }
         }
 
         // some border lines
         g.setColor(new Color(0x555555));
         g.drawLine(0,
-                -y,
-                this.getWidth(),
-                -y);
-        g.drawLine(0 - x,
-                0 - y,
-                0 - x,
-                this.getHeight() - y);
+        		modelToScreenCoord(-scrollYModel),
+        		this.getWidth(),
+        		modelToScreenCoord(-scrollYModel));
+        g.drawLine(modelToScreenCoord(0 - scrollXModel),
+        		modelToScreenCoord(0 - scrollYModel),
+        		modelToScreenCoord(0 - scrollXModel),
+        		this.getHeight() - modelToScreenCoord(scrollYModel));
         g.drawLine(0,
-                level.getTileMap().getHeight() * Config.representationTileSize - y,
+        		modelToScreenCoord(level.getTileMap().getHeight() * Config.representationTileSize - scrollYModel),
                 this.getWidth(),
-                level.getTileMap().getHeight() * Config.representationTileSize - y);
-        g.drawLine(level.getTileMap().getWidth() * Config.representationTileSize - x,
-                0 - y,
-                level.getTileMap().getWidth() * Config.representationTileSize - x,
-                this.getHeight() - y);
+                modelToScreenCoord(level.getTileMap().getHeight() * Config.representationTileSize - scrollYModel));
+        g.drawLine(modelToScreenCoord(level.getTileMap().getWidth() * Config.representationTileSize - scrollXModel),
+        		modelToScreenCoord(0 - scrollYModel),
+        		modelToScreenCoord(level.getTileMap().getWidth() * Config.representationTileSize - scrollXModel),
+                this.getHeight() - modelToScreenCoord(scrollYModel));
 
         // show getSelected dummy
         DummyObject d = level.getDummyObjects().getSelected();
@@ -444,15 +476,15 @@ public class MapView
         if (d != null) {
             if (markerSelectedDummy != null) {
                 g.drawImage(markerSelectedDummy.getImage(),
-                        (d.x + 
-                        d.w / 2 
-                        - (markerSelectedDummy.getImage()).getWidth(this) / 2) 
-                        - x,
-                        d.y - 30 - y,
+                        (modelToScreenCoord(d.x + 
+                        d.w / 2  
+                        - scrollXModel)
+                        - (markerSelectedDummy.getImage()).getWidth(this) / 2),
+                        modelToScreenCoord(d.y - scrollYModel) - (markerSelectedDummy.getImage()).getHeight(this),
                         this);
             } else {
-                g.drawRect(d.x - x, 
-                        d.y - 4 - y, 
+                g.drawRect(d.x - scrollXModel, 
+                        d.y - 4 - scrollYModel, 
                         d.w, 
                         4);
             }
@@ -465,6 +497,5 @@ public class MapView
                 - g.getFontMetrics().getHeight());
         
     }
-    //</editor-fold>
    
 }
