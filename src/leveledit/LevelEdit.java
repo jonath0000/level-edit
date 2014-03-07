@@ -58,10 +58,92 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 	private DummyTypeSelector dummyTypeSelector;
 	private Menu menu;
 	private Config config;
+	private String configFilePath;
+	private String tileMapImagePath;
 	private MapView mapView;
-	private Level level = new Level();
+	private Level level;
 	private File currentFile = null;
 
+	
+	/**
+	 * Setup app.
+	 * 
+	 * @param configFilePath Config file path.
+	 * @param tileMapImagePath Override of image in config.
+	 */
+	public LevelEdit(String configFilePath, String tileMapImagePath) {
+		super("LevelEdit");
+		this.configFilePath = configFilePath;
+		this.tileMapImagePath = tileMapImagePath;
+		
+		level = new Level();
+		
+		config = new Config(configFilePath, tileMapImagePath);	
+		toolSelector = new ToolSelector();
+		tileSelector = new TileSelector();
+		dummyTypeSelector = new DummyTypeSelector();
+		mapView = new MapView(this);
+		
+		Container container = getContentPane();
+		createGui(container);
+
+		loadDummyAndTileDefinitions();
+
+		mapView.revalidate();
+		mapView.repaint();
+	}
+	
+	/**
+	 * Will reload the definitions for dummys and tile image.
+	 */
+	private void loadDummyAndTileDefinitions() {
+		config = new Config(configFilePath, tileMapImagePath);	
+		tileSelector.setTiles(config.tiles, config.numTiles, config.tilesPerRow, config.sourceImageTileSize,
+				config.sourceImageTileSize, getHeight()/40, getHeight()/40);
+		dummyTypeSelector.setDummyList(config.typeNames, config.typeData);
+	}
+	
+	/**
+	 * Create the main window GUI.
+	 * 
+	 * @param container Container object.
+	 */
+	private void createGui(Container container) {
+		LevelEditHandler handler = new LevelEditHandler();
+
+		menu = new Menu(handler);
+		setJMenuBar(menu);
+
+		JPanel leftPanel = new JPanel();
+		leftPanel.setLayout(new GridLayout(2, 1));
+		JPanel bottomPanel = new JPanel();
+		
+		leftPanel.add(toolSelector);
+
+		JToolBar dummyToolBar = new JToolBar();
+		dummyToolBar.add(dummyTypeSelector);
+		leftPanel.add(dummyToolBar);
+		
+		JToolBar tileToolBar = new JToolBar();
+		tileToolBar.add(tileSelector);
+		bottomPanel.add(tileToolBar);
+
+		container.add(leftPanel, BorderLayout.WEST);
+		container.add(bottomPanel, BorderLayout.SOUTH);
+
+		mapView.addMouseListener(mapView);
+		mapView.addMouseMotionListener(mapView);
+		container.add(mapView, BorderLayout.CENTER);
+		
+		// init main window
+		setSize(Toolkit.getDefaultToolkit().getScreenSize().width - 40, Toolkit
+				.getDefaultToolkit().getScreenSize().height - 60);
+		setLocation(20, 20);
+		setVisible(true);
+		setResizable(true);
+	}
+	
+	
 	/**
 	 * Create new blank level. Ask for size.
 	 */
@@ -338,74 +420,6 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 
 			mapView.repaint();
 		}
-	}
-
-	/**
-	 * Create the main window GUI.
-	 * 
-	 * @param container Container object.
-	 */
-	private void createGui(Container container) {
-		LevelEditHandler handler = new LevelEditHandler();
-
-		menu = new Menu(handler);
-		setJMenuBar(menu);
-
-		JPanel leftPanel = new JPanel();
-		leftPanel.setLayout(new GridLayout(2, 1));
-		JPanel bottomPanel = new JPanel();
-		
-		toolSelector = new ToolSelector();
-		leftPanel.add(toolSelector);
-
-		JToolBar dummyToolBar = new JToolBar();
-		dummyTypeSelector = new DummyTypeSelector();
-		dummyToolBar.add(dummyTypeSelector);
-		leftPanel.add(dummyToolBar);
-		
-		JToolBar tileToolBar = new JToolBar();
-		tileSelector = new TileSelector();
-		tileToolBar.add(tileSelector);
-		bottomPanel.add(tileToolBar);
-
-		container.add(leftPanel, BorderLayout.WEST);
-		container.add(bottomPanel, BorderLayout.SOUTH);
-
-		// init main window
-		setSize(Toolkit.getDefaultToolkit().getScreenSize().width - 40, Toolkit
-				.getDefaultToolkit().getScreenSize().height - 60);
-		setLocation(20, 20);
-		setVisible(true);
-		setResizable(true);
-
-	}
-
-	/**
-	 * Setup app.
-	 * 
-	 * @param configFile Config file path.
-	 * @param tileMapImage Override of image in config.
-	 */
-	public LevelEdit(String configFile, String tileMapImage) {
-		super("LevelEdit");
-
-		config = new Config(configFile, tileMapImage);	
-
-		Container container = getContentPane();
-		createGui(container);
-
-		tileSelector.setTiles(config.tiles, config.numTiles, config.tilesPerRow, config.sourceImageTileSize,
-				config.sourceImageTileSize, getHeight()/40, getHeight()/40);
-		
-		dummyTypeSelector.setDummyList(config.typeNames, config.typeData);
-
-		// mapview
-		mapView = new MapView(this);
-		mapView.addMouseListener(mapView);
-		mapView.addMouseMotionListener(mapView);
-		container.add(mapView, BorderLayout.CENTER);
-		mapView.revalidate();
-		mapView.repaint();
 	}
 
 	/**
