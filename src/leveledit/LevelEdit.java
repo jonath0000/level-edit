@@ -230,6 +230,13 @@ public class LevelEdit extends JFrame {
 			if (event.getSource() == menu.scrollRightItem) {
 				mapView.scrollX(Config.representationTileSize);
 			}
+			
+			if (event.getSource() == menu.zoomInItem) {
+				System.out.println("TODO");
+			}
+			if (event.getSource() == menu.zoomOutItem) {
+				System.out.println("TODO");
+			}
 
 			// tile layer
 			if (event.getSource() == menu.nextLayerItem) {

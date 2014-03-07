@@ -43,6 +43,8 @@ public class Menu extends JMenuBar {
 	protected JMenuItem scrollRightItem;
 	protected JMenuItem scrollUpItem;
 	protected JMenuItem scrollDownItem;
+	protected JMenuItem zoomInItem;
+	protected JMenuItem zoomOutItem;
 	protected JMenuItem addLayerItem;
 	protected JMenuItem deleteLayerItem;
 	protected JMenuItem nextLayerItem;
@@ -110,7 +112,9 @@ public class Menu extends JMenuBar {
 		scrollRightItem = addMenuItem(levelMenu, handler, "Scroll right", KeyEvent.VK_D, 0);
 		scrollUpItem = addMenuItem(levelMenu, handler, "Scroll up", KeyEvent.VK_W, 0);
 		scrollDownItem = addMenuItem(levelMenu, handler, "Scroll down", KeyEvent.VK_S, 0);
-
+		zoomInItem = addMenuItem(levelMenu, handler, "Zoom in", KeyEvent.VK_PLUS, 0);
+		zoomOutItem = addMenuItem(levelMenu, handler, "Zoom out", KeyEvent.VK_MINUS, 0);
+		
 		addLayerItem = addMenuItem(tileMenu, handler, "Add layer");
 		deleteLayerItem = addMenuItem(tileMenu, handler, "Delete layer");
 		nextLayerItem = addMenuItem(tileMenu, handler, "Select next layer", KeyEvent.VK_Q, ActionEvent.ALT_MASK);
