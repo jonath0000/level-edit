@@ -1,6 +1,8 @@
 package leveledit;
 
 import levelmodel.DummyObject;
+import graphicsutils.GridDrawingUtil;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -350,7 +352,7 @@ public class MapView
      * @param map array of tile values.
      */
     private void paintMap(Graphics g, int[][] map) {
-        
+    	
         int scrollXModel = getScrollX();
         int scrollYModel = getScrollY();
         
@@ -409,6 +411,43 @@ public class MapView
         }
     }
 
+    
+    private void drawSelectedDummyIndicator(Graphics g) {
+        DummyObject d = level.getDummyObjects().getSelected();
+        if (d != null) {
+            if (markerSelectedDummy != null) {
+                g.drawImage(markerSelectedDummy.getImage(),
+                        (modelToScreenCoord(d.x + 
+                        d.w / 2  
+                        - getScrollX())
+                        - (markerSelectedDummy.getImage()).getWidth(this) / 2),
+                        modelToScreenCoord(d.y - getScrollY()) - (markerSelectedDummy.getImage()).getHeight(this),
+                        this);
+            }
+        }
+    }
+    
+    private void drawDummyObjects(Graphics g) {
+    	int scrollXModel = getScrollX();
+        int scrollYModel = getScrollY();
+        DummyObject dummy;
+        for (int i = 0; i < level.getDummyObjects().size(); i++) {
+            dummy = level.getDummyObjects().elementAt(i);
+            if (dummy.pic) {
+                g.drawImage(config.dummyPics.getImage(),
+                        //dest
+                		modelToScreenCoord(dummy.x - scrollXModel), 
+                        modelToScreenCoord(dummy.y - scrollYModel), 
+                        modelToScreenCoord(dummy.x + dummy.w - scrollXModel), 
+                        modelToScreenCoord(dummy.y + dummy.h - scrollYModel),
+                        // src
+                        dummy.picX, dummy.picY, dummy.picW, dummy.picH,
+                        this);
+            }
+        }
+    }
+    
+    
     /**
      * Paint.
      * @param g
@@ -423,75 +462,19 @@ public class MapView
             paintMap(g, level.getTileMap().getMap(i));
         }
 
-        int scrollXModel = getScrollX();
-        int scrollYModel = getScrollY();
+        drawDummyObjects(g);
+
+        // show tile map borders
+        GridDrawingUtil.drawBoundingBox(Color.CYAN, g, 
+        		modelToScreenCoord(-getScrollX()),
+        		modelToScreenCoord(-getScrollY()), 
+        		modelToScreenCoord(level.getTileMap().getWidth() * Config.representationTileSize - getScrollX()),
+        		modelToScreenCoord(level.getTileMap().getHeight() * Config.representationTileSize - getScrollY()));
+
+        drawSelectedDummyIndicator(g);
         
-        // draw the dummy objects
-        DummyObject p;
-        for (int i = 0; i < level.getDummyObjects().size(); i++) {
-            p = (DummyObject) level.getDummyObjects().elementAt(i);
-
-            // if has picture, draw it
-            if (p.pic) {
-                g.drawImage(config.dummyPics.getImage(),
-                        //dest
-                		modelToScreenCoord(p.x - scrollXModel), 
-                        modelToScreenCoord(p.y - scrollYModel), 
-                        modelToScreenCoord(p.x + p.w - scrollXModel), 
-                        modelToScreenCoord(p.y + p.h - scrollYModel),
-                        // src
-                        p.picX, p.picY, p.picW, p.picH,
-                        this);
-
-            // no pic, draw a square
-            } else {
-                g.setColor(new Color(0xFF0000));
-                g.drawRect(modelToScreenCoord(p.x - scrollXModel), modelToScreenCoord(p.y - scrollYModel), 
-                		modelToScreenCoord(p.w), modelToScreenCoord(p.h));
-            }
-        }
-
-        // some border lines
-        g.setColor(new Color(0x555555));
-        g.drawLine(0,
-        		modelToScreenCoord(-scrollYModel),
-        		this.getWidth(),
-        		modelToScreenCoord(-scrollYModel));
-        g.drawLine(modelToScreenCoord(0 - scrollXModel),
-        		modelToScreenCoord(0 - scrollYModel),
-        		modelToScreenCoord(0 - scrollXModel),
-        		this.getHeight() - modelToScreenCoord(scrollYModel));
-        g.drawLine(0,
-        		modelToScreenCoord(level.getTileMap().getHeight() * Config.representationTileSize - scrollYModel),
-                this.getWidth(),
-                modelToScreenCoord(level.getTileMap().getHeight() * Config.representationTileSize - scrollYModel));
-        g.drawLine(modelToScreenCoord(level.getTileMap().getWidth() * Config.representationTileSize - scrollXModel),
-        		modelToScreenCoord(0 - scrollYModel),
-        		modelToScreenCoord(level.getTileMap().getWidth() * Config.representationTileSize - scrollXModel),
-                this.getHeight() - modelToScreenCoord(scrollYModel));
-
-        // show getSelected dummy
-        DummyObject d = level.getDummyObjects().getSelected();
-        g.setColor(new Color(0x00FF00));
-        if (d != null) {
-            if (markerSelectedDummy != null) {
-                g.drawImage(markerSelectedDummy.getImage(),
-                        (modelToScreenCoord(d.x + 
-                        d.w / 2  
-                        - scrollXModel)
-                        - (markerSelectedDummy.getImage()).getWidth(this) / 2),
-                        modelToScreenCoord(d.y - scrollYModel) - (markerSelectedDummy.getImage()).getHeight(this),
-                        this);
-            } else {
-                g.drawRect(d.x - scrollXModel, 
-                        d.y - 4 - scrollYModel, 
-                        d.w, 
-                        4);
-            }
-        }
-        
-        // show tilemap layer
-        g.setColor(new Color(0x000000));
+        // show tile map layer
+        g.setColor(Color.BLACK);
         g.drawString("Editing tilemap layer " + (editlayer+1) + "/" + 
                 level.getTileMap().getNumLayers(), 5, getHeight() 
                 - g.getFontMetrics().getHeight());
