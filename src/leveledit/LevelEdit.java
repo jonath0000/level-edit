@@ -150,6 +150,10 @@ public class LevelEdit extends JFrame {
 		JOptionPane.showMessageDialog(this, HELP_TEXT);
 		System.out.println(HELP_TEXT);
 	}
+		
+	public void showTileValue() {
+		JOptionPane.showMessageDialog(this, "Tile value: " + tileSelector.getSelectedIndex());
+	}
 
 	/**
 	 * Handle all actions in main window.
@@ -242,6 +246,10 @@ public class LevelEdit extends JFrame {
 				level.isAboutToAlterState();
 				level.getTileMap().deleteMap(mapView.getSelectedLayer());
 			}
+			
+			if (event.getSource() == menu.showTileValueItem) {
+				showTileValue();
+			}		
 
 			// MENU -> "Save" (LevelEdit format)
 			if (event.getSource() == menu.saveItem) {

@@ -47,6 +47,7 @@ public class Menu extends JMenuBar {
 	protected JMenuItem deleteLayerItem;
 	protected JMenuItem nextLayerItem;
 	protected JMenuItem prevLayerItem;
+	protected JMenuItem showTileValueItem;
 
 	private JMenuItem addMenuItem(JMenu menu, ActionListener handler, String text) {
 		JMenuItem item = new JMenuItem(text);
@@ -115,6 +116,8 @@ public class Menu extends JMenuBar {
 		nextLayerItem = addMenuItem(tileMenu, handler, "Select next layer", KeyEvent.VK_Q, ActionEvent.ALT_MASK);
 		prevLayerItem = addMenuItem(tileMenu, handler, "Select previous layer", KeyEvent.VK_E, ActionEvent.ALT_MASK);
 
+		showTileValueItem = addMenuItem(tileMenu, handler, "Show selected tiles index", KeyEvent.VK_T, ActionEvent.CTRL_MASK);
+		
 		add(fileMenu);
 		add(editMenu);
 		add(levelMenu);
