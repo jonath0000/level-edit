@@ -46,5 +46,9 @@ public class DummyObject {
 		this.name = d.name;
 		this.additionalData = d.additionalData;
 	}
+	
+	public String toString() {
+		return name;
+	}
 
 }

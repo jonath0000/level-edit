@@ -5,7 +5,7 @@ import graphicsutils.CompatibleImageCreator;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.awt.MediaTracker;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 /**
@@ -18,8 +18,7 @@ public class Config {
 	// Values read from file.
 	public Image tiles;
 	public Color bgCol;
-	public String typeNames[];
-	public DummyObject typeData[];
+	public ArrayList<DummyObject> typeData;
 	public int sourceImageTileSize = 16;
 	public int representationTileSize = 32;
 	public int tilesPerRow = 8;
@@ -86,25 +85,18 @@ public class Config {
 
 			// dummy definitions
 			r.gotoPost("dummys", false);
+			typeData = new ArrayList<DummyObject>();
+
 			r.nextLine();
-			int nDummys = r.getWordAsInt();
-			if (nDummys > 100) {
-				throw new Exception("Max number of [dummys] is 100!");
-			}
-
-			typeNames = new String[nDummys];
-			typeData = new DummyObject[nDummys];
-
-			for (int i = 0; i < nDummys; i++) {
-				r.nextLine();
+			do {
 				String name = r.getWord();
 				int w = r.getNextWordAsInt();
 				int h = r.getNextWordAsInt();
 				String addData = r.getRestOfLine();
 				DummyObject dummy = new DummyObject(1, 1, w, h, addData, name);
-				typeNames[i] = name;
-				typeData[i] = dummy;
-			}
+				typeData.add(dummy);
+				r.nextLine();
+			} while (!r.getWord().equals("end"));
 
 			// bg color
 			r.gotoPost("bgcol", false);
