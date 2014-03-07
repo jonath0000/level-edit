@@ -22,9 +22,8 @@ public class TileSelector extends JScrollPane {
 		this.setViewportView(tileList);
 	}
 
-	public void setTiles(ImageIcon tilePic, int nTiles, int sourceWidth, int sourceHeight, int representationWidth, int representationHeight) {
+	public void setTiles(Image tiles, int nTiles, int sourceWidth, int sourceHeight, int representationWidth, int representationHeight) {
 
-		Image tiles = tilePic.getImage();
 		ImageIcon listitems[] = new ImageIcon[nTiles];
 
 		for (int i = 0; i < nTiles; i++) {

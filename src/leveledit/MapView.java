@@ -334,7 +334,7 @@ public class MapView
         int tileWidth = this.getWidth() / Config.representationTileSize;
         int tileHeight =  this.getHeight() / Config.representationTileSize;
         
-        Image tileImage = config.tiles.getImage();
+        Image tileImage = config.tiles;
         
         // draw tiles
         for (int i = tileX; i < tileX + tileWidth; i++) {

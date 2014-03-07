@@ -1,7 +1,10 @@
 package leveledit;
 
 import levelmodel.DummyObject;
+import graphicsutils.CompatibleImageCreator;
+
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.MediaTracker;
 import javax.swing.ImageIcon;
 
@@ -13,7 +16,7 @@ import javax.swing.ImageIcon;
 public class Config {
 
 	// Values read from file.
-	public ImageIcon tiles;
+	public Image tiles;
 	public ImageIcon dummyPics;
 	public Color bgCol;
 	public String typeNames[];
@@ -62,8 +65,8 @@ public class Config {
 			if (tileMapImageOverride != null && tileMapImageOverride.length() > 0) {
 				strTiles = tileMapImageOverride;
 			}
-			tiles = new ImageIcon(strTiles);
-			if (tiles.getImageLoadStatus() != MediaTracker.COMPLETE)
+			tiles = CompatibleImageCreator.createCompatibleImage(new ImageIcon(strTiles).getImage());
+			if (tiles == null)
 				throw new Exception("Couldn't load tile image!");
 			sourceImageTileSize = r.getNextWordAsInt();
 			numTiles = r.getNextWordAsInt();
