@@ -41,7 +41,7 @@ public class TileSelector extends JScrollPane {
 
 		tileList.setLayoutOrientation(JList.VERTICAL_WRAP);
 		tileList.setVisibleRowCount(8);
-		setPreferredSize(new Dimension(representationWidth * 8, representationHeight * 8));
+		//setPreferredSize(new Dimension(representationWidth * 8, representationHeight * 8));
 		tileList.setListData(listitems);
 	}
 

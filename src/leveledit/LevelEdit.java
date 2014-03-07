@@ -51,7 +51,6 @@ public class LevelEdit extends JFrame {
 
 			"";
 
-	private JPanel panel;
 	private ToolSelector toolSelector;
 	private TileSelector tileSelector;
 	private DummyTypeSelector dummyTypeSelector;
@@ -350,23 +349,25 @@ public class LevelEdit extends JFrame {
 		menu = new Menu(handler);
 		setJMenuBar(menu);
 
-		panel = new JPanel();
-		panel.setLayout(new GridLayout(1, 3));
-
+		JPanel leftPanel = new JPanel();
+		leftPanel.setLayout(new GridLayout(2, 1));
+		JPanel bottomPanel = new JPanel();
+		
 		toolSelector = new ToolSelector();
-		panel.add(toolSelector);
+		leftPanel.add(toolSelector);
 
 		JToolBar dummyToolBar = new JToolBar();
 		dummyTypeSelector = new DummyTypeSelector();
 		dummyToolBar.add(dummyTypeSelector);
-		panel.add(dummyToolBar);
-
+		leftPanel.add(dummyToolBar);
+		
 		JToolBar tileToolBar = new JToolBar();
 		tileSelector = new TileSelector();
 		tileToolBar.add(tileSelector);
-		panel.add(tileToolBar);
+		bottomPanel.add(tileToolBar);
 
-		container.add(panel, BorderLayout.SOUTH);
+		container.add(leftPanel, BorderLayout.WEST);
+		container.add(bottomPanel, BorderLayout.SOUTH);
 
 		// init main window
 		setSize(Toolkit.getDefaultToolkit().getScreenSize().width - 40, Toolkit
@@ -392,8 +393,8 @@ public class LevelEdit extends JFrame {
 		createGui(container);
 
 		tileSelector.setTiles(config.tiles, Config.numTiles, Config.sourceImageTileSize,
-				Config.sourceImageTileSize, Config.representationTileSize, Config.representationTileSize);
-
+				Config.sourceImageTileSize, getHeight()/40, getHeight()/40);
+		
 		dummyTypeSelector.setDummyList(config.typeNames, config.typeData);
 
 		// mapview
