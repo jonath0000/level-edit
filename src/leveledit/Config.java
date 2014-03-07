@@ -17,7 +17,6 @@ public class Config {
 
 	// Values read from file.
 	public Image tiles;
-	public ImageIcon dummyPics;
 	public Color bgCol;
 	public String typeNames[];
 	public DummyObject typeData[];
@@ -28,6 +27,7 @@ public class Config {
 	public int mirrorTileVal = 100;
 	public String projectPath = ".";
 	public String exportPath = ".";
+	public String dummyImagePath = ".";
 
 	public Config(String path, String tileMapImageOverride) {
 		System.out.println("Loading config file " + path);
@@ -56,6 +56,14 @@ public class Config {
 			System.out.println("[export_path] not configured, using default location " + exportPath);
 		}
 		
+		try {	
+			r.gotoPost("dummy_image_path", false);
+			r.nextLine();
+			dummyImagePath = r.getWord();
+		} catch (Exception e) {
+			System.out.println("[dummy_image_path] not configured, using default location " + dummyImagePath);
+		}
+		
 		try {			
 			// tile image path
 			r.gotoPost("tiles", false);
@@ -76,14 +84,6 @@ public class Config {
 			r.nextLine();
 			mirrorTileVal = r.getWordAsInt();
 
-			// dummy pic path
-			r.gotoPost("dummypics", false);
-			r.nextLine();
-			String strDummys = r.getWord();
-			dummyPics = new ImageIcon(strDummys);
-			if (dummyPics.getImageLoadStatus() != MediaTracker.COMPLETE)
-				throw new Exception("Couldn't load dummy image!");
-
 			// dummy definitions
 			r.gotoPost("dummys", false);
 			r.nextLine();
@@ -97,18 +97,12 @@ public class Config {
 
 			for (int i = 0; i < nDummys; i++) {
 				r.nextLine();
-				String caption = r.getWord();
-				String name = r.getNextWord();
+				String name = r.getWord();
 				int w = r.getNextWordAsInt();
 				int h = r.getNextWordAsInt();
-				boolean hasPic = r.getNextWordAsBool();
-				int picX = r.getNextWordAsInt();
-				int picY = r.getNextWordAsInt();
-				int picW = picX + r.getNextWordAsInt();
-				int picH = picY + r.getNextWordAsInt();
 				String addData = r.getRestOfLine();
-				DummyObject dummy = new DummyObject(1, 1, w, h, addData, name, hasPic, picX, picY, picW, picH);
-				typeNames[i] = caption;
+				DummyObject dummy = new DummyObject(1, 1, w, h, addData, name);
+				typeNames[i] = name;
 				typeData[i] = dummy;
 			}
 

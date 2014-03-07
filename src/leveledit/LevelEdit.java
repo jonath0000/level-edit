@@ -63,6 +63,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 	private MapView mapView;
 	private Level level;
 	private File currentFile = null;
+	private ImageStore imageStore;
 
 	
 	/**
@@ -79,6 +80,9 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 		level = new Level();
 		
 		config = new Config(configFilePath, tileMapImagePath);	
+		
+		imageStore = new ImageStore(config.dummyImagePath);
+		
 		toolSelector = new ToolSelector();
 		tileSelector = new TileSelector();
 		dummyTypeSelector = new DummyTypeSelector();
@@ -97,7 +101,6 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 	 * Will reload the definitions for dummys and tile image.
 	 */
 	private void loadDummyAndTileDefinitions() {
-		config = new Config(configFilePath, tileMapImagePath);	
 		tileSelector.setTiles(config.tiles, config.numTiles, config.tilesPerRow, config.sourceImageTileSize,
 				config.sourceImageTileSize, getHeight()/40, getHeight()/40);
 		dummyTypeSelector.setDummyList(config.typeNames, config.typeData);
@@ -419,6 +422,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 			}
 			
 			if (event.getSource() == menu.reloadConfigItem) {
+				config = new Config(configFilePath, tileMapImagePath);	
 				loadDummyAndTileDefinitions();
 			}
 
@@ -488,5 +492,10 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 	@Override 
 	public Config getConfig() {
 		return config;
+	}
+
+	@Override
+	public ImageStore getImageStore() {
+		return imageStore;
 	}
 }

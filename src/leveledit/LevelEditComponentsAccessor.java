@@ -10,4 +10,5 @@ public interface LevelEditComponentsAccessor {
 	public Level getLevelModel();
 	public ToolSelector.Tool getSelectedTool();
 	public Config getConfig();
+	public ImageStore getImageStore();
 }

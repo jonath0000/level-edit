@@ -404,17 +404,24 @@ public class MapView
         DummyObject dummy;
         for (int i = 0; i < componentsAccessor.getLevelModel().getDummyObjects().size(); i++) {
             dummy = componentsAccessor.getLevelModel().getDummyObjects().elementAt(i);
-            if (dummy.pic) {
-                g.drawImage(componentsAccessor.getConfig().dummyPics.getImage(),
+        	Image dummyImage = componentsAccessor.getImageStore().getImage(dummy.name);
+        	if (dummyImage != null) {
+                g.drawImage(dummyImage,
                         //dest
                 		modelToScreenCoord(dummy.x - scrollXModel), 
                         modelToScreenCoord(dummy.y - scrollYModel), 
                         modelToScreenCoord(dummy.x + dummy.w - scrollXModel), 
                         modelToScreenCoord(dummy.y + dummy.h - scrollYModel),
                         // src
-                        dummy.picX, dummy.picY, dummy.picW, dummy.picH,
+                        0, 0, dummyImage.getWidth(this), dummyImage.getHeight(this),
                         this);
+        	} else {
+            	GridDrawingUtil.drawBoundingBox(Color.RED, g, modelToScreenCoord(dummy.x - scrollXModel), 
+                        modelToScreenCoord(dummy.y - scrollYModel), 
+                        modelToScreenCoord(dummy.x + dummy.w - scrollXModel), 
+                        modelToScreenCoord(dummy.y + dummy.h - scrollYModel));
             }
+            
         }
     }
     

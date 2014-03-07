@@ -8,9 +8,9 @@ public class LevelTest {
 
 	@Test
 	public void testDummyUndoHistory() {
-		DummyObject dummy1 = new DummyObject(0, 0, 10, 10, "none", "dummy1", true, 0, 0, 10, 10);
-		DummyObject dummy2 = new DummyObject(20, 20, 200, 200, "adddata", "dummy2", true, 20, 20, 20, 20);
-		DummyObject dummy3 = new DummyObject(3000, 0, 3000, 3000, "", "dummy3", true, 90, 80, 70, 60);	
+		DummyObject dummy1 = new DummyObject(0, 0, 10, 10, "none", "dummy1");
+		DummyObject dummy2 = new DummyObject(20, 20, 200, 200, "adddata", "dummy2");
+		DummyObject dummy3 = new DummyObject(3000, 0, 3000, 3000, "", "dummy3");	
 		Level level = new Level();
 		level.initBlankMap(10, 10);
 		

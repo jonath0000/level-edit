@@ -12,8 +12,6 @@ public class DummyObject {
 
 	public String name;
 	public int x, y, w, h;
-	public boolean pic = true;
-	public int picX, picY, picW, picH;
 	public String additionalData;
 
 	/**
@@ -25,29 +23,18 @@ public class DummyObject {
 	 * @param h
 	 * @param additionalData
 	 * @param name
-	 * @param pic
-	 * @param picX
-	 * @param picY
-	 * @param picW
-	 * @param picH
 	 */
-	public DummyObject(int x, int y, int w, int h, String additionalData, String name, boolean pic, 
-			int picX, int picY, int picW, int picH) {
+	public DummyObject(int x, int y, int w, int h, String additionalData, String name) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
 		this.name = name;
 		this.additionalData = additionalData;
-		this.picX = picX;
-		this.picY = picY;
-		this.picW = picW;
-		this.picH = picH;
-		this.pic = pic;
 	}
 
 	/**
-	 * Use to clone a dummyobject.
+	 * Use to clone a dummy object.
 	 * 
 	 * @param d
 	 */
@@ -57,11 +44,6 @@ public class DummyObject {
 		this.w = d.w;
 		this.h = d.h;
 		this.name = d.name;
-		this.picX = d.picX;
-		this.picY = d.picY;
-		this.picW = d.picW;
-		this.picH = d.picH;
-		this.pic = d.pic;
 		this.additionalData = d.additionalData;
 	}
 
