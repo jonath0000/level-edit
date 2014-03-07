@@ -12,7 +12,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import levelmodel.Level;
 
 /**
  * Panel showing the tile map and dummy objects.
@@ -29,22 +28,7 @@ public class MapView
     
     /** Path to getSelected dummy image. */
     private static final String MARKERSELECTEDDUMMY_PATH 
-            = "res/markerSelectedDummy.png";
-    
-    /** Reference to config. */
-    private Config config;    
-    
-    /** Reference to level. */
-    private Level level;
-    
-    /** Reference to tool selector. */
-    private ToolSelector toolSelector;   
-    
-    /** Reference to tile selector. */
-    private TileSelector tileSelector;
-    
-    /** Reference to dummy type selector. */
-    private DummyTypeSelector dummyTypeSelector;
+            = "res/markerSelectedDummy.png"; 
     
     /** Scroll of map. */
     private int scrollX = 0;
@@ -70,33 +54,23 @@ public class MapView
     /** Scale of view */
     private float scale = 1.0f;
     
+    /** for accessing the gui components state */
+    LevelEditComponentsAccessor componentsAccessor;
+    
     /**
      * Constructor.
-     * @param config
+     * @param componentsAccessor.getConfig()
      * @param toolSelector
-     * @param tileSelector
-     * @param dummyTypeSelector
-     * @param level 
+     * @param componentsAccessor
      */
-    public MapView(
-            Config config, 
-            ToolSelector toolSelector, 
-            TileSelector tileSelector,
-            DummyTypeSelector dummyTypeSelector,
-            Level level) {
-        this.toolSelector = toolSelector;
-        this.config = config;
-        this.tileSelector = tileSelector;
-        this.dummyTypeSelector = dummyTypeSelector;
-        this.level = level;
-        setBackground(config.bgCol);
+    public MapView(LevelEditComponentsAccessor componentsAccessor) {
+        this.componentsAccessor = componentsAccessor;
+        setBackground(componentsAccessor.getConfig().bgCol);
         markerSelectedDummy = new ImageIcon(MARKERSELECTEDDUMMY_PATH);
         if (markerSelectedDummy.getImageLoadStatus() != MediaTracker.COMPLETE) {
             System.out.println("Error! Couldn't get image!");
         }
     }
-
-    // <editor-fold desc="Listeners">
 
     @Override
     public void mousePressed(MouseEvent e) {    	
@@ -133,15 +107,13 @@ public class MapView
     @Override
     public void mouseDragged(MouseEvent e) {
         // called during motion with buttons down
-        if (toolSelector.getTool() == ToolSelector.Tool.SET_TILE
-                || toolSelector.getTool() == ToolSelector.Tool.DELETE_TILE) {
+        if (componentsAccessor.getSelectedTool() == ToolSelector.Tool.SET_TILE
+                || componentsAccessor.getSelectedTool() == ToolSelector.Tool.DELETE_TILE) {
             click(screenToModelCoord(e.getX()), screenToModelCoord(e.getY()), true);
             repaint();
             e.consume();
         }
     }
-
-    // </editor-fold>
     
     
     
@@ -157,33 +129,33 @@ public class MapView
 	 */
 	public void click(int x, int y, boolean repeated) {
 
-		switch (toolSelector.getTool()) {
+		switch (componentsAccessor.getSelectedTool()) {
 
 		case NEW_DUMMY:
 			if (!repeated) {
-				level.isAboutToAlterState();
-				DummyObject d = dummyTypeSelector.createNewDummyObject();
-				level.getDummyObjects().newDummy(x + scrollX, y + scrollY, d);
+				componentsAccessor.getLevelModel().isAboutToAlterState();
+				DummyObject d = componentsAccessor.createNewDummyFromSelectedType();
+				componentsAccessor.getLevelModel().getDummyObjects().newDummy(x + scrollX, y + scrollY, d);
 			}
 			break;
 
 		case SELECT_DUMMY:
-			level.getDummyObjects().selectDummy(x + scrollX, y + scrollY);
+			componentsAccessor.getLevelModel().getDummyObjects().selectDummy(x + scrollX, y + scrollY);
 			break;
 
 		case DELETE_DUMMY:
-			level.isAboutToAlterState();
-			level.getDummyObjects().deleteDummy(x + scrollX, y + scrollY);
+			componentsAccessor.getLevelModel().isAboutToAlterState();
+			componentsAccessor.getLevelModel().getDummyObjects().deleteDummy(x + scrollX, y + scrollY);
 			break;
 
 		case SET_TILE:
 		case DELETE_TILE:
 			if (!repeated || System.currentTimeMillis() - lastMousePressStateSaveTime > 500) {
 				lastMousePressStateSaveTime = System.currentTimeMillis();
-				level.isAboutToAlterState();
+				componentsAccessor.getLevelModel().isAboutToAlterState();
 			}
-			if (tileSelector.getSelectedIndex() != -1) {
-				setTileVal(x, y, tileSelector.getSelectedIndex());
+			if (componentsAccessor.getSelectedTileIndex() != -1) {
+				setTileVal(x, y, componentsAccessor.getSelectedTileIndex());
 			}
 			break;
 			
@@ -191,16 +163,16 @@ public class MapView
 		case LINE_TILE:
 			if (!repeated || System.currentTimeMillis() - lastMousePressStateSaveTime > 500) {
 				lastMousePressStateSaveTime = System.currentTimeMillis();
-				level.isAboutToAlterState();
+				componentsAccessor.getLevelModel().isAboutToAlterState();
 			}
-			if (tileSelector.getSelectedIndex() != -1) {
-				setTileVal(x, y, tileSelector.getSelectedIndex());
+			if (componentsAccessor.getSelectedTileIndex() != -1) {
+				setTileVal(x, y, componentsAccessor.getSelectedTileIndex());
 			}
 			break;
 			
 		case PICKUP_TILE:
-			if (tileSelector.getSelectedIndex() != -1) {
-				setTileVal(x, y, tileSelector.getSelectedIndex());
+			if (componentsAccessor.getSelectedTileIndex() != -1) {
+				setTileVal(x, y, componentsAccessor.getSelectedTileIndex());
 			}
 			break;
 		}
@@ -216,28 +188,27 @@ public class MapView
      * @param tileIndex Tile index number
      */
     public void setTileVal(int x, int y, int tileIndex) {
-
-        // to tile index
-        int tX = (x + getScrollX()) / Config.representationTileSize;
-        int tY = (y + getScrollY()) / Config.representationTileSize;
+		// to tile index
+        int tX = (x + getScrollX()) / componentsAccessor.getConfig().representationTileSize;
+		int tY = (y + getScrollY()) / componentsAccessor.getConfig().representationTileSize;
 
         // tiles are 1 indexed.
         tileIndex++;
         
         // set tile
-        switch (toolSelector.getTool()) {
+        switch (componentsAccessor.getSelectedTool()) {
             case SET_TILE:
-                level.getTileMap().setTileVal(tX, tY, editlayer, tileIndex);
+            	componentsAccessor.getLevelModel().getTileMap().setTileVal(tX, tY, editlayer, tileIndex);
                 break;
             case DELETE_TILE:
-                level.getTileMap().setTileVal(tX, tY, editlayer, 0);
+            	componentsAccessor.getLevelModel().getTileMap().setTileVal(tX, tY, editlayer, 0);
                 break;
             case PICKUP_TILE:
-                tileSelector.setSelectedIndex(tileIndex);
+            	componentsAccessor.setSelectedTileIndex(tileIndex);
                 break;
             case FILL_TILE:
-                level.getTileMap().fill(editlayer, tX, tY,
-                    level.getTileMap().getTileVal(tX, tY, editlayer),
+            	componentsAccessor.getLevelModel().getTileMap().fill(editlayer, tX, tY,
+            			componentsAccessor.getLevelModel().getTileMap().getTileVal(tX, tY, editlayer),
                     tileIndex);
                 break;
             case LINE_TILE:
@@ -245,11 +216,11 @@ public class MapView
                 
                 if (lineToolFirstClick) {
                     lineToolFirstClick = false;
-                    level.getTileMap().setTileVal(tX, tY, editlayer, tileIndex);
+                    componentsAccessor.getLevelModel().getTileMap().setTileVal(tX, tY, editlayer, tileIndex);
                 }
                 else {
-                	level.isAboutToAlterState();
-                    level.getTileMap().drawLine(editlayer, lastEditedTileX,
+                	componentsAccessor.getLevelModel().isAboutToAlterState();
+                	componentsAccessor.getLevelModel().getTileMap().drawLine(editlayer, lastEditedTileX,
                         lastEditedTileY, tX, tY, tileIndex);
                 }
                 break;
@@ -265,7 +236,7 @@ public class MapView
 
         lastEditedTileX = tX;
         lastEditedTileY = tY;
-        if (toolSelector.getTool() != ToolSelector.Tool.LINE_TILE) {
+        if (componentsAccessor.getSelectedTool() != ToolSelector.Tool.LINE_TILE) {
             lineToolFirstClick = true;
         }
     }
@@ -274,7 +245,7 @@ public class MapView
      * Select next layer in tilemap for editing.
      */
     public void selectNextLayer() {
-        if (editlayer + 1 >= level.getTileMap().getNumLayers()) return;
+        if (editlayer + 1 >= componentsAccessor.getLevelModel().getTileMap().getNumLayers()) return;
         editlayer ++ ;
     }
     
@@ -359,12 +330,12 @@ public class MapView
         int tileMapWidth = map[0].length;
         int tileMapHeight = map.length;
 
-        int tileScrollX = scrollXModel / Config.representationTileSize;
-        int tileScrollY = scrollYModel / Config.representationTileSize;
-        int tileViewWidth = screenToModelCoord(this.getWidth()) / Config.representationTileSize;
-        int tileViewHeight = screenToModelCoord(this.getHeight()) / Config.representationTileSize;
+		int tileScrollX = scrollXModel / componentsAccessor.getConfig().representationTileSize;
+		int tileScrollY = scrollYModel / componentsAccessor.getConfig().representationTileSize;
+		int tileViewWidth = screenToModelCoord(this.getWidth()) / componentsAccessor.getConfig().representationTileSize;
+		int tileViewHeight = screenToModelCoord(this.getHeight()) / componentsAccessor.getConfig().representationTileSize;
         
-        Image tileImage = config.tiles;
+        Image tileImage = componentsAccessor.getConfig().tiles;
         
         // draw tiles
         for (int tx = tileScrollX; tx < tileScrollX + tileViewWidth; tx++) {
@@ -374,36 +345,36 @@ public class MapView
 
                     // get row
                     tileValue--; // translate tile index to image index
-                    int row = tileValue / Config.tilesPerRow;
-                    tileValue = tileValue % Config.tilesPerRow;
+					int row = tileValue / componentsAccessor.getConfig().tilesPerRow;
+					tileValue = tileValue % componentsAccessor.getConfig().tilesPerRow;
                   
-                    // non-mirrored
-                    if (map[ty][tx] <= Config.mirrorTileVal) {
+					// non-mirrored
+                    if (map[ty][tx] <= componentsAccessor.getConfig().mirrorTileVal) {
                         g.drawImage(tileImage,
                                 //dest
-                                modelToScreenCoord(tx * Config.representationTileSize - scrollXModel),
-                                modelToScreenCoord(ty * Config.representationTileSize - scrollYModel),
-                                modelToScreenCoord((tx + 1) * Config.representationTileSize - scrollXModel),
-                                modelToScreenCoord((ty + 1) * Config.representationTileSize - scrollYModel),
+                                modelToScreenCoord(tx * componentsAccessor.getConfig().representationTileSize - scrollXModel),
+                                modelToScreenCoord(ty * componentsAccessor.getConfig().representationTileSize - scrollYModel),
+                                modelToScreenCoord((tx + 1) * componentsAccessor.getConfig().representationTileSize - scrollXModel),
+                                modelToScreenCoord((ty + 1) * componentsAccessor.getConfig().representationTileSize - scrollYModel),
                                 // src
-                                (tileValue) * Config.sourceImageTileSize,
-                                row * Config.sourceImageTileSize,
-                                (tileValue + 1) * Config.sourceImageTileSize,
-                                (0 + row + 1) * Config.sourceImageTileSize,
+                                (tileValue) * componentsAccessor.getConfig().sourceImageTileSize,
+                                row * componentsAccessor.getConfig().sourceImageTileSize,
+                                (tileValue + 1) * componentsAccessor.getConfig().sourceImageTileSize,
+                                (0 + row + 1) * componentsAccessor.getConfig().sourceImageTileSize,
                                 this);
                     } // mirrored tiles
                     else {
                         g.drawImage(tileImage,
                                 //dest
-                        		modelToScreenCoord(tx * Config.representationTileSize - scrollXModel), 
-                                modelToScreenCoord(ty * Config.representationTileSize - scrollYModel),
-                                modelToScreenCoord((tx + 1) * Config.representationTileSize - scrollXModel), 
-                                modelToScreenCoord((ty + 1) * Config.representationTileSize - scrollYModel),
+                        		modelToScreenCoord(tx * componentsAccessor.getConfig().representationTileSize - scrollXModel), 
+                                modelToScreenCoord(ty * componentsAccessor.getConfig().representationTileSize - scrollYModel),
+                                modelToScreenCoord((tx + 1) * componentsAccessor.getConfig().representationTileSize - scrollXModel), 
+                                modelToScreenCoord((ty + 1) * componentsAccessor.getConfig().representationTileSize - scrollYModel),
                                 // src
-                                (map[ty][tx] - Config.mirrorTileVal + 1) * Config.sourceImageTileSize, 
+                                (map[ty][tx] - componentsAccessor.getConfig().mirrorTileVal + 1) * componentsAccessor.getConfig().sourceImageTileSize, 
                                 0,
-                                (map[ty][tx] - Config.mirrorTileVal) * Config.sourceImageTileSize, 
-                                Config.sourceImageTileSize,
+                                (map[ty][tx] - componentsAccessor.getConfig().mirrorTileVal) * componentsAccessor.getConfig().sourceImageTileSize, 
+                                componentsAccessor.getConfig().sourceImageTileSize,
                                 this);
                     }
                 }
@@ -413,7 +384,7 @@ public class MapView
 
     
     private void drawSelectedDummyIndicator(Graphics g) {
-        DummyObject d = level.getDummyObjects().getSelected();
+        DummyObject d = componentsAccessor.getLevelModel().getDummyObjects().getSelected();
         if (d != null) {
             if (markerSelectedDummy != null) {
                 g.drawImage(markerSelectedDummy.getImage(),
@@ -431,10 +402,10 @@ public class MapView
     	int scrollXModel = getScrollX();
         int scrollYModel = getScrollY();
         DummyObject dummy;
-        for (int i = 0; i < level.getDummyObjects().size(); i++) {
-            dummy = level.getDummyObjects().elementAt(i);
+        for (int i = 0; i < componentsAccessor.getLevelModel().getDummyObjects().size(); i++) {
+            dummy = componentsAccessor.getLevelModel().getDummyObjects().elementAt(i);
             if (dummy.pic) {
-                g.drawImage(config.dummyPics.getImage(),
+                g.drawImage(componentsAccessor.getConfig().dummyPics.getImage(),
                         //dest
                 		modelToScreenCoord(dummy.x - scrollXModel), 
                         modelToScreenCoord(dummy.y - scrollYModel), 
@@ -458,8 +429,8 @@ public class MapView
         super.paint(g);
 
         // draw tiles
-        for (int i = 0; i <level.getTileMap().getNumLayers(); i++) {
-            paintMap(g, level.getTileMap().getMap(i));
+        for (int i = 0; i < componentsAccessor.getLevelModel().getTileMap().getNumLayers(); i++) {
+            paintMap(g, componentsAccessor.getLevelModel().getTileMap().getMap(i));
         }
 
         drawDummyObjects(g);
@@ -468,15 +439,15 @@ public class MapView
         GridDrawingUtil.drawBoundingBox(Color.CYAN, g, 
         		modelToScreenCoord(-getScrollX()),
         		modelToScreenCoord(-getScrollY()), 
-        		modelToScreenCoord(level.getTileMap().getWidth() * Config.representationTileSize - getScrollX()),
-        		modelToScreenCoord(level.getTileMap().getHeight() * Config.representationTileSize - getScrollY()));
+        		modelToScreenCoord(componentsAccessor.getLevelModel().getTileMap().getWidth() * componentsAccessor.getConfig().representationTileSize - getScrollX()),
+        		modelToScreenCoord(componentsAccessor.getLevelModel().getTileMap().getHeight() * componentsAccessor.getConfig().representationTileSize - getScrollY()));
 
         drawSelectedDummyIndicator(g);
         
         // show tile map layer
         g.setColor(Color.BLACK);
         g.drawString("Editing tilemap layer " + (editlayer+1) + "/" + 
-                level.getTileMap().getNumLayers(), 5, getHeight() 
+        		componentsAccessor.getLevelModel().getTileMap().getNumLayers(), 5, getHeight() 
                 - g.getFontMetrics().getHeight());
         
     }

@@ -16,11 +16,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
+import leveledit.ToolSelector.Tool;
 import levelfileformats.Blocko2LevelFile;
 import levelfileformats.CommaSeparatedTileMapLevelFile;
 import levelfileformats.InternalLevelFile;
 import levelfileformats.MappyLevelFile;
 import levelfileformats.XmlObjectListLevelFile;
+import levelmodel.DummyObject;
 import levelmodel.Level;
 
 /**
@@ -28,7 +30,7 @@ import levelmodel.Level;
  * and stuff in the main window.
  * 
  */
-public class LevelEdit extends JFrame {
+public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 
 	private static final String HELP_TEXT = 
 			  "Quick help:                              \n"
@@ -177,16 +179,16 @@ public class LevelEdit extends JFrame {
 			// move
 			if (event.getSource() == menu.moveUpItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(0, -Config.representationTileSize);
+				level.getDummyObjects().moveSelectedDummy(0, -config.representationTileSize);
 			} else if (event.getSource() == menu.moveDownItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(0, Config.representationTileSize);
+				level.getDummyObjects().moveSelectedDummy(0, config.representationTileSize);
 			} else if (event.getSource() == menu.moveLeftItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(-Config.representationTileSize, 0);
+				level.getDummyObjects().moveSelectedDummy(-config.representationTileSize, 0);
 			} else if (event.getSource() == menu.moveRightItem) {
 				level.isAboutToAlterState();
-				level.getDummyObjects().moveSelectedDummy(Config.representationTileSize, 0);
+				level.getDummyObjects().moveSelectedDummy(config.representationTileSize, 0);
 			} // nudge
 			else if (event.getSource() == menu.nudgeUpItem) {
 				level.isAboutToAlterState();
@@ -219,16 +221,16 @@ public class LevelEdit extends JFrame {
 
 			// scroll
 			if (event.getSource() == menu.scrollUpItem) {
-				mapView.scrollY(-Config.representationTileSize);
+				mapView.scrollY(-config.representationTileSize);
 			}
 			if (event.getSource() == menu.scrollDownItem) {
-				mapView.scrollY(Config.representationTileSize);
+				mapView.scrollY(config.representationTileSize);
 			}
 			if (event.getSource() == menu.scrollLeftItem) {
-				mapView.scrollX(-Config.representationTileSize);
+				mapView.scrollX(-config.representationTileSize);
 			}
 			if (event.getSource() == menu.scrollRightItem) {
-				mapView.scrollX(Config.representationTileSize);
+				mapView.scrollX(config.representationTileSize);
 			}
 			
 			if (event.getSource() == menu.zoomInItem) {
@@ -392,14 +394,13 @@ public class LevelEdit extends JFrame {
 		Container container = getContentPane();
 		createGui(container);
 
-		tileSelector.setTiles(config.tiles, Config.numTiles, Config.sourceImageTileSize,
-				Config.sourceImageTileSize, getHeight()/40, getHeight()/40);
+		tileSelector.setTiles(config.tiles, config.numTiles, config.tilesPerRow, config.sourceImageTileSize,
+				config.sourceImageTileSize, getHeight()/40, getHeight()/40);
 		
 		dummyTypeSelector.setDummyList(config.typeNames, config.typeData);
 
 		// mapview
-		mapView = new MapView(config, toolSelector, tileSelector,
-				dummyTypeSelector, level);
+		mapView = new MapView(this);
 		mapView.addMouseListener(mapView);
 		mapView.addMouseMotionListener(mapView);
 		container.add(mapView, BorderLayout.CENTER);
@@ -439,5 +440,35 @@ public class LevelEdit extends JFrame {
 		} catch (Exception e) {
 			System.out.println("Error while initializing app.");
 		}
+	}
+
+	@Override
+	public int getSelectedTileIndex() {
+		return tileSelector.getSelectedIndex();
+	}
+
+	@Override
+	public void setSelectedTileIndex(int index) {
+		tileSelector.setSelectedIndex(index);
+	}
+
+	@Override
+	public DummyObject createNewDummyFromSelectedType() {
+		return dummyTypeSelector.createNewDummyObject();
+	}
+
+	@Override
+	public Level getLevelModel() {
+		return level;
+	}
+
+	@Override
+	public Tool getSelectedTool() {
+		return toolSelector.getTool();
+	}
+	
+	@Override 
+	public Config getConfig() {
+		return config;
 	}
 }

@@ -21,11 +21,11 @@ public class Config {
 	public Color bgCol;
 	public String typeNames[];
 	public DummyObject typeData[];
-	public static int sourceImageTileSize = 16;
-	public static int representationTileSize = 32;
-	public static int tilesPerRow = 8;
-	public static int numTiles = 200;
-	public static int mirrorTileVal = 100;
+	public int sourceImageTileSize = 16;
+	public int representationTileSize = 32;
+	public int tilesPerRow = 8;
+	public int numTiles = 200;
+	public int mirrorTileVal = 100;
 	public String projectPath = ".";
 	public String exportPath = ".";
 

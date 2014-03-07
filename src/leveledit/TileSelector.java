@@ -22,14 +22,14 @@ public class TileSelector extends JScrollPane {
 		this.setViewportView(tileList);
 	}
 
-	public void setTiles(Image tiles, int nTiles, int sourceWidth, int sourceHeight, int representationWidth, int representationHeight) {
+	public void setTiles(Image tiles, int nTiles, int tilesPerRowInImage, int sourceWidth, int sourceHeight, int representationWidth, int representationHeight) {
 
 		ImageIcon listitems[] = new ImageIcon[nTiles];
 
 		for (int i = 0; i < nTiles; i++) {
 
-			int row = i / Config.tilesPerRow;
-			int tile = i % Config.tilesPerRow;
+			int row = i / tilesPerRowInImage;
+			int tile = i % tilesPerRowInImage;
 
 			BufferedImage newIm = new BufferedImage(representationWidth, representationHeight, BufferedImage.TYPE_3BYTE_BGR);
 			Graphics g = newIm.getGraphics();
