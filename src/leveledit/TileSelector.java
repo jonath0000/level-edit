@@ -14,11 +14,11 @@ import javax.swing.JScrollPane;
  */
 public class TileSelector extends JScrollPane {
 
-	public JList<ImageIcon> tileList;
+	public JList tileList;
 
 	public TileSelector() {
 		super();
-		tileList = new JList<ImageIcon>();
+		tileList = new JList();
 		this.setViewportView(tileList);
 	}
 
