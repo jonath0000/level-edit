@@ -53,8 +53,7 @@ public class Config {
 			r.nextLine();
 			exportPath = r.getWord();
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("[export_path] not configured, using default location.");
+			System.out.println("[export_path] not configured, using default location " + exportPath);
 		}
 		
 		try {			

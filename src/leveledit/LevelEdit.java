@@ -417,6 +417,10 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 						config.typeData);
 				}
 			}
+			
+			if (event.getSource() == menu.reloadConfigItem) {
+				loadDummyAndTileDefinitions();
+			}
 
 			mapView.repaint();
 		}
