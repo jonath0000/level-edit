@@ -103,7 +103,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 	private void loadDummyAndTileDefinitions() {
 		tileSelector.setTiles(config.tiles, config.numTiles, config.tilesPerRow, config.sourceImageTileSize,
 				config.sourceImageTileSize, getHeight()/40, getHeight()/40);
-		dummyTypeSelector.setDummyList(config.typeData);
+		dummyTypeSelector.setDummyList(config.dummyDefinitions);
 	}
 	
 	/**
@@ -408,7 +408,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 				String path = getOpenLevelPath();
 				if (path != null) {
 					level.initFromFile(new InternalLevelFile(path),
-							config.typeData.toArray(new DummyObject[0]));
+							config.dummyDefinitions.toArray(new DummyObject[0]));
 				}
 			}
 
@@ -417,7 +417,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 				String path = getOpenLevelPath();
 				if (path != null) {
 					level.initFromFile(new MappyLevelFile(path),
-							(DummyObject[])config.typeData.toArray(new DummyObject[0]));
+							(DummyObject[])config.dummyDefinitions.toArray(new DummyObject[0]));
 				}
 			}
 			

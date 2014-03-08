@@ -2,27 +2,35 @@ package leveledit;
 
 import levelmodel.DummyObject;
 import graphicsutils.CompatibleImageCreator;
-
 import java.awt.Color;
 import java.awt.Image;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
- * Represents the current project configuration in a config file.
+ * Represents the current project configuration from a file.
  * 
- * @todo Could/should be done as XML file instead.
  */
 public class Config {
 
 	// Values read from file.
+	public int numTiles;
 	public Image tiles;
 	public Color bgCol;
-	public ArrayList<DummyObject> typeData;
+	public ArrayList<DummyObject> dummyDefinitions;
 	public int sourceImageTileSize = 16;
 	public int representationTileSize = 32;
 	public int tilesPerRow = 8;
-	public int numTiles = 200;
 	public int mirrorTileVal = 100;
 	public String projectPath = ".";
 	public String exportPath = ".";
@@ -30,82 +38,91 @@ public class Config {
 
 	public Config(String path, String tileMapImageOverride) {
 		System.out.println("Loading config file " + path);
-		ResFileReader r;
-		try {			
-			r = new ResFileReader(path);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
 		
-		try {	
-			r.gotoPost("project_path", false);
-			r.nextLine();
-			projectPath = r.getWord();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("[project_path] not configured, using default location.");
-		}
-		
-		try {	
-			r.gotoPost("export_path", false);
-			r.nextLine();
-			exportPath = r.getWord();
-		} catch (Exception e) {
-			System.out.println("[export_path] not configured, using default location " + exportPath);
-		}
-		
-		try {	
-			r.gotoPost("dummy_image_path", false);
-			r.nextLine();
-			dummyImagePath = r.getWord();
-		} catch (Exception e) {
-			System.out.println("[dummy_image_path] not configured, using default location " + dummyImagePath);
-		}
-		
-		try {			
-			// tile image path
-			r.gotoPost("tiles", false);
-			r.nextLine();
-			String strTiles = r.getWord();
-			if (tileMapImageOverride != null && tileMapImageOverride.length() > 0) {
-				strTiles = tileMapImageOverride;
-			}
-			tiles = CompatibleImageCreator.createCompatibleImage(new ImageIcon(strTiles).getImage());
-			if (tiles == null)
-				throw new Exception("Couldn't load tile image!");
-			sourceImageTileSize = r.getNextWordAsInt();
-			numTiles = r.getNextWordAsInt();
-			tilesPerRow = r.getNextWordAsInt();
-
-			// mirror tile val
-			r.gotoPost("tile_mirror_idx", false);
-			r.nextLine();
-			mirrorTileVal = r.getWordAsInt();
-
-			// dummy definitions
-			r.gotoPost("dummys", false);
-			typeData = new ArrayList<DummyObject>();
-
-			r.nextLine();
-			do {
-				String name = r.getWord();
-				int w = r.getNextWordAsInt();
-				int h = r.getNextWordAsInt();
-				String addData = r.getRestOfLine();
-				DummyObject dummy = new DummyObject(1, 1, w, h, addData, name);
-				typeData.add(dummy);
-				r.nextLine();
-			} while (!r.getWord().equals("end"));
-
-			// bg color
-			r.gotoPost("bgcol", false);
-			r.nextLine();
-			String hexrgb = r.getWord();
-			bgCol = new Color(Integer.parseInt(hexrgb, 16));
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (path.endsWith(".xml")) {
+			readFromXml(path, tileMapImageOverride);
+		} else {
+			System.out.println("Config file not xml. Ignoring.");
 		}
 	}
+	
+	private String getTextValueOfElement(String defaultValue, Element doc, String tag) {
+		String value = defaultValue;
+	    NodeList nl;
+	    nl = doc.getElementsByTagName(tag);
+	    if (nl.getLength() > 0 && nl.item(0).hasChildNodes()) {
+	        value = nl.item(0).getFirstChild().getNodeValue();
+	    } else {
+	    	System.out.println("Couldn't find tag <" + tag + "> , using default value \"" + defaultValue + "\"");
+	    }
+	    return value;
+	}
 
+	public void readFromXml(String path, String tileMapImageOverride) {
+		Document dom;
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        try {
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            dom = db.parse(path);
+            Element doc = dom.getDocumentElement();
+            projectPath = getTextValueOfElement(projectPath, doc, "projectPath");
+            exportPath = getTextValueOfElement(exportPath, doc, "exportPath");
+            bgCol = new Color(Integer.parseInt(getTextValueOfElement("AABBCC", doc, "editorBackgroundColor"), 16));
+            
+            // tiles
+            String tileMapImagePath = getTextValueOfElement(null, doc, "tileMapImagePath");
+            if (tileMapImageOverride != null && tileMapImageOverride.length() > 0) {
+            	tileMapImagePath = tileMapImageOverride;
+			}
+			tiles = CompatibleImageCreator.createCompatibleImage(new ImageIcon(tileMapImagePath).getImage());
+            sourceImageTileSize = Integer.parseInt(getTextValueOfElement("16", doc, "tileSize"));
+            tilesPerRow = Integer.parseInt(getTextValueOfElement("8", doc, "tilesPerRow"));
+            mirrorTileVal = Integer.parseInt(getTextValueOfElement("300", doc, "tileMirrorIndex"));
+            numTiles = (tiles.getWidth(null) * tiles.getHeight(null)) / (sourceImageTileSize * sourceImageTileSize);
+            
+            // dummys
+            dummyDefinitions = new ArrayList<DummyObject>();
+            dummyImagePath = getTextValueOfElement(dummyImagePath, doc, "dummyImagePath");
+            
+            NodeList dummyDefinitionElements;
+            dummyDefinitionElements = doc.getElementsByTagName("dummyDefinition");
+    	    for (int i = 0; i < dummyDefinitionElements.getLength(); i++) {
+    	    	
+    	    	Node dummyDef = dummyDefinitionElements.item(i);
+    	    	NamedNodeMap attributes = dummyDef.getAttributes();
+    	    	String type = null;
+	    		int width = -1;
+	    		int height = -1;
+	    		String otherAttributes = "";
+	    		
+    	    	for (int j = 0; j < attributes.getLength(); j++) {
+    	    		String attribute = attributes.item(j).getNodeName();
+    	    		String value = attributes.item(j).getNodeValue();
+    	    		
+    	    		if (attribute.equals("type")) {
+    	    			type = value;
+    	    		} else if (attribute.equals("width")) {
+    	    			width = Integer.parseInt(value);
+    	    		} else if (attribute.equals("height")) {
+    	    			height = Integer.parseInt(value);
+    	    		} else {
+    	    			// TODO best way to implement additional data ?
+    	    			if (otherAttributes.isEmpty()) {
+    	    				otherAttributes += attribute;
+    	    			} else {
+    	    				otherAttributes += "," + attribute;
+    	    			}
+    	    		}
+    	    	}
+    	    	DummyObject dummy = new DummyObject(0, 0, width, height, otherAttributes, type);
+				dummyDefinitions.add(dummy);
+    	    }
+        } catch (ParserConfigurationException pce) {
+            System.out.println(pce.getMessage());
+        } catch (SAXException se) {
+            System.out.println(se.getMessage());
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
+	}
 }

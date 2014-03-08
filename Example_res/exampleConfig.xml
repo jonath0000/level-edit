@@ -1,0 +1,49 @@
+<levelEditConfig>
+	<!--
+		Example config file.
+		Copy this file and modify it to use it in your own project.
+		Start LevelEdit with the config file as first argument to load it.
+	-->
+
+	<!-- Define default location to open/save files. -->
+	<projectPath>./..</projectPath>
+
+	<!-- Define default location to export files. -->
+	<exportPath>./..</exportPath>
+
+	<editorBackgroundColor>FFFFAA</editorBackgroundColor>
+
+
+	<tileMapImage>
+		<tileMapImagePath>./Example_res/tiles.png</tileMapImagePath>
+
+		<!-- Tile size in source image, in pixels -->
+		<tileSize>16</tileSize>
+
+		<!-- Number of tiles in one row in tile image -->
+		<tilesPerRow>8</tilesPerRow>
+
+		<!-- Tile index above which will be used as mirrored versions of the tiles.
+			Eg. if mirror index is 300, tile 301 will be drawn as tile 1 mirrored.-->
+		<tileMirrorIndex>300</tileMirrorIndex>
+	</tileMapImage>
+	
+	<!-- 
+		Path to dummy png images, there should be one for each dummy name,
+		eg. [type].png 
+	-->
+	<dummyImagePath>./Example_res/dummyimages/</dummyImagePath>
+
+	<!-- 
+		Define the dummys that will be available in the editor. 
+		"type" will be directly used to show the image. 
+	-->
+	<dummyDefinitionList>
+		<dummyDefinition type="blue" width="22" height="44" hej="hej" hopp="hopp"/>
+		<dummyDefinition type="red" width="22" height="44" />
+		<dummyDefinition type="yellow" width="22" height="44" />
+		<dummyDefinition type="StartOfLevel" width="50" height="50" />
+		<dummyDefinition type="EndOfLevel" width="50" height="50" />
+	</dummyDefinitionList>
+
+</levelEditConfig>
