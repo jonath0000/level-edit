@@ -4,14 +4,17 @@ import levelmodel.DummyObject;
 import graphicsutils.GridDrawingUtil;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.Scrollable;
 
 /**
  * Panel showing the tile map and dummy objects.
@@ -21,7 +24,7 @@ import javax.swing.JPanel;
  */
 public class MapView
         extends JPanel
-        implements MouseListener, MouseMotionListener {
+        implements MouseListener, MouseMotionListener, Scrollable {
     
     /** Image for getSelected dummy. */
     private ImageIcon markerSelectedDummy;
@@ -115,6 +118,21 @@ public class MapView
         }
     }
     
+    
+    private Dimension getContentSize() {
+    	return new Dimension(componentsAccessor.getLevelModel().getTileMap().getWidth() 
+    			* componentsAccessor.getConfig().representationTileSize,
+    			componentsAccessor.getLevelModel().getTileMap().getHeight() 
+    			* componentsAccessor.getConfig().representationTileSize);
+    }
+    
+    /**
+     * Called when a new level was loaded to update size etc.
+     */
+    public void onLevelLoaded() {
+    	setPreferredSize(getContentSize());
+    	revalidate();
+    }
     
     
 	/**
@@ -330,10 +348,10 @@ public class MapView
         int tileMapWidth = map[0].length;
         int tileMapHeight = map.length;
 
-		int tileScrollX = scrollXModel / componentsAccessor.getConfig().representationTileSize;
-		int tileScrollY = scrollYModel / componentsAccessor.getConfig().representationTileSize;
-		int tileViewWidth = screenToModelCoord(this.getWidth()) / componentsAccessor.getConfig().representationTileSize;
-		int tileViewHeight = screenToModelCoord(this.getHeight()) / componentsAccessor.getConfig().representationTileSize;
+		int tileScrollX = g.getClipBounds().x / componentsAccessor.getConfig().representationTileSize;
+		int tileScrollY = g.getClipBounds().y / componentsAccessor.getConfig().representationTileSize;
+		int tileViewWidth = 1 + screenToModelCoord(g.getClipBounds().width) / componentsAccessor.getConfig().representationTileSize;
+		int tileViewHeight = 1 + screenToModelCoord(g.getClipBounds().height) / componentsAccessor.getConfig().representationTileSize;
         
         Image tileImage = componentsAccessor.getConfig().tiles;
         
@@ -458,5 +476,30 @@ public class MapView
                 - g.getFontMetrics().getHeight());
         
     }
+
+	@Override
+	public Dimension getPreferredScrollableViewportSize() {
+		return getContentSize();
+	}
+
+	@Override
+	public int getScrollableBlockIncrement(Rectangle arg0, int arg1, int arg2) {
+		return componentsAccessor.getConfig().representationTileSize;
+	}
+
+	@Override
+	public boolean getScrollableTracksViewportHeight() {
+		return false;
+	}
+
+	@Override
+	public boolean getScrollableTracksViewportWidth() {
+		return false;
+	}
+
+	@Override
+	public int getScrollableUnitIncrement(Rectangle arg0, int arg1, int arg2) {
+		return componentsAccessor.getConfig().representationTileSize;
+	}
    
 }

@@ -14,6 +14,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
 import leveledit.ToolSelector.Tool;
@@ -93,6 +94,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 
 		loadDummyAndTileDefinitions();
 
+		mapView.onLevelLoaded();
 		mapView.revalidate();
 		mapView.repaint();
 	}
@@ -136,7 +138,8 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 
 		mapView.addMouseListener(mapView);
 		mapView.addMouseMotionListener(mapView);
-		container.add(mapView, BorderLayout.CENTER);
+		JScrollPane scrollPane = new JScrollPane(mapView);
+		container.add(scrollPane, BorderLayout.CENTER);
 		
 		// init main window
 		setSize(Toolkit.getDefaultToolkit().getScreenSize().width - 40, Toolkit
@@ -158,6 +161,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 		level.initBlankMap(x, y);
 		currentFile = null;
 		setTitle("LevelEdit - untitled");
+		mapView.onLevelLoaded();
 	}
 
 	/**
@@ -409,6 +413,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 				if (path != null) {
 					level.initFromFile(new InternalLevelFile(path),
 							config.dummyDefinitions.toArray(new DummyObject[0]));
+					mapView.onLevelLoaded();
 				}
 			}
 
@@ -418,6 +423,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 				if (path != null) {
 					level.initFromFile(new MappyLevelFile(path),
 							(DummyObject[])config.dummyDefinitions.toArray(new DummyObject[0]));
+					mapView.onLevelLoaded();
 				}
 			}
 			
