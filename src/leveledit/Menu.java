@@ -40,10 +40,6 @@ public class Menu extends JMenuBar {
 	protected JMenuItem selectPrevItem;
 	protected JMenuItem deleteDummyItem;
 	protected JMenuItem editDummyCustomDataItem;
-	protected JMenuItem scrollLeftItem;
-	protected JMenuItem scrollRightItem;
-	protected JMenuItem scrollUpItem;
-	protected JMenuItem scrollDownItem;
 	protected JMenuItem zoomInItem;
 	protected JMenuItem zoomOutItem;
 	protected JMenuItem addLayerItem;
@@ -94,15 +90,15 @@ public class Menu extends JMenuBar {
 
 		undoItem = addMenuItem(editMenu, handler, "Undo", KeyEvent.VK_Z, ActionEvent.CTRL_MASK);
 
-		moveLeftItem = addMenuItem(dummyMenu, handler, "Move left", KeyEvent.VK_LEFT, 0);
-		moveRightItem = addMenuItem(dummyMenu, handler, "Move right", KeyEvent.VK_RIGHT, 0);
-		moveUpItem = addMenuItem(dummyMenu, handler, "Move up", KeyEvent.VK_UP, 0);
-		moveDownItem = addMenuItem(dummyMenu, handler, "Move down", KeyEvent.VK_DOWN, 0);
+		moveLeftItem = addMenuItem(dummyMenu, handler, "Move left", KeyEvent.VK_J, 0);
+		moveRightItem = addMenuItem(dummyMenu, handler, "Move right", KeyEvent.VK_L, 0);
+		moveUpItem = addMenuItem(dummyMenu, handler, "Move up", KeyEvent.VK_I, 0);
+		moveDownItem = addMenuItem(dummyMenu, handler, "Move down", KeyEvent.VK_K, 0);
 
-		nudgeLeftItem = addMenuItem(dummyMenu, handler, "Nudge left", KeyEvent.VK_LEFT, ActionEvent.ALT_MASK);
-		nudgeRightItem = addMenuItem(dummyMenu, handler, "Nudge right", KeyEvent.VK_RIGHT, ActionEvent.ALT_MASK);
-		nudgeUpItem = addMenuItem(dummyMenu, handler, "Nudge up", KeyEvent.VK_UP, ActionEvent.ALT_MASK);
-		nudgeDownItem = addMenuItem(dummyMenu, handler, "Nudge down", KeyEvent.VK_DOWN, ActionEvent.ALT_MASK);
+		nudgeLeftItem = addMenuItem(dummyMenu, handler, "Nudge left", KeyEvent.VK_J, ActionEvent.ALT_MASK);
+		nudgeRightItem = addMenuItem(dummyMenu, handler, "Nudge right", KeyEvent.VK_L, ActionEvent.ALT_MASK);
+		nudgeUpItem = addMenuItem(dummyMenu, handler, "Nudge up", KeyEvent.VK_I, ActionEvent.ALT_MASK);
+		nudgeDownItem = addMenuItem(dummyMenu, handler, "Nudge down", KeyEvent.VK_K, ActionEvent.ALT_MASK);
 
 		selectNextItem = addMenuItem(dummyMenu, handler, "Select next", KeyEvent.VK_Q, 0);
 		selectPrevItem = addMenuItem(dummyMenu, handler, "Select prev", KeyEvent.VK_E, 0);
@@ -110,10 +106,6 @@ public class Menu extends JMenuBar {
 		deleteDummyItem = addMenuItem(dummyMenu, handler, "Delete", KeyEvent.VK_DELETE, 0);
 		editDummyCustomDataItem = addMenuItem(dummyMenu, handler, "Edit custom data", KeyEvent.VK_E, ActionEvent.CTRL_MASK);
 
-		scrollLeftItem = addMenuItem(levelMenu, handler, "Scroll left", KeyEvent.VK_A, 0);
-		scrollRightItem = addMenuItem(levelMenu, handler, "Scroll right", KeyEvent.VK_D, 0);
-		scrollUpItem = addMenuItem(levelMenu, handler, "Scroll up", KeyEvent.VK_W, 0);
-		scrollDownItem = addMenuItem(levelMenu, handler, "Scroll down", KeyEvent.VK_S, 0);
 		zoomInItem = addMenuItem(levelMenu, handler, "Zoom in", KeyEvent.VK_PERIOD, 0);
 		zoomOutItem = addMenuItem(levelMenu, handler, "Zoom out", KeyEvent.VK_COMMA, 0);
 		

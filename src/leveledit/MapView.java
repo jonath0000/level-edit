@@ -32,12 +32,6 @@ public class MapView
     /** Path to getSelected dummy image. */
     private static final String MARKERSELECTEDDUMMY_PATH 
             = "res/markerSelectedDummy.png"; 
-    
-    /** Scroll of map. */
-    private int scrollX = 0;
-    
-    /** Scroll of map. */
-    private int scrollY = 0; 
 
     /** Layer currently edited. */
     private int editlayer = 0;
@@ -153,17 +147,17 @@ public class MapView
 			if (!repeated) {
 				componentsAccessor.getLevelModel().isAboutToAlterState();
 				DummyObject d = componentsAccessor.createNewDummyFromSelectedType();
-				componentsAccessor.getLevelModel().getDummyObjects().newDummy(x + scrollX, y + scrollY, d);
+				componentsAccessor.getLevelModel().getDummyObjects().newDummy(x, y, d);
 			}
 			break;
 
 		case SELECT_DUMMY:
-			componentsAccessor.getLevelModel().getDummyObjects().selectDummy(x + scrollX, y + scrollY);
+			componentsAccessor.getLevelModel().getDummyObjects().selectDummy(x, y);
 			break;
 
 		case DELETE_DUMMY:
 			componentsAccessor.getLevelModel().isAboutToAlterState();
-			componentsAccessor.getLevelModel().getDummyObjects().deleteDummy(x + scrollX, y + scrollY);
+			componentsAccessor.getLevelModel().getDummyObjects().deleteDummy(x, y);
 			break;
 
 		case SET_TILE:
@@ -207,8 +201,8 @@ public class MapView
      */
     public void setTileVal(int x, int y, int tileIndex) {
 		// to tile index
-        int tX = (x + getScrollX()) / componentsAccessor.getConfig().representationTileSize;
-		int tY = (y + getScrollY()) / componentsAccessor.getConfig().representationTileSize;
+        int tX = x / componentsAccessor.getConfig().representationTileSize;
+		int tY = y / componentsAccessor.getConfig().representationTileSize;
 
         // tiles are 1 indexed.
         tileIndex++;
@@ -283,39 +277,6 @@ public class MapView
     }
     
     /**
-     * Scroll position x
-     * @return scrollX
-     */
-    public int getScrollX() {
-        return scrollX;
-    }
- 
-    /**
-     * Scroll position y
-     * @return scrollY
-     */
-    public int getScrollY() {
-        return scrollY;
-    }
-    
-    /**
-     * Scroll in x direction.
-     * @param length Pixels to scroll.
-     */
-    public void scrollX(int length) {
-        scrollX += length/scale;
-    }
-    
-    /**
-     * Scroll in y direction.
-     * @param length Pixels to scroll.
-     */
-    public void scrollY(int length) {
-        scrollY += length/scale;
-    }
-
-    
-    /**
      * Zoom view.
      * @param scaleFactor Positive will zoom in, negative out.
      */
@@ -341,9 +302,6 @@ public class MapView
      * @param map array of tile values.
      */
     private void paintMap(Graphics g, int[][] map) {
-    	
-        int scrollXModel = getScrollX();
-        int scrollYModel = getScrollY();
         
         int tileMapWidth = map[0].length;
         int tileMapHeight = map.length;
@@ -370,10 +328,10 @@ public class MapView
                     if (map[ty][tx] <= componentsAccessor.getConfig().mirrorTileVal) {
                         g.drawImage(tileImage,
                                 //dest
-                                modelToScreenCoord(tx * componentsAccessor.getConfig().representationTileSize - scrollXModel),
-                                modelToScreenCoord(ty * componentsAccessor.getConfig().representationTileSize - scrollYModel),
-                                modelToScreenCoord((tx + 1) * componentsAccessor.getConfig().representationTileSize - scrollXModel),
-                                modelToScreenCoord((ty + 1) * componentsAccessor.getConfig().representationTileSize - scrollYModel),
+                                modelToScreenCoord(tx * componentsAccessor.getConfig().representationTileSize),
+                                modelToScreenCoord(ty * componentsAccessor.getConfig().representationTileSize),
+                                modelToScreenCoord((tx + 1) * componentsAccessor.getConfig().representationTileSize),
+                                modelToScreenCoord((ty + 1) * componentsAccessor.getConfig().representationTileSize),
                                 // src
                                 (tileValue) * componentsAccessor.getConfig().sourceImageTileSize,
                                 row * componentsAccessor.getConfig().sourceImageTileSize,
@@ -384,10 +342,10 @@ public class MapView
                     else {
                         g.drawImage(tileImage,
                                 //dest
-                        		modelToScreenCoord(tx * componentsAccessor.getConfig().representationTileSize - scrollXModel), 
-                                modelToScreenCoord(ty * componentsAccessor.getConfig().representationTileSize - scrollYModel),
-                                modelToScreenCoord((tx + 1) * componentsAccessor.getConfig().representationTileSize - scrollXModel), 
-                                modelToScreenCoord((ty + 1) * componentsAccessor.getConfig().representationTileSize - scrollYModel),
+                        		modelToScreenCoord(tx * componentsAccessor.getConfig().representationTileSize), 
+                                modelToScreenCoord(ty * componentsAccessor.getConfig().representationTileSize ),
+                                modelToScreenCoord((tx + 1) * componentsAccessor.getConfig().representationTileSize), 
+                                modelToScreenCoord((ty + 1) * componentsAccessor.getConfig().representationTileSize),
                                 // src
                                 (map[ty][tx] - componentsAccessor.getConfig().mirrorTileVal + 1) * componentsAccessor.getConfig().sourceImageTileSize, 
                                 0,
@@ -407,18 +365,14 @@ public class MapView
             if (markerSelectedDummy != null) {
                 g.drawImage(markerSelectedDummy.getImage(),
                         (modelToScreenCoord(d.x + 
-                        d.w / 2  
-                        - getScrollX())
-                        - (markerSelectedDummy.getImage()).getWidth(this) / 2),
-                        modelToScreenCoord(d.y - getScrollY()) - (markerSelectedDummy.getImage()).getHeight(this),
+                        d.w / 2  - (markerSelectedDummy.getImage()).getWidth(this) / 2)),
+                        modelToScreenCoord(d.y) - (markerSelectedDummy.getImage()).getHeight(this),
                         this);
             }
         }
     }
     
     private void drawDummyObjects(Graphics g) {
-    	int scrollXModel = getScrollX();
-        int scrollYModel = getScrollY();
         DummyObject dummy;
         for (int i = 0; i < componentsAccessor.getLevelModel().getDummyObjects().size(); i++) {
             dummy = componentsAccessor.getLevelModel().getDummyObjects().elementAt(i);
@@ -426,18 +380,18 @@ public class MapView
         	if (dummyImage != null) {
                 g.drawImage(dummyImage,
                         //dest
-                		modelToScreenCoord(dummy.x - scrollXModel), 
-                        modelToScreenCoord(dummy.y - scrollYModel), 
-                        modelToScreenCoord(dummy.x + dummy.w - scrollXModel), 
-                        modelToScreenCoord(dummy.y + dummy.h - scrollYModel),
+                		modelToScreenCoord(dummy.x), 
+                        modelToScreenCoord(dummy.y), 
+                        modelToScreenCoord(dummy.x + dummy.w), 
+                        modelToScreenCoord(dummy.y + dummy.h),
                         // src
                         0, 0, dummyImage.getWidth(this), dummyImage.getHeight(this),
                         this);
         	} else {
-            	GridDrawingUtil.drawBoundingBox(Color.RED, g, modelToScreenCoord(dummy.x - scrollXModel), 
-                        modelToScreenCoord(dummy.y - scrollYModel), 
-                        modelToScreenCoord(dummy.x + dummy.w - scrollXModel), 
-                        modelToScreenCoord(dummy.y + dummy.h - scrollYModel));
+            	GridDrawingUtil.drawBoundingBox(Color.RED, g, modelToScreenCoord(dummy.x), 
+                        modelToScreenCoord(dummy.y), 
+                        modelToScreenCoord(dummy.x + dummy.w), 
+                        modelToScreenCoord(dummy.y + dummy.h));
             }
             
         }
@@ -462,10 +416,10 @@ public class MapView
 
         // show tile map borders
         GridDrawingUtil.drawBoundingBox(Color.CYAN, g, 
-        		modelToScreenCoord(-getScrollX()),
-        		modelToScreenCoord(-getScrollY()), 
-        		modelToScreenCoord(componentsAccessor.getLevelModel().getTileMap().getWidth() * componentsAccessor.getConfig().representationTileSize - getScrollX()),
-        		modelToScreenCoord(componentsAccessor.getLevelModel().getTileMap().getHeight() * componentsAccessor.getConfig().representationTileSize - getScrollY()));
+        		0,
+        		0, 
+        		modelToScreenCoord(componentsAccessor.getLevelModel().getTileMap().getWidth() * componentsAccessor.getConfig().representationTileSize),
+        		modelToScreenCoord(componentsAccessor.getLevelModel().getTileMap().getHeight() * componentsAccessor.getConfig().representationTileSize));
 
         drawSelectedDummyIndicator(g);
         

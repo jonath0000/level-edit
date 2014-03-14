@@ -41,7 +41,6 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 			+ "stand-alone documentation for help on    \n"
 			+ "this.                                    \n"
 			+ "                                         \n"
-			+ "A,W,S,D - move camera                    \n"
 			+ ". ,     - zoom camera                    \n"
 			+ "                                         \n"
 			+ "Dummy objects are game objects such as   \n"
@@ -306,20 +305,6 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 					level.isAboutToAlterState();
 					level.getDummyObjects().getSelected().additionalData = newCustomData;
 				}
-			}
-
-			// scroll
-			if (event.getSource() == menu.scrollUpItem) {
-				mapView.scrollY(-config.representationTileSize);
-			}
-			if (event.getSource() == menu.scrollDownItem) {
-				mapView.scrollY(config.representationTileSize);
-			}
-			if (event.getSource() == menu.scrollLeftItem) {
-				mapView.scrollX(-config.representationTileSize);
-			}
-			if (event.getSource() == menu.scrollRightItem) {
-				mapView.scrollX(config.representationTileSize);
 			}
 			
 			if (event.getSource() == menu.zoomInItem) {
