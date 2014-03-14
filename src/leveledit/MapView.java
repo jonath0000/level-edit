@@ -114,10 +114,10 @@ public class MapView
     
     
     private Dimension getContentSize() {
-    	return new Dimension(componentsAccessor.getLevelModel().getTileMap().getWidth() 
-    			* componentsAccessor.getConfig().representationTileSize,
-    			componentsAccessor.getLevelModel().getTileMap().getHeight() 
-    			* componentsAccessor.getConfig().representationTileSize);
+    	return new Dimension((int)(componentsAccessor.getLevelModel().getTileMap().getWidth() 
+    			* componentsAccessor.getConfig().representationTileSize * scale),
+    			(int)(componentsAccessor.getLevelModel().getTileMap().getHeight() 
+    			* componentsAccessor.getConfig().representationTileSize * scale));
     }
     
     /**
@@ -282,6 +282,8 @@ public class MapView
      */
     public void zoom(float scaleFactor) {
     	scale *= scaleFactor;
+    	setPreferredSize(getContentSize());
+    	revalidate();
     	System.out.println("Change zoom to " + scale);
     }
     
@@ -306,8 +308,8 @@ public class MapView
         int tileMapWidth = map[0].length;
         int tileMapHeight = map.length;
 
-		int tileScrollX = g.getClipBounds().x / componentsAccessor.getConfig().representationTileSize;
-		int tileScrollY = g.getClipBounds().y / componentsAccessor.getConfig().representationTileSize;
+		int tileScrollX = screenToModelCoord(g.getClipBounds().x) / componentsAccessor.getConfig().representationTileSize;
+		int tileScrollY = screenToModelCoord(g.getClipBounds().y) / componentsAccessor.getConfig().representationTileSize;
 		int tileViewWidth = 1 + screenToModelCoord(g.getClipBounds().width) / componentsAccessor.getConfig().representationTileSize;
 		int tileViewHeight = 1 + screenToModelCoord(g.getClipBounds().height) / componentsAccessor.getConfig().representationTileSize;
         
