@@ -1,14 +1,14 @@
 package leveledit;
 
-import levelmodel.DummyObject;
+import tools.TileSelector;
+import tools.Tool;
 import levelmodel.Level;
 
 public interface LevelEditComponentsAccessor {
-	public int getSelectedTileIndex();
-	public void setSelectedTileIndex(int index);
-	public DummyObject createNewDummyFromSelectedType();
+	public TileSelector getTileSelector();
+	public DummyObjectFactory getDummyObjectFactory();
 	public Level getLevelModel();
-	public ToolSelector.Tool getSelectedTool();
+	public Tool getSelectedTool();
 	public Config getConfig();
 	public ImageStore getImageStore();
 }

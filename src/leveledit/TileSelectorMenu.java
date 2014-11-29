@@ -3,19 +3,22 @@ package leveledit;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+
+import tools.TileSelector;
 
 /**
  * Frame allowing user to choose a tile.
  * 
  */
-public class TileSelector extends JScrollPane {
+public class TileSelectorMenu extends JScrollPane implements TileSelector {
 
 	public JList tileList;
 
-	public TileSelector() {
+	public TileSelectorMenu() {
 		super();
 		tileList = new JList();
 		this.setViewportView(tileList);
@@ -44,11 +47,14 @@ public class TileSelector extends JScrollPane {
 		tileList.setListData(listitems);
 	}
 
+	@Override
 	public int getSelectedIndex() {
-		return tileList.getSelectedIndex();
+		return tileList.getSelectedIndex() + 1;
 	}
 
+	@Override
 	public void setSelectedIndex(int n) {
-		tileList.setSelectedIndex(n);
+		if (n <= 0) return;
+		tileList.setSelectedIndex(n - 1);
 	}
 }

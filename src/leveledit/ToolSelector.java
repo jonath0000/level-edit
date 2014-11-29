@@ -3,10 +3,21 @@ package leveledit;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+
+import tools.DeleteDummyTool;
+import tools.DeleteTileTool;
+import tools.FillTileTool;
+import tools.LineTileTool;
+import tools.NewDummyTool;
+import tools.PickupTileTool;
+import tools.SelectDummyTool;
+import tools.SetTileTool;
+import tools.Tool;
 
 /**
  * Panel to select editing tool.
@@ -14,6 +25,7 @@ import javax.swing.JToolBar;
  */
 public class ToolSelector extends JToolBar {
     
+	/*
     public enum Tool {
         SET_TILE,
         DELETE_TILE,
@@ -23,7 +35,7 @@ public class ToolSelector extends JToolBar {
         NEW_DUMMY,
         SELECT_DUMMY,
         DELETE_DUMMY,
-    }
+    }*/
     
     private Tool tool;
 
@@ -57,24 +69,22 @@ public class ToolSelector extends JToolBar {
         
         super();
         
-        tool = Tool.SET_TILE;
+        tool = new NewDummyTool();
 
-        createButton(Tool.NEW_DUMMY,    "res/toolNewDummy.png");
-        createButton(Tool.SELECT_DUMMY, "res/toolSelectDummy.png");
-        createButton(Tool.DELETE_DUMMY, "res/toolDeleteDummy.png");
-        createButton(Tool.SET_TILE,     "res/toolSetTile.png");
-        createButton(Tool.DELETE_TILE,  "res/toolDeleteTile.png");
-        createButton(Tool.FILL_TILE,    "res/toolFillTile.png");
-        createButton(Tool.PICKUP_TILE,  "res/toolPickupTile.png");
-        createButton(Tool.LINE_TILE,    "res/toolLineTile.png");
+        createButton(new NewDummyTool(),    "res/toolNewDummy.png");
+        createButton(new SelectDummyTool(), "res/toolSelectDummy.png");
+        createButton(new DeleteDummyTool(), "res/toolDeleteDummy.png");
+        createButton(new SetTileTool(),     "res/toolSetTile.png");
+        createButton(new DeleteTileTool(),  "res/toolDeleteTile.png");
+        createButton(new FillTileTool(),    "res/toolFillTile.png");
+        createButton(new PickupTileTool(),  "res/toolPickupTile.png");
+        createButton(new LineTileTool(),    "res/toolLineTile.png");
         
-	setLayout(new GridLayout(3,3));
+        setLayout(new GridLayout(3,3));
     }
 
     
     public Tool getTool() {
-        
-        
         return tool;
     }
 }

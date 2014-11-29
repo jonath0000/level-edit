@@ -18,7 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
-import leveledit.ToolSelector.Tool;
+import tools.TileSelector;
+import tools.Tool;
 import levelfileformats.Blocko2LevelFile;
 import levelfileformats.CommaSeparatedTileMapLevelFile;
 import levelfileformats.InternalLevelFile;
@@ -55,7 +56,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 			"";
 
 	private ToolSelector toolSelector;
-	private TileSelector tileSelector;
+	private TileSelectorMenu tileSelector;
 	private DummyTypeSelector dummyTypeSelector;
 	private Menu menu;
 	private Config config;
@@ -88,7 +89,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 		imageStore = new ImageStore(config.dummyImagePath);
 		
 		toolSelector = new ToolSelector();
-		tileSelector = new TileSelector();
+		tileSelector = new TileSelectorMenu();
 		dummyTypeSelector = new DummyTypeSelector();
 		mapView = new MapView(this);
 		
@@ -440,7 +441,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 		
 		if (args.length < 1) {
 			System.out.println("No config specified, using default.");
-			configFile = "Example_res/example.config";
+			configFile = "Example_res/exampleConfig.xml";
 		} else {
 			configFile = args[0];
 		}
@@ -450,30 +451,20 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 			tileMapImage = args[1];
 		}
 
-		try {
-			LevelEdit app = new LevelEdit(configFile, tileMapImage);
-			app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		} catch (Exception e) {
-			System.out.println("Error while initializing app.");
-		}
+		LevelEdit app = new LevelEdit(configFile, tileMapImage);
+		app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	@Override
-	public int getSelectedTileIndex() {
-		return tileSelector.getSelectedIndex();
+	public TileSelector getTileSelector() {
+		return tileSelector;
 	}
 
 	@Override
-	public void setSelectedTileIndex(int index) {
-		tileSelector.setSelectedIndex(index);
+	public DummyObjectFactory getDummyObjectFactory() {
+		return dummyTypeSelector;
 	}
-
-	@Override
-	public DummyObject createNewDummyFromSelectedType() {
-		return dummyTypeSelector.createNewDummyObject();
-	}
-
+	
 	@Override
 	public Level getLevelModel() {
 		return level;

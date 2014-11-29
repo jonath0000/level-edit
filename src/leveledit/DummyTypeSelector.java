@@ -12,12 +12,12 @@ import levelmodel.DummyObject;
  * DummyObjects.
  * 
  */
-public class DummyTypeSelector extends JScrollPane {
+public class DummyTypeSelector extends JScrollPane implements DummyObjectFactory {
 
-	private JList typeList;
+	private JList<Object> typeList;
 
 	public DummyTypeSelector() {
-		typeList = new JList();
+		typeList = new JList<>();
 		typeList.setVisibleRowCount(3);
 		typeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setViewportView(typeList);
@@ -28,6 +28,11 @@ public class DummyTypeSelector extends JScrollPane {
 	}
 
 	public DummyObject createNewDummyObject() {
+		return new DummyObject((DummyObject) typeList.getSelectedValue());
+	}
+
+	@Override
+	public DummyObject createDummyFromSelected() {
 		return new DummyObject((DummyObject) typeList.getSelectedValue());
 	}
 

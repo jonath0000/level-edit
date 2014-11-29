@@ -35,18 +35,6 @@ public class MapView
 
     /** Layer currently edited. */
     private int editlayer = 0;
-
-    /** Last edited tile, used to draw lines. */
-    private int lastEditedTileX = 0;
-
-    /** Last edited tile, used to draw lines. */
-    private int lastEditedTileY = 0;
-        
-    /** Want second click to draw the line. */
-    private boolean lineToolFirstClick = true;
-    
-    /** For saving undo state while press. */
-    private long lastMousePressStateSaveTime = 0;
     
     /** Scale of view */
     private float scale = 1.0f;
@@ -104,12 +92,9 @@ public class MapView
     @Override
     public void mouseDragged(MouseEvent e) {
         // called during motion with buttons down
-        if (componentsAccessor.getSelectedTool() == ToolSelector.Tool.SET_TILE
-                || componentsAccessor.getSelectedTool() == ToolSelector.Tool.DELETE_TILE) {
-            click(screenToModelCoord(e.getX()), screenToModelCoord(e.getY()), true);
-            repaint();
-            e.consume();
-        }
+        click(screenToModelCoord(e.getX()), screenToModelCoord(e.getY()), true);
+        repaint();
+        e.consume();
     }
     
     
@@ -141,117 +126,18 @@ public class MapView
 	 */
 	public void click(int x, int y, boolean repeated) {
 
-		switch (componentsAccessor.getSelectedTool()) {
+		int tX = x / componentsAccessor.getConfig().representationTileSize;
+		int tY = y / componentsAccessor.getConfig().representationTileSize;
+		componentsAccessor.getSelectedTool().click(x, y, tX, tY, repeated, 
+				componentsAccessor.getLevelModel(), 
+				componentsAccessor.getDummyObjectFactory(),
+				componentsAccessor.getTileSelector(),
+				editlayer);
 
-		case NEW_DUMMY:
-			if (!repeated) {
-				componentsAccessor.getLevelModel().isAboutToAlterState();
-				DummyObject d = componentsAccessor.createNewDummyFromSelectedType();
-				componentsAccessor.getLevelModel().getDummyObjects().newDummy(x, y, d);
-			}
-			break;
-
-		case SELECT_DUMMY:
-			componentsAccessor.getLevelModel().getDummyObjects().selectDummy(x, y);
-			break;
-
-		case DELETE_DUMMY:
-			componentsAccessor.getLevelModel().isAboutToAlterState();
-			componentsAccessor.getLevelModel().getDummyObjects().deleteDummy(x, y);
-			break;
-
-		case SET_TILE:
-		case DELETE_TILE:
-			if (!repeated || System.currentTimeMillis() - lastMousePressStateSaveTime > 500) {
-				lastMousePressStateSaveTime = System.currentTimeMillis();
-				componentsAccessor.getLevelModel().isAboutToAlterState();
-			}
-			if (componentsAccessor.getSelectedTileIndex() != -1) {
-				setTileVal(x, y, componentsAccessor.getSelectedTileIndex());
-			}
-			break;
-			
-		case FILL_TILE:
-		case LINE_TILE:
-			if (!repeated || System.currentTimeMillis() - lastMousePressStateSaveTime > 500) {
-				lastMousePressStateSaveTime = System.currentTimeMillis();
-				componentsAccessor.getLevelModel().isAboutToAlterState();
-			}
-			if (componentsAccessor.getSelectedTileIndex() != -1) {
-				setTileVal(x, y, componentsAccessor.getSelectedTileIndex());
-			}
-			break;
-			
-		case PICKUP_TILE:
-			if (componentsAccessor.getSelectedTileIndex() != -1) {
-				setTileVal(x, y, componentsAccessor.getSelectedTileIndex());
-			}
-			break;
-		}
 		requestFocusInWindow();
 	}
     
-    
-    /**
-     * Sets tile at mouse click, decides how to behave dependent on selected 
-     * tool.
-     * @param x Mouse x (model coords)
-     * @param y Mouse y (model coords)
-     * @param tileIndex Tile index number
-     */
-    public void setTileVal(int x, int y, int tileIndex) {
-		// to tile index
-        int tX = x / componentsAccessor.getConfig().representationTileSize;
-		int tY = y / componentsAccessor.getConfig().representationTileSize;
 
-        // tiles are 1 indexed.
-        tileIndex++;
-        
-        // set tile
-        switch (componentsAccessor.getSelectedTool()) {
-            case SET_TILE:
-            	componentsAccessor.getLevelModel().getTileMap().setTileVal(tX, tY, editlayer, tileIndex);
-                break;
-            case DELETE_TILE:
-            	componentsAccessor.getLevelModel().getTileMap().setTileVal(tX, tY, editlayer, 0);
-                break;
-            case PICKUP_TILE:
-            	componentsAccessor.setSelectedTileIndex(tileIndex);
-                break;
-            case FILL_TILE:
-            	componentsAccessor.getLevelModel().getTileMap().fill(editlayer, tX, tY,
-            			componentsAccessor.getLevelModel().getTileMap().getTileVal(tX, tY, editlayer),
-                    tileIndex);
-                break;
-            case LINE_TILE:
-                    
-                
-                if (lineToolFirstClick) {
-                    lineToolFirstClick = false;
-                    componentsAccessor.getLevelModel().getTileMap().setTileVal(tX, tY, editlayer, tileIndex);
-                }
-                else {
-                	componentsAccessor.getLevelModel().isAboutToAlterState();
-                	componentsAccessor.getLevelModel().getTileMap().drawLine(editlayer, lastEditedTileX,
-                        lastEditedTileY, tX, tY, tileIndex);
-                }
-                break;
-		case DELETE_DUMMY:
-			break;
-		case NEW_DUMMY:
-			break;
-		case SELECT_DUMMY:
-			break;
-		default:
-			break;
-        }
-
-        lastEditedTileX = tX;
-        lastEditedTileY = tY;
-        if (componentsAccessor.getSelectedTool() != ToolSelector.Tool.LINE_TILE) {
-            lineToolFirstClick = true;
-        }
-    }
 
     /**
      * Select next layer in tilemap for editing.
