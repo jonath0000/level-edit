@@ -15,3 +15,10 @@ nb-configuration.xml
 *.jar
 *.war
 *.ear
+
+*~
+.DS_Store
+.classpath
+.project
+bin/
+.DS_Store
