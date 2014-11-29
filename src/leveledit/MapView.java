@@ -316,8 +316,8 @@ public class MapView
         Image tileImage = componentsAccessor.getConfig().tiles;
         
         // draw tiles
-        for (int tx = tileScrollX; tx < tileScrollX + tileViewWidth; tx++) {
-            for (int ty = tileScrollY; ty < tileScrollY + tileViewHeight; ty++) {
+        for (int tx = tileScrollX; tx <= tileScrollX + tileViewWidth; tx++) {
+            for (int ty = tileScrollY; ty <= tileScrollY + tileViewHeight; ty++) {
                 if (tx >= 0 && ty >= 0 && tx < tileMapWidth && ty < tileMapHeight && map[ty][tx] != 0) {
                     int tileValue = map[ty][tx];
 
