@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.ImageIcon;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -74,7 +73,7 @@ public class Config {
             if (tileMapImageOverride != null && tileMapImageOverride.length() > 0) {
             	tileMapImagePath = tileMapImageOverride;
 			}
-			tiles = CompatibleImageCreator.createCompatibleImage(new ImageIcon(tileMapImagePath).getImage());
+			tiles = CompatibleImageCreator.createCompatibleImageFromFile(tileMapImagePath);
             sourceImageTileSize = Integer.parseInt(getTextValueOfElement("16", doc, "tileSize"));
             tilesPerRow = Integer.parseInt(getTextValueOfElement("8", doc, "tilesPerRow"));
             mirrorTileVal = Integer.parseInt(getTextValueOfElement("300", doc, "tileMirrorIndex"));
@@ -108,9 +107,9 @@ public class Config {
     	    		} else {
     	    			// TODO best way to implement additional data ?
     	    			if (otherAttributes.isEmpty()) {
-    	    				otherAttributes += attribute;
+    	    				otherAttributes += value;
     	    			} else {
-    	    				otherAttributes += "," + attribute;
+    	    				otherAttributes += "," + value;
     	    			}
     	    		}
     	    	}

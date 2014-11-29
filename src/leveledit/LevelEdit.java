@@ -10,6 +10,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -77,6 +78,9 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 		this.configFilePath = configFilePath;
 		this.tileMapImagePath = tileMapImagePath;
 		
+		ImageIcon icon = new ImageIcon("res/leveledit-icon.png");
+		setIconImage(icon.getImage());
+		
 		level = new Level();
 		
 		config = new Config(configFilePath, tileMapImagePath);	
@@ -103,7 +107,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 	 */
 	private void loadDummyAndTileDefinitions() {
 		tileSelector.setTiles(config.tiles, config.numTiles, config.tilesPerRow, config.sourceImageTileSize,
-				config.sourceImageTileSize, getHeight()/40, getHeight()/40);
+				config.sourceImageTileSize, getHeight()/30, getHeight()/30);
 		dummyTypeSelector.setDummyList(config.dummyDefinitions);
 	}
 	

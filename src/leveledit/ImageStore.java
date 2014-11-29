@@ -24,14 +24,7 @@ public class ImageStore {
 	
 	private boolean loadImage(String imageName) {
 		String imageToLoad = imageDirectory + imageName + ".png";
-		System.out.print("Load image " + imageToLoad);
-		ImageIcon imageIcon = new ImageIcon(imageToLoad);
-		if (imageIcon.getImageLoadStatus() != MediaTracker.COMPLETE) {
-			images.put(imageName, null);
-			System.out.println(" - fail.");
-			return false;
-		}
-		Image image = CompatibleImageCreator.createCompatibleImage(imageIcon.getImage());
+		Image image = CompatibleImageCreator.createCompatibleImageFromFile(imageToLoad);
 		images.put(imageName, image);
 		System.out.println(" - OK.");
 		return true;

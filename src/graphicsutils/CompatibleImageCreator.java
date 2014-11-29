@@ -6,6 +6,10 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class CompatibleImageCreator {
 	
@@ -33,5 +37,16 @@ public class CompatibleImageCreator {
         g.dispose();
         
         return compatibleImage;
+	}
+	
+	public static Image createCompatibleImageFromFile(String path) {
+		BufferedImage loadedImage = null;
+		try {
+		    loadedImage = ImageIO.read(new File(path));
+		} catch (IOException e) {
+			System.out.println("Load " + path + " failed.");
+			return null;
+		}
+		return createCompatibleImage(loadedImage);
 	}
 }
