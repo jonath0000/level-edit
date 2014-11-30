@@ -164,12 +164,21 @@ public class MapView
     
     /**
      * Zoom view.
-     * @param scaleFactor Positive will zoom in, negative out.
+     * @param scaleFactor > 1 will zoom in, < 1 zooms out.
      */
     public void zoom(float scaleFactor) {
     	scale *= scaleFactor;
+    	Rectangle v = getVisibleRect();
+    	int currectFocusX = v.x + v.width/2;
+    	int currectFocusY = v.y + v.height/2;
+    	int zoomedFocusX = (int) (scaleFactor * (float)currectFocusX);
+    	int zoomedFocusY = (int) (scaleFactor * (float)currectFocusY);
+    	v.x = zoomedFocusX - v.width/2;
+    	v.y = zoomedFocusY - v.height/2;
+
     	setPreferredSize(getContentSize());
     	revalidate();
+    	scrollRectToVisible(v);
     	System.out.println("Change zoom to " + scale);
     }
     
