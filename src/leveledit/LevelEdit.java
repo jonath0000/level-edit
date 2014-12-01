@@ -33,7 +33,7 @@ import levelmodel.Level;
  * and stuff in the main window.
  * 
  */
-public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
+public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, CurrentLevelProvider {
 
 	private static final String HELP_TEXT = 
 			  "Quick help:                              \n"
@@ -66,6 +66,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 	private Level level;
 	private File currentFile = null;
 	private ImageStore imageStore;
+	private ApplicationClipBoard clipBoard;
 
 	
 	/**
@@ -98,6 +99,8 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 
 		loadDummyAndTileDefinitions();
 
+		clipBoard = new ApplicationClipBoard(this);
+		
 		mapView.onLevelLoaded();
 		mapView.revalidate();
 		mapView.repaint();
@@ -483,5 +486,22 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor {
 	@Override
 	public ImageStore getImageStore() {
 		return imageStore;
+	}
+
+	@Override
+	public Level getLevel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getSelectedLayer() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ApplicationClipBoard getClipBoard() {
+		return clipBoard;
 	}
 }

@@ -16,6 +16,7 @@ import tools.LineTileTool;
 import tools.NewDummyTool;
 import tools.PickupTileTool;
 import tools.SelectDummyTool;
+import tools.SelectTileRectTool;
 import tools.SetTileTool;
 import tools.Tool;
 
@@ -24,19 +25,7 @@ import tools.Tool;
  * 
  */
 public class ToolSelector extends JToolBar {
-    
-	/*
-    public enum Tool {
-        SET_TILE,
-        DELETE_TILE,
-        FILL_TILE,
-        PICKUP_TILE,
-        LINE_TILE,
-        NEW_DUMMY,
-        SELECT_DUMMY,
-        DELETE_DUMMY,
-    }*/
-    
+
     private Tool tool;
 
     private class ToolButton extends JButton {
@@ -79,6 +68,7 @@ public class ToolSelector extends JToolBar {
         createButton(new FillTileTool(),    "res/toolFillTile.png");
         createButton(new PickupTileTool(),  "res/toolPickupTile.png");
         createButton(new LineTileTool(),    "res/toolLineTile.png");
+        createButton(new SelectTileRectTool(),"res/toolSelectTileRect.png");
         
         setLayout(new GridLayout(3,3));
     }

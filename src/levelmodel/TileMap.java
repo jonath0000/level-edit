@@ -47,6 +47,18 @@ public class TileMap {
 		}
 	}
 
+	public void deleteTiles(int x, int y, int w, int h, int n) {
+		
+	}
+	
+	public void insertTiles(int x, int y, int[][] tiles, int n) {
+		
+	}
+	
+	public int [][] getSubTiles(int x, int y, int w, int h, int n) {
+		return null;
+	}
+	
 	/**
 	 * Add a blank map to the last index.
 	 */

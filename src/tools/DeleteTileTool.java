@@ -9,7 +9,7 @@ public class DeleteTileTool implements Tool {
 	@Override
 	public void click(int worldX, int worldY, int tileX, int tileY,
 			boolean repeated, Level currentLevel, DummyObjectFactory dummyObjectFactory, 
-			TileSelector tileSelector, int currentTileLayer) {
+			TileSelector tileSelector, int currentTileLayer, RectSelecter rectSelecter) {
 		// to prevent a lot of undo states
 		if (!repeated || System.currentTimeMillis() - lastMousePressStateSaveTime > 500) {
 			lastMousePressStateSaveTime = System.currentTimeMillis();

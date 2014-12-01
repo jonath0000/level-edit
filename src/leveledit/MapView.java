@@ -12,9 +12,12 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
+
+import tools.RectSelecter;
 
 /**
  * Panel showing the tile map and dummy objects.
@@ -24,7 +27,7 @@ import javax.swing.Scrollable;
  */
 public class MapView
         extends JPanel
-        implements MouseListener, MouseMotionListener, Scrollable {
+        implements MouseListener, MouseMotionListener, Scrollable, RectSelecter {
     
     /** Image for getSelected dummy. */
     private ImageIcon markerSelectedDummy;
@@ -132,7 +135,7 @@ public class MapView
 				componentsAccessor.getLevelModel(), 
 				componentsAccessor.getDummyObjectFactory(),
 				componentsAccessor.getTileSelector(),
-				editlayer);
+				editlayer, this);
 
 		requestFocusInWindow();
 	}
@@ -320,6 +323,14 @@ public class MapView
 
         drawSelectedDummyIndicator(g);
         
+        if (componentsAccessor.getClipBoard().hasSelection()) {
+        	GridDrawingUtil.drawBoundingBox(Color.GREEN, g, 
+            		modelToScreenCoord(componentsAccessor.getClipBoard().getSelectionX() * componentsAccessor.getConfig().representationTileSize),
+            		modelToScreenCoord(componentsAccessor.getClipBoard().getSelectionY() * componentsAccessor.getConfig().representationTileSize),
+            		modelToScreenCoord((componentsAccessor.getClipBoard().getSelectionX() + componentsAccessor.getClipBoard().getSelectionWidth()) * componentsAccessor.getConfig().representationTileSize),
+            		modelToScreenCoord((componentsAccessor.getClipBoard().getSelectionY() + componentsAccessor.getClipBoard().getSelectionHeight()) * componentsAccessor.getConfig().representationTileSize));
+        }
+        
         // show tile map layer
         g.setColor(Color.BLACK);
         g.drawString("Editing tilemap layer " + (editlayer+1) + "/" + 
@@ -351,6 +362,19 @@ public class MapView
 	@Override
 	public int getScrollableUnitIncrement(Rectangle arg0, int arg1, int arg2) {
 		return componentsAccessor.getConfig().representationTileSize;
+	}
+
+	@Override
+	public void setSelectedRect(int x1, int y1, int x2, int y2) {
+		Rectangle r = new Rectangle();
+		r.x = Math.min(x1, x2);
+		r.y = Math.min(y1, y2);
+		r.width = Math.abs(x2-x1);
+		r.height = Math.abs(y2-y1);
+		if (x2 == x1) return;
+		if (y2 == y1) return;
+		System.out.println("Select " + r.toString());
+		componentsAccessor.getClipBoard().setSelectedRect(r.x, r.y, r.width, r.height);
 	}
    
 }

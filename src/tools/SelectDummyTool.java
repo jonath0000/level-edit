@@ -11,7 +11,7 @@ public class SelectDummyTool implements Tool {
 	@Override
 	public void click(int worldX, int worldY, int tileX, int tileY,
 			boolean repeated, Level currentLevel, DummyObjectFactory dummyObjectFactory, 
-			TileSelector tileSelector, int currentTileLayer) {
+			TileSelector tileSelector, int currentTileLayer, RectSelecter rectSelecter) {
 		if (repeated) {
 			if (movedDummy == null) {
 				currentLevel.isAboutToAlterState();

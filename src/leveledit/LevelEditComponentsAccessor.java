@@ -11,4 +11,5 @@ public interface LevelEditComponentsAccessor {
 	public Tool getSelectedTool();
 	public Config getConfig();
 	public ImageStore getImageStore();
+	public ApplicationClipBoard getClipBoard();
 }
