@@ -57,11 +57,21 @@ public class TileMap {
 	}
 	
 	public void insertTiles(int x, int y, int[][] tiles, int n) {
-		
+		for (int yIter = y; yIter < y+tiles.length; yIter++) {
+			for (int xIter = x; xIter < x+tiles[0].length; xIter++) {
+				getMap(n)[yIter][xIter] = tiles[yIter-y][xIter-x];
+			}
+		}
 	}
 	
 	public int [][] getSubTiles(int x, int y, int w, int h, int n) {
-		return null;
+		int[][] tiles = new int[h][w];
+		for (int yIter = y; yIter < y+h; yIter++) {
+			for (int xIter = x; xIter < x+w; xIter++) {
+				tiles[yIter-y][xIter-x] = getMap(n)[yIter][xIter];
+			}
+		}
+		return tiles;
 	}
 	
 	/**

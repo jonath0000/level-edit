@@ -25,7 +25,7 @@ public class FloatingLayer {
 	}
 	
 	public void setCenter(int x, int y) {
-		this.posX = x - tiles.length/2;
-		this.posY = y - tiles[0].length/2;
+		this.posX = x - tiles[0].length/2;
+		this.posY = y - tiles.length/2;
 	}
 }

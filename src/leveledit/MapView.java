@@ -128,15 +128,24 @@ public class MapView
 	 *            If the click event is from a "press down".
 	 */
 	public void click(int x, int y, boolean repeated) {
-
 		int tX = x / componentsAccessor.getConfig().representationTileSize;
 		int tY = y / componentsAccessor.getConfig().representationTileSize;
-		componentsAccessor.getSelectedTool().click(x, y, tX, tY, repeated, 
-				componentsAccessor.getLevelModel(), 
-				componentsAccessor.getDummyObjectFactory(),
-				componentsAccessor.getTileSelector(),
-				editlayer, this);
-
+		
+		if (componentsAccessor.getClipBoard().hasFloatingLayer()) {
+			FloatingLayer floatingLayer = componentsAccessor.getClipBoard().getFloatingLayer();
+			if (tX < floatingLayer.getPosX() || tX > floatingLayer.getPosX() + floatingLayer.getTiles()[0].length
+					|| tY < floatingLayer.getPosY() || tY > floatingLayer.getPosY() + floatingLayer.getTiles().length) {
+				componentsAccessor.getClipBoard().anchorFloatingLayer();
+			} else {
+				floatingLayer.setCenter(tX, tY);
+			}
+		} else {	
+			componentsAccessor.getSelectedTool().click(x, y, tX, tY, repeated, 
+					componentsAccessor.getLevelModel(), 
+					componentsAccessor.getDummyObjectFactory(),
+					componentsAccessor.getTileSelector(),
+					editlayer, this);
+		}
 		requestFocusInWindow();
 	}
     
@@ -201,23 +210,27 @@ public class MapView
      * @param g Graphics object
      * @param map array of tile values.
      */
-    private void paintMap(Graphics g, int[][] map) {
+    private void paintMap(Graphics g, int[][] map, int offsetTilesX, int offsetTilesY) {
         
         int tileMapWidth = map[0].length;
         int tileMapHeight = map.length;
 
-		int tileScrollX = screenToModelCoord(g.getClipBounds().x) / componentsAccessor.getConfig().representationTileSize;
-		int tileScrollY = screenToModelCoord(g.getClipBounds().y) / componentsAccessor.getConfig().representationTileSize;
-		int tileViewWidth = 1 + screenToModelCoord(g.getClipBounds().width) / componentsAccessor.getConfig().representationTileSize;
-		int tileViewHeight = 1 + screenToModelCoord(g.getClipBounds().height) / componentsAccessor.getConfig().representationTileSize;
+        Config config = componentsAccessor.getConfig();
         
-        Image tileImage = componentsAccessor.getConfig().tiles;
+		int tileScrollX = screenToModelCoord(g.getClipBounds().x) / config.representationTileSize;
+		int tileScrollY = screenToModelCoord(g.getClipBounds().y) / config.representationTileSize;
+		int tileViewWidth = 1 + screenToModelCoord(g.getClipBounds().width) / config.representationTileSize;
+		int tileViewHeight = 1 + screenToModelCoord(g.getClipBounds().height) / config.representationTileSize;
+        
+        Image tileImage = config.tiles;
         
         // draw tiles
         for (int tx = tileScrollX; tx <= tileScrollX + tileViewWidth; tx++) {
             for (int ty = tileScrollY; ty <= tileScrollY + tileViewHeight; ty++) {
-                if (tx >= 0 && ty >= 0 && tx < tileMapWidth && ty < tileMapHeight && map[ty][tx] != 0) {
-                    int tileValue = map[ty][tx];
+            	int txOffs = tx - offsetTilesX;
+            	int tyOffs = ty - offsetTilesY;
+                if (txOffs >= 0 && tyOffs >= 0 && txOffs < tileMapWidth && tyOffs < tileMapHeight && map[tyOffs][txOffs] != 0) {
+                    int tileValue = map[tyOffs][txOffs];
 
                     // get row
                     tileValue--; // translate tile index to image index
@@ -225,32 +238,32 @@ public class MapView
 					tileValue = tileValue % componentsAccessor.getConfig().tilesPerRow;
                   
 					// non-mirrored
-                    if (map[ty][tx] <= componentsAccessor.getConfig().mirrorTileVal) {
+                    if (map[tyOffs][txOffs] <= config.mirrorTileVal) {
                         g.drawImage(tileImage,
                                 //dest
-                                modelToScreenCoord(tx * componentsAccessor.getConfig().representationTileSize),
-                                modelToScreenCoord(ty * componentsAccessor.getConfig().representationTileSize),
-                                modelToScreenCoord((tx + 1) * componentsAccessor.getConfig().representationTileSize),
-                                modelToScreenCoord((ty + 1) * componentsAccessor.getConfig().representationTileSize),
+                                modelToScreenCoord(tx * config.representationTileSize),
+                                modelToScreenCoord(ty * config.representationTileSize),
+                                modelToScreenCoord((tx + 1) * config.representationTileSize),
+                                modelToScreenCoord((ty + 1) * config.representationTileSize),
                                 // src
-                                (tileValue) * componentsAccessor.getConfig().sourceImageTileSize,
-                                row * componentsAccessor.getConfig().sourceImageTileSize,
-                                (tileValue + 1) * componentsAccessor.getConfig().sourceImageTileSize,
-                                (0 + row + 1) * componentsAccessor.getConfig().sourceImageTileSize,
+                                (tileValue) * config.sourceImageTileSize,
+                                row * config.sourceImageTileSize,
+                                (tileValue + 1) * config.sourceImageTileSize,
+                                (0 + row + 1) * config.sourceImageTileSize,
                                 this);
                     } // mirrored tiles
                     else {
                         g.drawImage(tileImage,
                                 //dest
-                        		modelToScreenCoord(tx * componentsAccessor.getConfig().representationTileSize), 
-                                modelToScreenCoord(ty * componentsAccessor.getConfig().representationTileSize ),
-                                modelToScreenCoord((tx + 1) * componentsAccessor.getConfig().representationTileSize), 
-                                modelToScreenCoord((ty + 1) * componentsAccessor.getConfig().representationTileSize),
+                        		modelToScreenCoord(tx * config.representationTileSize), 
+                                modelToScreenCoord(ty * config.representationTileSize ),
+                                modelToScreenCoord((tx + 1) * config.representationTileSize), 
+                                modelToScreenCoord((ty + 1) * config.representationTileSize),
                                 // src
-                                (map[ty][tx] - componentsAccessor.getConfig().mirrorTileVal + 1) * componentsAccessor.getConfig().sourceImageTileSize, 
+                                (map[tyOffs][txOffs] - config.mirrorTileVal + 1) * config.sourceImageTileSize, 
                                 0,
-                                (map[ty][tx] - componentsAccessor.getConfig().mirrorTileVal) * componentsAccessor.getConfig().sourceImageTileSize, 
-                                componentsAccessor.getConfig().sourceImageTileSize,
+                                (map[tyOffs][txOffs] - config.mirrorTileVal) * config.sourceImageTileSize, 
+                                config.sourceImageTileSize,
                                 this);
                     }
                 }
@@ -309,7 +322,7 @@ public class MapView
 
         // draw tiles
         for (int i = 0; i < componentsAccessor.getLevelModel().getTileMap().getNumLayers(); i++) {
-            paintMap(g, componentsAccessor.getLevelModel().getTileMap().getMap(i));
+            paintMap(g, componentsAccessor.getLevelModel().getTileMap().getMap(i), 0, 0);
         }
 
         drawDummyObjects(g);
@@ -329,6 +342,17 @@ public class MapView
             		modelToScreenCoord(componentsAccessor.getClipBoard().getSelectionY() * componentsAccessor.getConfig().representationTileSize),
             		modelToScreenCoord((componentsAccessor.getClipBoard().getSelectionX() + componentsAccessor.getClipBoard().getSelectionWidth()) * componentsAccessor.getConfig().representationTileSize),
             		modelToScreenCoord((componentsAccessor.getClipBoard().getSelectionY() + componentsAccessor.getClipBoard().getSelectionHeight()) * componentsAccessor.getConfig().representationTileSize));
+        }
+        
+        if (componentsAccessor.getClipBoard().hasFloatingLayer()) {
+        	FloatingLayer floatingLayer = componentsAccessor.getClipBoard().getFloatingLayer();
+        	paintMap(g, floatingLayer.getTiles(), floatingLayer.getPosX(), floatingLayer.getPosY());
+        	GridDrawingUtil.drawBoundingBox(Color.BLUE, g, 
+            		modelToScreenCoord(floatingLayer.getPosX() * componentsAccessor.getConfig().representationTileSize),
+            		modelToScreenCoord(floatingLayer.getPosY() * componentsAccessor.getConfig().representationTileSize),
+            		modelToScreenCoord((floatingLayer.getPosX() + floatingLayer.getTiles()[0].length) * componentsAccessor.getConfig().representationTileSize),
+            		modelToScreenCoord((floatingLayer.getPosY() + floatingLayer.getTiles().length) * componentsAccessor.getConfig().representationTileSize));
+
         }
         
         // show tile map layer
