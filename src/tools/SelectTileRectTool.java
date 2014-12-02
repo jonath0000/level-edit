@@ -22,8 +22,8 @@ public class SelectTileRectTool implements Tool {
 		} else {
 			selectX1 = tileX;
 			selectY1 = tileY;
-			selectX2 = tileX;
-			selectY2 = tileY;
+			selectX2 = tileX+1;
+			selectY2 = tileY+1;
 		}
 		rectSelecter.setSelectedRect(selectX1, selectY1, selectX2, selectY2);
 	}
