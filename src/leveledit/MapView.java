@@ -373,7 +373,6 @@ public class MapView
 		r.height = Math.abs(y2-y1);
 		if (x2 == x1) return;
 		if (y2 == y1) return;
-		System.out.println("Select " + r.toString());
 		componentsAccessor.getClipBoard().setSelectedRect(r.x, r.y, r.width, r.height);
 	}
    

@@ -28,6 +28,10 @@ public class Menu extends JMenuBar {
 	protected JMenuItem quitItem;
 	protected JMenuItem helpItem;
 	protected JMenuItem undoItem;
+	protected JMenuItem copyItem;
+	protected JMenuItem cutItem;
+	protected JMenuItem pasteItem;
+	protected JMenuItem deleteItem;
 	protected JMenuItem moveLeftItem;
 	protected JMenuItem moveRightItem;
 	protected JMenuItem moveUpItem;
@@ -38,7 +42,6 @@ public class Menu extends JMenuBar {
 	protected JMenuItem nudgeDownItem;
 	protected JMenuItem selectNextItem;
 	protected JMenuItem selectPrevItem;
-	protected JMenuItem deleteDummyItem;
 	protected JMenuItem editDummyCustomDataItem;
 	protected JMenuItem zoomInItem;
 	protected JMenuItem zoomOutItem;
@@ -89,7 +92,11 @@ public class Menu extends JMenuBar {
 		helpItem = addMenuItem(helpMenu, handler, "Help");
 
 		undoItem = addMenuItem(editMenu, handler, "Undo", KeyEvent.VK_Z, ActionEvent.CTRL_MASK);
-
+		copyItem = addMenuItem(editMenu, handler, "Copy", KeyEvent.VK_C, ActionEvent.CTRL_MASK);
+		cutItem = addMenuItem(editMenu, handler, "Cut", KeyEvent.VK_X, ActionEvent.CTRL_MASK);
+		pasteItem = addMenuItem(editMenu, handler, "Paste", KeyEvent.VK_V, ActionEvent.CTRL_MASK);
+		deleteItem = addMenuItem(editMenu, handler, "Delete", KeyEvent.VK_DELETE, 0);
+		
 		moveLeftItem = addMenuItem(dummyMenu, handler, "Move left", KeyEvent.VK_J, 0);
 		moveRightItem = addMenuItem(dummyMenu, handler, "Move right", KeyEvent.VK_L, 0);
 		moveUpItem = addMenuItem(dummyMenu, handler, "Move up", KeyEvent.VK_I, 0);
@@ -103,7 +110,6 @@ public class Menu extends JMenuBar {
 		selectNextItem = addMenuItem(dummyMenu, handler, "Select next", KeyEvent.VK_Q, 0);
 		selectPrevItem = addMenuItem(dummyMenu, handler, "Select prev", KeyEvent.VK_E, 0);
 
-		deleteDummyItem = addMenuItem(dummyMenu, handler, "Delete", KeyEvent.VK_DELETE, 0);
 		editDummyCustomDataItem = addMenuItem(dummyMenu, handler, "Edit custom data", KeyEvent.VK_E, ActionEvent.CTRL_MASK);
 
 		zoomInItem = addMenuItem(levelMenu, handler, "Zoom in", KeyEvent.VK_PERIOD, 0);

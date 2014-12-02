@@ -48,7 +48,12 @@ public class TileMap {
 	}
 
 	public void deleteTiles(int x, int y, int w, int h, int n) {
-		
+		int[][] tiles = getMap(n);
+		for (int yIter = y; yIter < y+h; yIter++) {
+			for (int xIter = x; xIter < x+w; xIter++) {
+				tiles[yIter][xIter] = 0;
+			}
+		}
 	}
 	
 	public void insertTiles(int x, int y, int[][] tiles, int n) {

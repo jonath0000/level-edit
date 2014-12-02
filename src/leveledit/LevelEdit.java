@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
+import tools.SelectDummyTool;
+import tools.SelectTileRectTool;
 import tools.TileSelector;
 import tools.Tool;
 import levelfileformats.Blocko2LevelFile;
@@ -264,6 +266,31 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 				level.undo();
 			}
 			
+			if (event.getSource() == menu.copyItem) {
+				clipBoard.copySelectedImage();
+			}
+			
+			if (event.getSource() == menu.cutItem) {
+				level.isAboutToAlterState();
+				clipBoard.cutSelectedImage();
+			}
+			
+			if (event.getSource() == menu.pasteItem) {
+				level.isAboutToAlterState();
+				clipBoard.pasteImage();
+			}
+			
+			if (event.getSource() == menu.deleteItem) {
+				if (toolSelector.getTool() instanceof SelectTileRectTool) {
+					level.isAboutToAlterState();
+					clipBoard.deleteSelectedImage();
+				}
+				if (toolSelector.getTool() instanceof SelectDummyTool) {
+					level.isAboutToAlterState();
+					level.getDummyObjects().deleteSelectedDummy();
+				}
+			}
+			
 			if (event.getSource() == menu.selectNextItem) {
 				level.getDummyObjects().selectNextDummy();
 			}
@@ -300,10 +327,6 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 				level.getDummyObjects().moveSelectedDummy(1, 0);
 			}
 
-			if (event.getSource() == menu.deleteDummyItem) {
-				level.isAboutToAlterState();
-				level.getDummyObjects().deleteSelectedDummy();
-			}
 
 			if (event.getSource() == menu.editDummyCustomDataItem) {
 				String newCustomData = JOptionPane.showInputDialog("Custom data for object " 
@@ -490,14 +513,12 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 
 	@Override
 	public Level getLevel() {
-		// TODO Auto-generated method stub
-		return null;
+		return level;
 	}
 
 	@Override
 	public int getSelectedLayer() {
-		// TODO Auto-generated method stub
-		return 0;
+		return mapView.getSelectedLayer();
 	}
 
 	@Override
