@@ -56,6 +56,25 @@ public class TileMap {
 		}
 	}
 	
+	private void copyTiles(
+			int srcX, int srcY, int w, int h, int[][] src, 
+			int dstX, int dstY, int[][] dst) {
+		
+		int [][] temp = new int[h][w];
+		
+		for (int yIter = 0; yIter < h; yIter++) {
+			for (int xIter = 0; xIter < w; xIter++) {
+				temp[yIter][xIter] = src[yIter + srcY][xIter + srcX];
+			}
+		}
+		
+		for (int yIter = 0; yIter < h; yIter++) {
+			for (int xIter = 0; xIter < w; xIter++) {
+				dst[yIter + dstY][xIter + dstX] = temp[yIter][xIter];
+			}
+		}
+	}
+	
 	public void insertTiles(int x, int y, int[][] tiles, int n) {
 		for (int yIter = y; yIter < y+tiles.length; yIter++) {
 			for (int xIter = x; xIter < x+tiles[0].length; xIter++) {
@@ -72,6 +91,26 @@ public class TileMap {
 			}
 		}
 		return tiles;
+	}
+	
+	public void resize(int left, int right, int top, int bottom) {
+		
+		if (left + right + getWidth() < 4) return;
+		if (top + bottom + getHeight() < 4) return;
+		
+		for (int n = 0; n < getNumLayers(); n++) {
+			int[][] oldMap = getMap(n);
+			int[][] newMap = new int[oldMap.length + top + bottom][oldMap[0].length + left + right];
+			int copyW = oldMap[0].length + (left < 0 ? left : 0) + (right < 0 ? right : 0);
+			int copyH = oldMap.length + (top < 0 ? top : 0) + (bottom < 0 ? bottom : 0);
+			int srcX = left < 0 ? -left : 0;
+			int srcY = top < 0 ? -top : 0;
+			int dstX = left > 0 ? left : 0;
+			int dstY = top > 0 ? top : 0;
+			copyTiles(srcX, srcY, copyW, copyH, oldMap, 
+					dstX, dstY, newMap);
+			setMap(newMap, n);
+		}
 	}
 	
 	/**

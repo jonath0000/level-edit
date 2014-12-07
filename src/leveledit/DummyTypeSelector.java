@@ -33,7 +33,11 @@ public class DummyTypeSelector extends JScrollPane implements DummyObjectFactory
 
 	@Override
 	public DummyObject createDummyFromSelected() {
-		return new DummyObject((DummyObject) typeList.getSelectedValue());
+		DummyObject dummy = (DummyObject) typeList.getSelectedValue();
+		if (dummy != null) {
+			return new DummyObject(dummy);
+		}
+		return null;
 	}
 
 }

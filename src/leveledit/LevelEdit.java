@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
@@ -361,6 +362,10 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 				level.getTileMap().deleteMap(mapView.getSelectedLayer());
 			}
 			
+			if (event.getSource() == menu.resizeTilemapItem) {
+				resizeTileMap();
+			}
+			
 			if (event.getSource() == menu.showTileValueItem) {
 				showTileValue();
 			}		
@@ -450,6 +455,37 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 
 			mapView.repaint();
 		}
+	}
+	
+	private void resizeTileMap() {
+		ArrayList<PropertiesInputDialog.PropertyItem> propertyList = new ArrayList<PropertiesInputDialog.PropertyItem>();
+		propertyList.add(new PropertiesInputDialog.PropertyItem("Right addition", "0"));
+		propertyList.add(new PropertiesInputDialog.PropertyItem("Left addition", "0"));
+		propertyList.add(new PropertiesInputDialog.PropertyItem("Top addition", "0"));
+		propertyList.add(new PropertiesInputDialog.PropertyItem("Bottom addition", "0"));
+		
+		new PropertiesInputDialog(this, "Resize", propertyList);
+		
+		int right = 0;
+		int left = 0;
+		int top = 0;
+		int bottom = 0;
+		
+		for (PropertiesInputDialog.PropertyItem property : propertyList) {
+			int intValue = 0;
+			try {
+				intValue = Integer.parseInt(property.value);
+			} catch (Exception e) {}
+			
+			if (property.name.equals("Right addition")) right = intValue;
+			if (property.name.equals("Left addition")) left = intValue;
+			if (property.name.equals("Top addition")) top = intValue;
+			if (property.name.equals("Bottom addition")) bottom = intValue;
+		}
+
+		level.isAboutToAlterState();
+		level.getTileMap().resize(left, right, top, bottom);
+		mapView.zoom(1); // to repaint
 	}
 
 	/**

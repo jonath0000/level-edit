@@ -12,8 +12,10 @@ public class NewDummyTool implements Tool {
 			TileSelector tileSelector, int currentTileLayer, RectSelecter rectSelecter) {
 		if (repeated) return;
 		DummyObject d = dummyObjectFactory.createDummyFromSelected();
-		currentLevel.isAboutToAlterState();
-		currentLevel.getDummyObjects().newDummy(worldX, worldY, d);
+		if (d != null) {
+			currentLevel.isAboutToAlterState();
+			currentLevel.getDummyObjects().newDummy(worldX, worldY, d);
+		}
 	}
 
 }
