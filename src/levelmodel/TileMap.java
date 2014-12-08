@@ -8,24 +8,33 @@ import java.util.List;
  * 
  */
 public class TileMap {
-	private List<int[][]> maps;
+	
+	public class TileMapLayer {
+		public TileMapLayer(int[][] tiles, String name, boolean isHidden) {
+			this.tiles = tiles;
+			this.name = name;
+			this.isHidden = isHidden;
+		}
+		public int[][] tiles;
+		public String name;
+		public boolean isHidden;
+		@Override
+		public String toString() {
+			return name + (isHidden ? " (hidden)" : "");
+		}
+	}
+	
+	private List<TileMapLayer> maps;
 
 	private static final int FILL_TEMP_VAL = -50000;
 
 	/**
 	 * Create new tilemap size w*h with n layers.
-	 * 
-	 * @param w
-	 *            Size x.
-	 * @param h
-	 *            Size y.
-	 * @param n
-	 *            Layers.
 	 */
 	public TileMap(int w, int h, int n) {
-		maps = new ArrayList<int[][]>();
+		maps = new ArrayList<TileMapLayer>();
 		for (int i = 0; i < n; i++) {
-			maps.add(new int[h][w]);
+			maps.add(new TileMapLayer(new int[h][w], new String("Layer " + (i+1)), false));
 		}
 	}
 	
@@ -34,8 +43,7 @@ public class TileMap {
 	 * @param tileMapToCopy Deep copy this object.
 	 */
 	public TileMap(TileMap tileMapToCopy) {
-		maps = new ArrayList<int[][]>();
-		// ugh... stupid way to do it :P
+		maps = new ArrayList<TileMapLayer>();
 		for (int i = 0; i < tileMapToCopy.getNumLayers(); i++) {
 			int[][] newMap = new int[tileMapToCopy.getHeight()][tileMapToCopy.getWidth()];
 			for (int y = 0; y < tileMapToCopy.getHeight(); y++) {
@@ -43,8 +51,36 @@ public class TileMap {
 					newMap[y][x] = tileMapToCopy.getTileVal(x, y, i);
 				}
 			}
-			maps.add(newMap);
+			maps.add(new TileMapLayer(newMap, tileMapToCopy.getLayers().get(i).name,
+					tileMapToCopy.getLayers().get(i).isHidden));
 		}
+	}
+	
+	public boolean isHidden(int layerIndex) {
+		TileMapLayer layer = maps.get(layerIndex);
+		if (layer != null) return layer.isHidden;
+		return true;
+	}
+	
+	public void toggleHidden(int layerIndex) {
+		TileMapLayer layer = maps.get(layerIndex);
+		if (layer != null) layer.isHidden = !layer.isHidden;
+	}
+	
+	public void moveLayerUp(int layerIndex) {
+		if (layerIndex <= 0) return;
+		if (layerIndex >= getNumLayers()) return;
+		TileMapLayer temp = maps.get(layerIndex);
+		maps.set(layerIndex, maps.get(layerIndex-1));
+		maps.set(layerIndex-1, temp);
+	}
+	
+	public void moveLayerDown(int layerIndex) {
+		if (layerIndex < 0) return;
+		if (layerIndex >= getNumLayers() - 1) return;
+		TileMapLayer temp = maps.get(layerIndex);
+		maps.set(layerIndex, maps.get(layerIndex+1));
+		maps.set(layerIndex+1, temp);
 	}
 
 	public void deleteTiles(int x, int y, int w, int h, int n) {
@@ -117,14 +153,15 @@ public class TileMap {
 	 * Add a blank map to the last index.
 	 */
 	public void addMap() {
-		maps.add(new int[getHeight()][getWidth()]);
+		maps.add(new TileMapLayer(new int[getHeight()][getWidth()], 
+				new String("Layer " + (getNumLayers()+1)), false));
 	}
 
 	/**
 	 * Add given map to the last index.
 	 */
 	public void addMap(int[][] map) {
-		maps.add(map);
+		maps.add(new TileMapLayer(map, "Layer " + (getNumLayers()+1), false));
 	}
 
 	/**
@@ -140,15 +177,17 @@ public class TileMap {
 	/**
 	 * Set map array.
 	 * 
-	 * @param map
-	 *            Map data.
-	 * @param n
-	 *            Layer.
+	 * @param map Map data.
+	 * @param n Layer.
 	 */
 	public void setMap(int[][] map, int n) {
-		maps.set(n, map);
+		maps.set(n, new TileMapLayer(map, "Layer " + (n+1), false));
 	}
 
+	public final List<TileMapLayer> getLayers() {
+		return maps;
+	}
+	
 	/**
 	 * Get map array for layer.
 	 * 
@@ -157,7 +196,7 @@ public class TileMap {
 	 * @return Map data.
 	 */
 	public int[][] getMap(int n) {
-		return maps.get(n);
+		return maps.get(n).tiles;
 	}
 
 	/**
@@ -166,7 +205,7 @@ public class TileMap {
 	 * @return Width.
 	 */
 	public int getWidth() {
-		return maps.get(0)[0].length;
+		return maps.get(0).tiles[0].length;
 	}
 
 	/**
@@ -175,7 +214,7 @@ public class TileMap {
 	 * @return Height.
 	 */
 	public int getHeight() {
-		return maps.get(0).length;
+		return maps.get(0).tiles.length;
 	}
 
 	/**
@@ -189,7 +228,7 @@ public class TileMap {
 
 	private boolean checkBounds(int x, int y) {
 		int[][] map;
-		map = maps.get(0);
+		map = maps.get(0).tiles;
 		if (x >= 0 && x < map[0].length && y >= 0 && y < map.length)
 			return true;
 		return false;
@@ -207,7 +246,7 @@ public class TileMap {
 	 * @return Value.
 	 */
 	public int getTileVal(int x, int y, int n) {
-		return maps.get(n)[y][x];
+		return maps.get(n).tiles[y][x];
 	}
 
 	/**
@@ -225,7 +264,7 @@ public class TileMap {
 	public void setTileVal(int x, int y, int n, int val) {
 		if (!checkBounds(x, y))
 			return;
-		maps.get(n)[y][x] = val;
+		maps.get(n).tiles[y][x] = val;
 	}
 
 	private boolean isTileInMap(int x, int y, int[][] map) {
@@ -272,7 +311,7 @@ public class TileMap {
 	 */
 	public void fill(int n, int tx, int ty, int oldval, int newval) {
 		int[][] map;
-		map = maps.get(n);
+		map = maps.get(n).tiles;
 
 		if (isTileInMap(tx, ty, map)) {
 			// mark tiles as belonging to area
@@ -319,7 +358,7 @@ public class TileMap {
 	 */
 	public void drawLine(int n, int sx, int sy, int dx, int dy, int val) {
 		int[][] map;
-		map = maps.get(n);
+		map = maps.get(n).tiles;
 
 		if (dx >= 0 && dx < map[0].length && dy >= 0 && dy < map.length) {
 			boolean isVert = false;

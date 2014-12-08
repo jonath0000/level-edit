@@ -66,7 +66,6 @@ public class Level {
      * @param y height of new map.
      */
     public void initBlankMap(int x, int y) {
-
     	levelStateHistory.newState(new LevelState(new TileMap(x, y, 2), new DummyObjectList()));
     }    
     

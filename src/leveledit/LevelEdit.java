@@ -23,6 +23,7 @@ import tools.SelectDummyTool;
 import tools.SelectTileRectTool;
 import tools.TileSelector;
 import tools.Tool;
+import leveledit.LayerListButtonBar.LayerListButtonBarListener;
 import levelfileformats.Blocko2LevelFile;
 import levelfileformats.CommaSeparatedTileMapLevelFile;
 import levelfileformats.InternalLevelFile;
@@ -36,7 +37,11 @@ import levelmodel.Level;
  * and stuff in the main window.
  * 
  */
-public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, CurrentLevelProvider {
+public class LevelEdit extends JFrame 
+	implements LevelEditComponentsAccessor, 
+		CurrentLevelProvider,
+		LayerListButtonBarListener,
+		LayerSelector.SelectedLayerChangeListener {
 
 	private static final String HELP_TEXT = 
 			  "Quick help:                              \n"
@@ -70,6 +75,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 	private File currentFile = null;
 	private ImageStore imageStore;
 	private ApplicationClipBoard clipBoard;
+	private LayerSelector layerSelector;
 
 	
 	/**
@@ -92,6 +98,8 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 		
 		imageStore = new ImageStore(config.dummyImagePath);
 		
+		layerSelector = new LayerSelector(this);
+		
 		toolSelector = new ToolSelector();
 		tileSelector = new TileSelectorMenu();
 		dummyTypeSelector = new DummyTypeSelector();
@@ -105,6 +113,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 		clipBoard = new ApplicationClipBoard(this);
 		
 		mapView.onLevelLoaded();
+		layerSelector.onLayersChanged(level.getTileMap());
 		mapView.revalidate();
 		mapView.repaint();
 	}
@@ -130,11 +139,18 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 		setJMenuBar(menu);
 
 		JPanel leftPanel = new JPanel();
-		leftPanel.setLayout(new GridLayout(2, 1));
+		leftPanel.setLayout(new GridLayout(3, 1));
 		JPanel bottomPanel = new JPanel();
 		
 		leftPanel.add(toolSelector);
 
+		JPanel layerListPanel = new JPanel(new BorderLayout());
+		JToolBar layerSelectorToolBar = new JToolBar();
+		layerListPanel.add(layerSelector, BorderLayout.CENTER);
+		layerListPanel.add(new LayerListButtonBar(this), BorderLayout.NORTH);
+		layerSelectorToolBar.add(layerListPanel);
+		leftPanel.add(layerSelectorToolBar, BorderLayout.WEST);
+		
 		JToolBar dummyToolBar = new JToolBar();
 		dummyToolBar.add(dummyTypeSelector);
 		leftPanel.add(dummyToolBar);
@@ -172,6 +188,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 		currentFile = null;
 		setTitle("LevelEdit - untitled");
 		mapView.onLevelLoaded();
+		layerSelector.onLayersChanged(level.getTileMap());
 	}
 
 	/**
@@ -347,19 +364,12 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 			}
 
 			// tile layer
-			if (event.getSource() == menu.nextLayerItem) {
-				mapView.selectNextLayer();
-			}
-			if (event.getSource() == menu.prevLayerItem) {
-				mapView.selectPrevLayer();
-			}
+
 			if (event.getSource() == menu.addLayerItem) {
-				level.isAboutToAlterState();
-				level.getTileMap().addMap();
+				addLayer();
 			}
 			if (event.getSource() == menu.deleteLayerItem) {
-				level.isAboutToAlterState();
-				level.getTileMap().deleteMap(mapView.getSelectedLayer());
+				deleteLayer();
 			}
 			
 			if (event.getSource() == menu.resizeTilemapItem) {
@@ -435,6 +445,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 					level.initFromFile(new InternalLevelFile(path),
 							config.dummyDefinitions.toArray(new DummyObject[0]));
 					mapView.onLevelLoaded();
+					layerSelector.onLayersChanged(level.getTileMap());
 				}
 			}
 
@@ -445,6 +456,7 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 					level.initFromFile(new MappyLevelFile(path),
 							(DummyObject[])config.dummyDefinitions.toArray(new DummyObject[0]));
 					mapView.onLevelLoaded();
+					layerSelector.onLayersChanged(level.getTileMap());
 				}
 			}
 			
@@ -560,5 +572,46 @@ public class LevelEdit extends JFrame implements LevelEditComponentsAccessor, Cu
 	@Override
 	public ApplicationClipBoard getClipBoard() {
 		return clipBoard;
+	}
+
+	public void addLayer() {
+		level.isAboutToAlterState();
+		level.getTileMap().addMap();
+		layerSelector.onLayersChanged(level.getTileMap());
+		mapView.zoom(1);
+	}
+	
+	public void deleteLayer() {
+		level.isAboutToAlterState();
+		level.getTileMap().deleteMap(mapView.getSelectedLayer());
+		layerSelector.onLayersChanged(level.getTileMap());
+		mapView.zoom(1);
+	}
+
+	@Override
+	public void onMoveLayerUpButton() {
+		level.getTileMap().moveLayerUp(layerSelector.getSelectedIndex());	
+		layerSelector.onLayersChanged(level.getTileMap());
+		mapView.zoom(1);
+	}
+
+	@Override
+	public void onMoveLayerDownButton() {
+		level.getTileMap().moveLayerDown(layerSelector.getSelectedIndex());
+		layerSelector.onLayersChanged(level.getTileMap());
+		mapView.zoom(1);
+	}
+
+	@Override
+	public void onToggleLayerVisibleButton() {
+		level.getTileMap().toggleHidden(layerSelector.getSelectedIndex());
+		layerSelector.onLayersChanged(level.getTileMap());
+		mapView.zoom(1);
+	}
+
+	@Override
+	public void onSelectedLayerChanged() {
+		mapView.selectLayer(layerSelector.getSelectedIndex());
+		mapView.zoom(1);
 	}
 }

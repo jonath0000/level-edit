@@ -148,30 +148,18 @@ public class MapView
 		}
 		requestFocusInWindow();
 	}
-    
 
-
-    /**
-     * Select next layer in tilemap for editing.
-     */
-    public void selectNextLayer() {
-        if (editlayer + 1 >= componentsAccessor.getLevelModel().getTileMap().getNumLayers()) return;
-        editlayer ++ ;
-    }
-    
-    /**
-     * Select previous layer in tilemap for editing.
-     */
-    public void selectPrevLayer() {
-        if (editlayer <= 0) return;
-        editlayer -- ;
-    }
     
     /**
      * Get currently edited layer. 
      */
     public int getSelectedLayer() {
         return editlayer;
+    }
+    
+    public void selectLayer(int index) {
+    	if (index < 0 || index >= componentsAccessor.getLevelModel().getTileMap().getNumLayers()) return;
+    	editlayer = index;
     }
     
     /**
@@ -191,7 +179,7 @@ public class MapView
     	setPreferredSize(getContentSize());
     	revalidate();
     	scrollRectToVisible(v);
-    	System.out.println("Change zoom to " + scale);
+    	repaint();
     }
     
     
@@ -234,8 +222,8 @@ public class MapView
 
                     // get row
                     tileValue--; // translate tile index to image index
-					int row = tileValue / componentsAccessor.getConfig().tilesPerRow;
-					tileValue = tileValue % componentsAccessor.getConfig().tilesPerRow;
+					int row = tileValue / config.tilesPerRow;
+					tileValue = tileValue % config.tilesPerRow;
                   
 					// non-mirrored
                     if (map[tyOffs][txOffs] <= config.mirrorTileVal) {
@@ -321,8 +309,10 @@ public class MapView
         super.paint(g);
 
         // draw tiles
-        for (int i = 0; i < componentsAccessor.getLevelModel().getTileMap().getNumLayers(); i++) {
-            paintMap(g, componentsAccessor.getLevelModel().getTileMap().getMap(i), 0, 0);
+        for (int n = 0; n < componentsAccessor.getLevelModel().getTileMap().getNumLayers(); n++) {
+        	if (!componentsAccessor.getLevelModel().getTileMap().isHidden(n)) {
+        		paintMap(g, componentsAccessor.getLevelModel().getTileMap().getMap(n), 0, 0);
+        	}
         }
 
         drawDummyObjects(g);

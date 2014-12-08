@@ -47,8 +47,6 @@ public class Menu extends JMenuBar {
 	protected JMenuItem zoomOutItem;
 	protected JMenuItem addLayerItem;
 	protected JMenuItem deleteLayerItem;
-	protected JMenuItem nextLayerItem;
-	protected JMenuItem prevLayerItem;
 	protected JMenuItem resizeTilemapItem;
 	protected JMenuItem showTileValueItem;
 
@@ -118,8 +116,6 @@ public class Menu extends JMenuBar {
 		
 		addLayerItem = addMenuItem(tileMenu, handler, "Add layer");
 		deleteLayerItem = addMenuItem(tileMenu, handler, "Delete layer");
-		nextLayerItem = addMenuItem(tileMenu, handler, "Select next layer", KeyEvent.VK_Q, ActionEvent.ALT_MASK);
-		prevLayerItem = addMenuItem(tileMenu, handler, "Select previous layer", KeyEvent.VK_E, ActionEvent.ALT_MASK);
 
 		resizeTilemapItem = addMenuItem(tileMenu, handler, "Resize...");
 
