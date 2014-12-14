@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -54,10 +55,9 @@ public class MapView
     public MapView(LevelEditComponentsAccessor componentsAccessor) {
         this.componentsAccessor = componentsAccessor;
         setBackground(componentsAccessor.getConfig().bgCol);
-        markerSelectedDummy = new ImageIcon(MARKERSELECTEDDUMMY_PATH);
-        if (markerSelectedDummy.getImageLoadStatus() != MediaTracker.COMPLETE) {
-            System.out.println("Error! Couldn't get image!");
-        }
+        Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource(
+        		MARKERSELECTEDDUMMY_PATH)).getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        markerSelectedDummy = new ImageIcon(image);
     }
 
     @Override

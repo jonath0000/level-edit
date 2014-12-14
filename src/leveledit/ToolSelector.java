@@ -1,12 +1,13 @@
 package leveledit;
 
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import tools.DeleteDummyTool;
@@ -48,7 +49,9 @@ public class ToolSelector extends JToolBar {
     
     private ButtonHandler buttonHandler = new ButtonHandler();
     
-    private void createButton(Tool tool, String image) {
+    private void createButton(Tool tool, String imagePath) {
+    	Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource(
+				imagePath)).getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         ToolButton button = new ToolButton(new ImageIcon(image), tool);
         button.addActionListener(buttonHandler);
         add(button);

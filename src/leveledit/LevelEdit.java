@@ -3,6 +3,7 @@ package leveledit;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -89,7 +90,9 @@ public class LevelEdit extends JFrame
 		this.configFilePath = configFilePath;
 		this.tileMapImagePath = tileMapImagePath;
 		
-		ImageIcon icon = new ImageIcon("res/leveledit-icon.png");
+		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource(
+				"res/leveledit-icon.png")).getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		ImageIcon icon = new ImageIcon(image);
 		setIconImage(icon.getImage());
 		
 		level = new Level();
