@@ -25,21 +25,22 @@ public class CommaSeparatedTileMapLevelFile implements LevelFileInterface {
 	/**
 	 * Write level to file.
 	 * 
-	 * Todo: Only writes level 0.
-	 * 
 	 * @return true if ok.
 	 */
 	@Override
 	public boolean write(DummyObjectList dummyObjects, TileMap tileMap) {
 		try {
 			PrintWriter out = new PrintWriter(path);
-			out.print(tileMap.getWidth());
-			out.print("," + tileMap.getHeight());
-
-			for (int j = 0; j < tileMap.getHeight(); j++) {
-				for (int i = 0; i < tileMap.getWidth(); i++) {
-					out.print("," + tileMap.getTileVal(i, j, 0));
+			for (int layer = 0; layer < tileMap.getNumLayers(); layer++) {
+				out.print(tileMap.getWidth());
+				out.print("," + tileMap.getHeight());
+	
+				for (int j = 0; j < tileMap.getHeight(); j++) {
+					for (int i = 0; i < tileMap.getWidth(); i++) {
+						out.print("," + tileMap.getTileVal(i, j, layer));
+					}
 				}
+				out.print("\n");
 			}
 			out.close();
 			
